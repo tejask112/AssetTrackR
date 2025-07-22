@@ -1,0 +1,23 @@
+User Accounts
+[ ] User Login
+[ ] User Registration
+
+View User Holdings
+[ ] View current Virtual Account balance
+[ ] Add/Remove funds from Virtual Account balance
+[ ] View current Portfolio/Holdings
+
+Account History
+[ ] View Portfolio Analytics
+[ ] View all History of Trades
+
+View Stocks
+[ ] Add stocks on a Watchlist
+[ ] Search stocks 
+[ ] View Index Funds (eg S&P500)
+
+Buy/Sell Stock
+[ ] Place Buy order on requested stock
+[ ] Place Sell order on requested stock
+[ ] View Line + Candlestick chart (history performance) for each stock
+[ ] View stock information (Company, Q1/2/3/4 Profits, Stats]
