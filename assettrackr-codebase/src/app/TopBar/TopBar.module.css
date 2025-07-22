@@ -1,0 +1,42 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 - 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+}
+
+.button {
+    background-color: #323a56;
+    font-family: 'Inter', Arial;
+    font-size: 1.4rem;
+    font-weight: 300;
+    padding: 5px 25px 5px 25px;
+    transition: background-color 0.1s ease;   
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #3a425d;
+}
+.button:active {
+    transform: scale(0.99);
+    background-color: #545d77;
+}
+
+.buttonDiv {
+    padding: 2px 0px 0px 75px;
+}
+
+.logo {
+    font-family: 'Inter', Arial;
+    font-size: 2rem;
+    font-weight: 500;
+    padding: 5px 0px 10px 100px;
+}
+
+.topBar {
+    background-color: #323a56;
+    color: white;
+}
+
+
