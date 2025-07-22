@@ -1,0 +1,13 @@
+.chartBox{
+    
+}
+
+.externalDiv{
+    margin: 20px 80px 0px 80px;
+    background-color: rgba(135, 206, 250, 0.527);
+    display: flex;
+}
+
+.statsBox{
+    border: 3px black solid;
+}

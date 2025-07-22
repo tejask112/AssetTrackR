@@ -23,6 +23,10 @@
     background-color: #545d77;
 }
 
+.buttonActivated{
+    background-color: #545d77;
+}
+
 .buttonDiv {
     padding: 2px 0px 0px 75px;
 }
