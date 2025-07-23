@@ -1,18 +1,48 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
 CORS(app)
 
-def hello():
-    return jsonify({'message': 'hello world (from flask!)'})
+headers = {
+        "accept": "application/json",
+        "APCA-API-KEY-ID": "PKSBHQZ8SKVL9FA4OE75",
+        "APCA-API-SECRET-KEY": "bLa4uLT72RV2GAJjUf7hQBQfShk1a0jfioav79kF"
+        }
 
+@app.route('/api/market_data')
 def market_data():
+    symbolInput = request.args.get('symbol').upper()
+    url = f"https://data.alpaca.markets/v2/stocks/{symbolInput}/trades/latest"
+
+    response = requests.get(url, headers=headers)
+    responseJson = response.json()
+    res_symbol = responseJson['symbol']
+    res_price = responseJson['trade']['p']
+    res_area = responseJson['trade']['z']
+    res_areaUpdate = ''
+
+    match res_area:
+        case 'A':
+            res_areaUpdate = 'New York Stock Exchange'
+        case 'B':
+            res_areaUpdate = 'NYSE Arca, Bats, IEX and other regional exchanges'
+        case 'C':
+            res_areaUpdate = 'NYSE Arca, Bats, IEX and other regional exchanges'
+        case 'N':
+            res_areaUpdate = 'Overnight'
+        case 'O':
+            res_areaUpdate = 'OTC'
+
+    print(response.text)
+
     data = {
-        'symbol' : 'AAPL',
-        'price': 123.45,
-        'timestamp': '2025-07-22T14:00:00Z'
-    }
+        'symbol': res_symbol,
+        'price': res_price,
+        'area': res_areaUpdate,
+    }   
+
     return jsonify(data)
 
 if __name__ == '__main__':

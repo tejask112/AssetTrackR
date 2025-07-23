@@ -1,13 +1,14 @@
-module.exports = () => {
-  const rewrites = () => {
+import { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  async rewrites() {
     return [
       {
-        source: "/hello/:path*",
-        destination: "http://localhost:5000/hello/:path*",
+        source: '/api/:path*', 
+        destination: 'http://localhost:5000/api/:path*',
       },
     ];
-  };
-  return {
-    rewrites,
-  };
+  },
 };
+
+export default nextConfig;
