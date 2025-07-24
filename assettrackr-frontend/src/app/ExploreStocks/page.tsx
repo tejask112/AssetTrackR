@@ -1,5 +1,7 @@
 'use client';
+import styles from './page.module.css';
 import { useState, useEffect, SetStateAction } from "react";
+import TodaysTopMovers from './TodaysTopMovers/TodaysTopMovers';
 
 export default function SearchStocks() {
 
@@ -21,11 +23,22 @@ export default function SearchStocks() {
     }
 
     return(
-        <div>
-            <h1>Search for a stock:</h1>
-            <input type="text" placeholder="Type here" value={symbolName} onChange={handleSymbolChange}></input>
-            <button onClick={searchStock}>Search</button>
-            <h1>{data==null ? `` : `${data.symbol}: £${data.price} - ${data.area}`}</h1>
+        <div className={styles.entireDiv}>
+            
+            <div className={styles.searchStockDiv}>
+                <h1 className={styles.searchText}>Search for a stock</h1>
+                <div>
+                    <input className={styles.searchBox} type="text" placeholder="Enter Symbol/Company Name" value={symbolName} onChange={handleSymbolChange}></input>
+                    {/* <h1>{data==null ? `` : `${data.symbol}: £${data.price} - ${data.area}`}</h1> */}
+                </div>
+            </div>
+
+            <div className={styles.marketCards}>
+                <TodaysTopMovers/>
+            </div>
+
+            
+            
         </div>
     )
 

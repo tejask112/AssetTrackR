@@ -25,8 +25,8 @@ export default function NavBar() {
             <button className={`${styles.button} ${pathName === '/TradeHistory' ? styles.buttonActivated : ''}`}>Trade History</button>
           </Link>
 
-          <Link href="/SearchStocks">
-            <button className={`${styles.button} ${pathName === '/SearchStocks' ? styles.buttonActivated : ''}`}>Search Stocks</button>
+          <Link href="/ExploreStocks">
+            <button className={`${styles.button} ${pathName === '/ExploreStocks' ? styles.buttonActivated : ''}`}>Explore Stocks</button>
           </Link>
 
         </div>

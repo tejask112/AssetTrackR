@@ -1,0 +1,46 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 - 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+}
+
+.entireDiv{
+    display: flex;
+    padding-right: 100px;
+}
+
+.marketCards{
+    margin: 20px 0px 0px 0px;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-top: 20px;
+}
+
+.searchBox{
+    font-family: 'Inter', Arial;
+    width: 400px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #a1a4aa;
+    border-radius: 0.375rem;
+    transition: border-color 0.2s ease;
+    margin-right: 0.5rem;
+}
+
+.searchStockDiv{
+    margin: 20px 10px 10px 100px;
+    max-width: 400px;
+    width: 400px;
+    flex-direction: column;
+    margin: 20px 0 0 100px;
+
+}
+
+.searchText{
+    padding: 0px 20px 5px 0px;  
+    font-size: 1.3rem;
+    font-family: 'Inter', Arial;
+    font-weight: 500;
+}

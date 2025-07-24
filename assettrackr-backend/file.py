@@ -11,6 +11,21 @@ headers = {
         "APCA-API-SECRET-KEY": "bLa4uLT72RV2GAJjUf7hQBQfShk1a0jfioav79kF"
         }
 
+@app.route('/api/todats_top_movers')
+def todays_top_movers():
+    url = "https://data.alpaca.markets/v1beta1/screener/stocks/movers?top=10"
+    response = requests.get(url, headers=headers)
+    responseJson = response.json()
+    
+
+
+
+
+
+
+
+
+
 @app.route('/api/market_data')
 def market_data():
     symbolInput = request.args.get('symbol').upper()

@@ -1,0 +1,72 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 - 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+}
+
+.cardRow{
+    display: flex;
+    overflow-x: auto;
+    cursor: grab;
+    scrollbar-width: none;
+}
+.cardRow.active{
+    cursor: grabbing
+}
+
+.change{
+    font-size: 0.8rem;
+    color: green;
+}
+
+.companyInfo{
+    flex: 1;
+}
+
+.companyName{
+    font-size: 1.2rem;
+}
+
+.companyStats{
+    flex: 0 0 auto;
+    text-align: right;
+}
+
+.price{
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.stockCard{
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: space-between;
+    border: 1px solid black;
+    padding: 10px 10px 10px 10px;
+    margin: 10px 20px 0px 0px;
+    min-width: 350px;
+    max-width: 350px;
+    min-height: 175px;
+    display: flex;
+}
+
+.stockDiv{
+    font-family: 'Inter', Arial;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px 20px 20px 20px;
+    margin: 0px 20px 0px 25px;
+    width: 100%;    
+}
+
+.tickerName{
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.title{
+    font-weight: 500;
+    font-size: 1.5rem;
+}
