@@ -30,7 +30,7 @@
 }
 
 .companyName{
-    font-size: 1.3rem;
+    font-size: 1rem;
 }
 
 .companyStats{
@@ -39,8 +39,9 @@
 }
 
 .image{
-    border: 1px solid black;
-    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 3px 3px 3px 3px;
 }
 
 .imageDiv{
@@ -58,6 +59,7 @@
     flex: 0 0 auto;
     justify-content: space-between;
     border: 1px solid rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
     padding: 10px 10px 10px 10px;
     margin: 10px 20px 0px 0px;
     min-width: 350px;
