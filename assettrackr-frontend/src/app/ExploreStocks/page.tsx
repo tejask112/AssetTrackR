@@ -1,25 +1,36 @@
 'use client';
 import styles from './page.module.css';
 import { useState, useEffect, SetStateAction } from "react";
-import TodaysTopMovers from './TodaysTopMovers/TodaysTopMovers';
+import LoadingBar from './LoadingBar/LoadingBar';
+import StockRow from './StockRow/StockRow';
+
+interface Stock {
+    current_price: number;
+    closing_price_7D: number[];
+    change: number;
+    exchange: string;
+    logo: string;
+    name: string;
+    percentage_change: number;
+    symbol: string;
+}
 
 export default function SearchStocks() {
 
-    const [data, setData] = useState<{ area: string; price: number; symbol: string} | null >(null);
-    const [symbolName, setSymbolName] = useState("");
+    const [companies, setCompanies] = useState<Stock[] | null>(null);
+    
+    useEffect(() => {
+        async function fetchMovers() {
+            const res = await fetch('/api/biggest_stock_gainers');
+            const json: Stock[] = await res.json();
+            setCompanies(json);
+        }
+        fetchMovers();
+    }, []);
 
-    // useEffect(() => {
-    //     fetch('/api/market_data').then(res => {return res.json();}).then(json => setData(json));
-    // }, []);
-
-    function handleSymbolChange(event: { target: { value: SetStateAction<string>; }; }) {
-        setSymbolName(event.target.value)
-    }
-
-    const searchStock = () => {
-        fetch('/api/market_data?symbol=' + encodeURIComponent(symbolName))
-        .then(res => {return res.json();})
-        .then(json => setData(json));
+    
+    if (!companies) {
+        return <LoadingBar />
     }
 
     return(
@@ -28,17 +39,15 @@ export default function SearchStocks() {
             <div className={styles.searchStockDiv}>
                 <h1 className={styles.searchText}>Search for a stock</h1>
                 <div>
-                    <input className={styles.searchBox} type="text" placeholder="Enter Symbol/Company Name" value={symbolName} onChange={handleSymbolChange}></input>
-                    {/* <h1>{data==null ? `` : `${data.symbol}: £${data.price} - ${data.area}`}</h1> */}
+                    <input className={styles.searchBox} type="text" placeholder="Enter Symbol/Company Name"></input>
                 </div>
             </div>
 
-            <div className={styles.marketCards}>
-                <TodaysTopMovers/>
+            <div>
+                <div className={styles.marketCards}>
+                    <StockRow title="Today's Top Gainers " stocks={companies}/>
+                </div>
             </div>
-
-            
-            
         </div>
     )
 

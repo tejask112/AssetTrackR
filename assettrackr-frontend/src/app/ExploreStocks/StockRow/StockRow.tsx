@@ -1,54 +1,49 @@
 'use client';
-import styles from './TodaysTopMovers.module.css'
-import { useState, useEffect } from 'react';
+import styles from './StockRow.module.css'
 import Image from 'next/image';
 import StockLineChart from './StockLineChart/StockLineChart';
+import { useState } from 'react';
 
 interface Stock {
-    current_price: number;
-    change: number;
-    // closing_price_7D: number[];
-    exchange: string;
-    logo: string;
-    name: string;
-    percentage_change: number;
-    symbol: string;
+  current_price: number;
+  closing_price_7D: number[];
+  change: number;
+  exchange: string;
+  logo: string;
+  name: string;
+  percentage_change: number;
+  symbol: string;
 }
 
-export default function TodaysTopMovers() {
+interface StockCardProps {
+    stocks: Stock[];
+    title: string;
+}
 
-    const [movers, setMovers] = useState<Stock | null>(null);
+export default function StockRow( { stocks, title } : StockCardProps) {
+
     const [failedLogos, setFailedLogos] = useState<Set<string>>(new Set());
-
-    useEffect(() => {
-        async function fetchMovers() {
-            const res = await fetch('/api/biggest_stock_gainers');
-            const json: Stock = await res.json();
-            setMovers(json);
-        }
-        fetchMovers();
-    }, []);
 
     const handleImageError = (symbol: string) => {
         setFailedLogos(prev => new Set(prev).add(symbol));
     };
-    
-    if (!movers) {
-        return <p>Loading top movers…</p>;
-    }
-
 
     return(
         <div>
             {/* Todays top gainers*/}
             <div className={styles.stockDiv}>
-                <h1 className={styles.title}>Today's Top Gainers</h1>
+                <h1 className={styles.title}>{title}</h1>
 
                 <div className={styles.cardRow}>
 
-                    {Object.entries(movers).map(([symbol, stock]) => {
+                    {stocks.map((stock) => {
+                        const priceChangeColor = stock.percentage_change > 0 ? '#16a34a' : '#dc2626';
+                        const stockLineChartColor = stock.percentage_change > 0 ? 'green' : 'red';
+
                         return (
-                            <div key={symbol} className={styles.stockCard}>
+                            <div key={stock.symbol} className={styles.stockCard}>
+
+                                {/* STOCK INFO: Symbol, Company Name, Price, +- % */}
                                 <div className={styles.stockData}>
                                     <div className={styles.stockCardQualtitative}>
                                         <div className={styles.companyInfo}>
@@ -65,25 +60,20 @@ export default function TodaysTopMovers() {
                                             </div>
                                             <div className={styles.companyStats}>
                                                 <h1 className={styles.price}>£{stock.current_price.toFixed(2)}</h1>
-                                                <h1 className={styles.change}>+{stock.change.toFixed(2)} {stock.percentage_change.toFixed(2)}% 24H</h1>
+                                                <h1 className={styles.change} style={{ color: priceChangeColor }}>+{stock.change.toFixed(2)} {stock.percentage_change.toFixed(2)}% 24H</h1>
                                             </div>
                                         </div>    
                                     </div>
-
+                                    
+                                    {/* STOCK PERFORMANCE CHART: 7 days of closing prices */}
                                     <div className={styles.stockCardQuantitativeData}>
-                                        <StockLineChart prices={stock.closing_price_7D}/>
+                                        <StockLineChart prices={stock.closing_price_7D} chartColor={stockLineChartColor}/>
                                     </div>
-
                                 </div>
-                                
                             </div>
-                        )
-                    })}
-                    
+                        )})}
                 </div>
-            
             </div>
-           
         </div>
         
     );
