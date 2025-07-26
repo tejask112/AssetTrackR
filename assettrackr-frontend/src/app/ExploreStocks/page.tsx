@@ -43,11 +43,14 @@ export default function SearchStocks() {
                 </div>
             </div>
 
-            <div>
-                <div className={styles.marketCards}>
-                    <StockRow title="Today's Top Gainers " stocks={companies}/>
-                </div>
+            
+            <div className={styles.marketCards}>
+                <StockRow title="Today's Top Gainers " stocks={companies}/>
             </div>
+            
+            
+
+
         </div>
     )
 
