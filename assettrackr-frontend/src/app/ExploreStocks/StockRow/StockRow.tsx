@@ -60,7 +60,7 @@ export default function StockRow( { stocks, title } : StockCardProps) {
                                             </div>
                                             <div className={styles.companyStats}>
                                                 <h1 className={styles.price}>£{stock.current_price.toFixed(2)}</h1>
-                                                <h1 className={styles.change} style={{ color: priceChangeColor }}>+{stock.change.toFixed(2)} {stock.percentage_change.toFixed(2)}% 24H</h1>
+                                                <h1 className={styles.change} style={{ color: priceChangeColor }}>{stock.change.toFixed(2)} {stock.percentage_change.toFixed(2)}% 24H</h1>
                                             </div>
                                         </div>    
                                     </div>

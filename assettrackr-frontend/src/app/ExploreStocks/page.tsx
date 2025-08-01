@@ -17,21 +17,36 @@ interface Stock {
 
 export default function SearchStocks() {
 
-    const [companies, setCompanies] = useState<Stock[] | null>(null);
+    const [todaysTopGainers, setTodaysTopGainers] = useState<Stock[] | null>(null);
+    const [todaysTopLosers, setTodaysTopLosers] = useState<Stock[] | null>(null);
+    const [mostActive, setMostActive] = useState<Stock[] | null>(null);
     
     useEffect(() => {
-        async function fetchMovers() {
+        async function fetchTopMovers() {
             const res = await fetch('/api/biggest_stock_gainers');
             const json: Stock[] = await res.json();
-            setCompanies(json);
+            setTodaysTopGainers(json);
         }
-        fetchMovers();
+        fetchTopMovers();
+
+        async function fetchLowestMovers() {
+            const res = await fetch('api/biggest_stock_losers');
+            const json: Stock[] = await res.json();
+            setTodaysTopLosers(json);
+        }
+        fetchLowestMovers();
+
+        async function fetchMostActive() {
+            const res = await fetch('api/most_actively_traded');
+            const json: Stock[] = await res.json();
+            setMostActive(json);
+        }
+        fetchMostActive();
     }, []);
 
-    
-    if (!companies) {
-        return <LoadingBar />
-    }
+    if (!todaysTopGainers) { return <LoadingBar /> }
+    if (!todaysTopLosers) { return <LoadingBar /> }
+    if (!mostActive) { return <LoadingBar /> }
 
     return(
         <div className={styles.entireDiv}>
@@ -43,14 +58,17 @@ export default function SearchStocks() {
                 </div>
             </div>
 
-            
             <div className={styles.marketCards}>
-                <StockRow title="Today's Top Gainers " stocks={companies}/>
+                <StockRow title="Most Actively Traded Stocks" stocks={mostActive}/>
             </div>
             
-            
+            <div className={styles.marketCards}>
+                <StockRow title="Today's Top Gainers" stocks={todaysTopGainers}/>
+            </div>
 
-
+            <div className={styles.marketCards}>
+                <StockRow title="Today's Top Losers" stocks={todaysTopLosers}/>
+            </div>
         </div>
     )
 
