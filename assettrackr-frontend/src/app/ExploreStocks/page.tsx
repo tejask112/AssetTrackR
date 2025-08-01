@@ -3,6 +3,7 @@ import styles from './page.module.css';
 import { useState, useEffect, SetStateAction } from "react";
 import LoadingBar from './LoadingBar/LoadingBar';
 import StockRow from './StockRow/StockRow';
+import SearchBar from './SearchBar/SearchBar';
 
 interface Stock {
     current_price: number;
@@ -44,19 +45,26 @@ export default function SearchStocks() {
         fetchMostActive();
     }, []);
 
-    if (!todaysTopGainers) { return <LoadingBar /> }
-    if (!todaysTopLosers) { return <LoadingBar /> }
-    if (!mostActive) { return <LoadingBar /> }
+    if (!todaysTopGainers) { return (
+        <div className={styles.entireDiv}>
+            <LoadingBar />
+            <SearchBar/>
+        </div>) }
+    if (!todaysTopLosers) { return (
+        <div className={styles.entireDiv}>
+            <LoadingBar />
+            <SearchBar/>
+        </div>) }
+    if (!mostActive) { return (
+        <div className={styles.entireDiv}>
+            <LoadingBar />
+            <SearchBar/>
+        </div>) }
 
     return(
         <div className={styles.entireDiv}>
-            
-            <div className={styles.searchStockDiv}>
-                <h1 className={styles.searchText}>Search for a stock</h1>
-                <div>
-                    <input className={styles.searchBox} type="text" placeholder="Enter Symbol/Company Name"></input>
-                </div>
-            </div>
+
+            <SearchBar/>
 
             <div className={styles.marketCards}>
                 <StockRow title="Most Actively Traded" stocks={mostActive}/>

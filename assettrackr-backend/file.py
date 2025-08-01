@@ -3,6 +3,8 @@ import pandas as pd
 from flask_cors import CORS
 import requests
 from datetime import datetime, timedelta, timezone
+import finnhub
+
 
 app = Flask(__name__)
 CORS(app)
@@ -108,8 +110,11 @@ def biggest_stock_gainers():
     output = []
     for s in listOfTodaysTopGainers:
         symbolName = s["symbol"]
-        bars = allBars[symbolName]
-        closingPrices = [bar['c'] for bar in bars]
+        if symbolName in allBars:
+            bars = allBars[symbolName]
+            closingPrices = [bar['c'] for bar in bars]
+        else:
+            closingPrices = []
 
         data = {
             "symbol": symbolName,
@@ -215,6 +220,27 @@ def most_actively_traded():
 
     return jsonify(output)
 
+# ---------------- SEARCH BAR TO FIND STOCKS | EXPLORE PAGE  ----------------
+@app.route('/api/symbol_lookup', methods=["GET"])
+def symbol_lookup():
+    finnhub_client = finnhub.Client(api_key="d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50")
+
+    query = request.args.get("query", "")
+    response = finnhub_client.symbol_lookup(query=query)
+
+    print("VALUE QUERIED: " + query)
+
+    output = []
+    if 'result' in response:
+        results = response["result"]
+        for company in results:
+            data = {
+                'symbol': company['symbol'],
+                'name': company['description'],
+            }
+            output.append(data)
+
+    return jsonify(output)
 
 
 
