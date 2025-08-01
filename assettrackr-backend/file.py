@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import pandas as pd
 from flask_cors import CORS
 import requests
 from datetime import datetime, timedelta, timezone
@@ -60,6 +61,29 @@ def calculateAllHistoricalBarsFromAPI(listOfStocks, start_date, end_date):
 
     print("All keys API responded with: " + ",".join(allBars.keys()) + " | count = " + str(len(allBars)))
     return allBars
+
+def calculate24HclosingPriceDiff(bars):
+    if not bars:
+        return 0.0, 0.0
+
+    df = pd.DataFrame(bars)
+    df['t'] = pd.to_datetime(df['t'], utc=True)
+    df = df.sort_values('t')
+    latest_row = df.iloc[-1]
+    latest_price = latest_row['c']
+    target_time = latest_row['t'] - pd.Timedelta(hours=24)
+
+    prior = df[df['t'] <= target_time]
+    if not prior.empty:
+        price_24h = prior.iloc[-1]['c']
+    else:
+        # fallback: closest timestamp to 24h ago
+        diffs = (df['t'] - target_time).abs()
+        price_24h = df.loc[diffs.idxmin(), 'c']
+
+    diff = latest_price - price_24h
+    pct = (diff / price_24h) * 100 if price_24h != 0 else 0.0
+    return diff, pct
 
 
 # ---------------- RETRIEVES TODAYS TOP GAINERS (STOCKS) ----------------
@@ -173,9 +197,7 @@ def most_actively_traded():
             bars = allBars[symbolName]
             closingPrices = [bar['c'] for bar in bars]
 
-            # price_now = closingPrices[-1]
-            # price_24H_ago = 
-
+            diff, pct = calculate24HclosingPriceDiff(bars)
         else:
             closingPrices = []
 
@@ -183,11 +205,11 @@ def most_actively_traded():
             "symbol": symbolName,
             "current_price": closingPrices[-1] if closingPrices else 0,
             "closing_price_7D": closingPrices,
-            "change": 5,
+            "change": diff,
             "exchange": "unsure", #NEED TO FIX
             "logo": f'https://img.logo.dev/ticker/{symbolName}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
             "name": s['name'],
-            "percentage_change": 5,
+            "percentage_change": pct,
         }
         output.append(data)
 

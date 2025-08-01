@@ -59,7 +59,7 @@ export default function SearchStocks() {
             </div>
 
             <div className={styles.marketCards}>
-                <StockRow title="Most Actively Traded Stocks" stocks={mostActive}/>
+                <StockRow title="Most Actively Traded" stocks={mostActive}/>
             </div>
             
             <div className={styles.marketCards}>
