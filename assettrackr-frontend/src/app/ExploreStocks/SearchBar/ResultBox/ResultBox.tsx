@@ -21,7 +21,7 @@ export default function ResultBox( { lookupValue }:ResultBoxProps) {
             setResult(data);
         }
         if (lookupValue.trim().length == 0) {
-            setResult([]);
+            setResult(null);
         } else {
             fetchResponse();
         }
@@ -33,10 +33,14 @@ export default function ResultBox( { lookupValue }:ResultBoxProps) {
 
     return (
         <div className={styles.resultsContainer}>
-            {result?.map((r) => (
-                <button key={r.symbol} className={styles.resultButton} onClick={() => searchStocks(r.symbol)}><strong>{r.symbol}</strong> {r.name}</button>
-            ))}
+            {result === null ? null : result.length > 0 ? (
+                result.map((r) => (
+                    <button key={r.symbol} className={styles.resultButton} onClick={() => searchStocks(r.symbol)}> <strong>{r.symbol}</strong> {r.name} </button>
+                ))
+            ) : (
+                <h1 className={styles.resultButton} >No results</h1>
+            )}
         </div>
-    )
+    );
 
 }
