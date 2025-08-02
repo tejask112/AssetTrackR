@@ -43,13 +43,16 @@
     cursor: pointer;
 }
 
+.searchForm{
+    width: 615px;
+}
+
 .searchStockDiv{
     margin: 20px 10px 10px 100px;
     max-width: 400px;
     width: 400px;
     flex-direction: column;
     margin: 20px 0 0 100px;
-
 }
 
 .searchText{

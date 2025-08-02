@@ -228,17 +228,18 @@ def symbol_lookup():
     query = request.args.get("query", "")
     response = finnhub_client.symbol_lookup(query=query)
 
-    print("VALUE QUERIED: " + query)
-
     output = []
     if 'result' in response:
         results = response["result"]
         for company in results:
-            data = {
-                'symbol': company['symbol'],
-                'name': company['description'],
-            }
-            output.append(data)
+            if '.' in company['symbol']:
+                continue
+            else:
+                data = {
+                    'symbol': company['symbol'],
+                    'name': company['description'],
+                }
+                output.append(data)
 
     return jsonify(output)
 

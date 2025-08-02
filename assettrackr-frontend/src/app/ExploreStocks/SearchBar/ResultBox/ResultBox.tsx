@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styles from './ResultBox.module.css'
 
 interface ResultBoxProps {
     lookupValue: string;
@@ -16,18 +17,26 @@ export default function ResultBox( { lookupValue }:ResultBoxProps) {
     useEffect(() => {
         async function fetchResponse() {
             const response = await fetch('/api/symbol_lookup?query='+encodeURIComponent(lookupValue.trim()));
-            const data = await response.json();
+            const data: Result[] = await response.json();
             setResult(data);
         }
-        fetchResponse()
+        if (lookupValue.trim().length == 0) {
+            setResult([]);
+        } else {
+            fetchResponse();
+        }
     }, [lookupValue])
 
+    const searchStocks = (symbol: string) => {
+        console.log('the user clicked on ' + symbol)
+    }
+
     return (
-        <datalist>
+        <div className={styles.resultsContainer}>
             {result?.map((r) => (
-                <option key={r.symbol}>{r.symbol} | {r.name}</option>
+                <button key={r.symbol} className={styles.resultButton} onClick={() => searchStocks(r.symbol)}><strong>{r.symbol}</strong> {r.name}</button>
             ))}
-        </datalist>
+        </div>
     )
 
 }
