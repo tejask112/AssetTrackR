@@ -299,7 +299,7 @@ def profile_data():
         "5DayPriceReturnDaily": basicFinancialsResultMetric.get("5DayPriceReturnDaily", -1),
         "10DayPriceReturnDaily": basicFinancialsResultMetric.get("10DayPriceReturnDaily", -1),
         "monthToDatePriceReturnDaily": basicFinancialsResultMetric.get("monthToDatePriceReturnDaily", -1),
-        "13WeekPriceReturnDaily": basicFinancialsResultMetric.get("13WeekPriceReturnDaily ", -1),
+        "13WeekPriceReturnDaily": basicFinancialsResultMetric.get("13WeekPriceReturnDaily", -1),
         "26WeekPriceReturnDaily": basicFinancialsResultMetric.get("26WeekPriceReturnDaily", -1),
         "52WeekPriceReturnDaily": basicFinancialsResultMetric.get("52WeekPriceReturnDaily", -1),
         
