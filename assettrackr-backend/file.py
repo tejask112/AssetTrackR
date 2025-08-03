@@ -288,23 +288,22 @@ def profile_data():
     #     # COMPANY FINANCIALS - Volume
     #     "volume": companyProfileResult.get("volume", -1),
     #     "averageVolume": companyProfileResult.get("averageVolume", -1),
-    #     "10DayAverageTradingVolume": basicFinancialsResultMetric.get("10DayAverageTradingVolume", -1),
-    #     "3MonthAverageTradingVolume": basicFinancialsResultMetric.get("3MonthAverageTradingVolume", -1),
+    #     "x10DayAverageTradingVolume": basicFinancialsResultMetric.get("10DayAverageTradingVolume", -1),
+    #     "x3MonthAverageTradingVolume": basicFinancialsResultMetric.get("3MonthAverageTradingVolume", -1),
 
     #     # COMPANY FINANCIALS - Asset Turnover
     #     "assetTurnoverAnnual": basicFinancialsResultMetric.get("assetTurnoverAnnual", -1),
     #     "assetTurnoverTTM": basicFinancialsResultMetric.get("assetTurnoverTTM", -1),
 
     #     # COMPANY FINANCIALS - Price Return over time
-    #     "5DayPriceReturnDaily": basicFinancialsResultMetric.get("5DayPriceReturnDaily", -1),
-    #     "10DayPriceReturnDaily": basicFinancialsResultMetric.get("10DayPriceReturnDaily", -1),
+    #     "x5DayPriceReturnDaily": basicFinancialsResultMetric.get("5DayPriceReturnDaily", -1),
     #     "monthToDatePriceReturnDaily": basicFinancialsResultMetric.get("monthToDatePriceReturnDaily", -1),
-    #     "13WeekPriceReturnDaily": basicFinancialsResultMetric.get("13WeekPriceReturnDaily", -1),
-    #     "26WeekPriceReturnDaily": basicFinancialsResultMetric.get("26WeekPriceReturnDaily", -1),
-    #     "52WeekPriceReturnDaily": basicFinancialsResultMetric.get("52WeekPriceReturnDaily", -1),
+    #     "x13WeekPriceReturnDaily": basicFinancialsResultMetric.get("13WeekPriceReturnDaily", -1),
+    #     "x26WeekPriceReturnDaily": basicFinancialsResultMetric.get("26WeekPriceReturnDaily", -1),
+    #     "x52WeekPriceReturnDaily": basicFinancialsResultMetric.get("52WeekPriceReturnDaily", -1),
         
     #     # COMPANY FINANCIALS - Valuation & Market Cap
-    #     "marketCapitalisation": basicFinancialsResultMetric.get("marketCapitalisation", -1),
+    #     "marketCapitalisation": basicFinancialsResultMetric.get("marketCapitalization", -1),
     #     "enterpriseValue": basicFinancialsResultMetric.get("enterpriseValue", -1),
     #     "forwardPE": basicFinancialsResultMetric.get("forwardPE", -1),
     #     "peAnnual": basicFinancialsResultMetric.get("peAnnual", -1),
@@ -346,13 +345,13 @@ def profile_data():
     # return jsonify(modified_data)
 
     output = {
-        "10DayAverageTradingVolume": 49.73162,
-        "10DayPriceReturnDaily": -1,
-        "13WeekPriceReturnDaily": 16.4462,
-        "26WeekPriceReturnDaily": -8.7801,
-        "3MonthAverageTradingVolume": 47.85682,
-        "52WeekPriceReturnDaily": 14.8519,
-        "5DayPriceReturnDaily": -7.7495,
+        "x10DayAverageTradingVolume": 49.73162,
+        "x10DayPriceReturnDaily": -1,
+        "x13WeekPriceReturnDaily": 16.4462,
+        "x26WeekPriceReturnDaily": -8.7801,
+        "x3MonthAverageTradingVolume": 47.85682,
+        "x52WeekPriceReturnDaily": 14.8519,
+        "x5DayPriceReturnDaily": -7.7495,
         "assetTurnoverAnnual": 1.0209,
         "assetTurnoverTTM": 1.0573,
         "averageVolume": 42481574,
@@ -369,7 +368,7 @@ def profile_data():
         "grossMarginAnnual": 48.85,
         "industry": "Specialty Retail",
         "location": "Seattle, US",
-        "marketCapitalisation": -1,
+        "marketCapitalisation": 228643534565,
         "monthToDatePriceReturnDaily": -8.2696,
         "netProfitMargin5Y": 5.34,
         "operatingMargin5Y": 6.15,
@@ -379,7 +378,9 @@ def profile_data():
         "pretaxMargin5Y": 6.1,
         "pretaxMarginAnnual": 10.76,
         "price": 214.75,
-        "range": "151.61-242.52",
+        "rangeLow": 151.61,
+        "rangeHigh": 242.52,
+        "recommendation": "Buy",
         "recommendationTools": [
             {
                 "buy": 50,

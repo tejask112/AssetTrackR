@@ -37,25 +37,25 @@ interface ProfileDataResponse {
     location: string;
     companyLogo: string;
     price: number;
-    range: string;
+    rangeLow: number;
+    rangeHigh: number;
 
     // Volume / liquidity
     volume: number;
     averageVolume: number;
-    "10DayAverageTradingVolume": number;
-    "3MonthAverageTradingVolume": number;
+    x10DayAverageTradingVolume: number;
+    x3MonthAverageTradingVolume: number;
 
     // Asset turnover
     assetTurnoverAnnual: number;
     assetTurnoverTTM: number;
 
     // Price returns / momentum
-    "5DayPriceReturnDaily": number;
-    "10DayPriceReturnDaily": number;
+    x5DayPriceReturnDaily: number;
     monthToDatePriceReturnDaily: number;
-    "13WeekPriceReturnDaily": number;
-    "26WeekPriceReturnDaily": number;
-    "52WeekPriceReturnDaily": number;
+    x13WeekPriceReturnDaily: number;
+    x26WeekPriceReturnDaily: number;
+    x52WeekPriceReturnDaily: number;
 
     // Valuation & market cap
     marketCapitalisation: number;
@@ -84,6 +84,7 @@ interface ProfileDataResponse {
     payoutRatioAnnual: number;
 
     // Other
+    recommendation: string;
     recommendationTools: Recommendation[];
     timeseries: TimeSeriesPoint[] | "Error";
 }
@@ -124,10 +125,97 @@ export default function DetailedStockView({ symbol }: Props) {
                     <h1 className={styles.priceHourlyChangeStats}>-19.36 (-8.27%)</h1>
                 </div>
 
-                <button className={styles.tradeButton}>Trade {symbol}</button>
-                <button className={styles.companyInfoButton}>View Company Info</button>
+                <div className={styles.buttonsDiv}>
+                    <button className={styles.tradeButton}>Trade {symbol}</button>
+                    <button className={styles.fundamentalDataButton}>View Fundamental Data</button>
+                </div>
+
+                <div className={styles.briefCompanyInfoCard}>
+                    <div className={styles.metricsTwoCol}>
+                        <div className={styles.col}>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>Exchange</div>
+                            <div className={styles.value}>{results.exchange}</div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>Volume</div>
+                            <div className={styles.value}>{results.volume.toLocaleString()}</div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>Market Cap</div>
+                            <div className={styles.value}>${results.marketCapitalisation.toLocaleString()}</div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>Annual P/E</div>
+                            <div className={styles.value}>{results.peAnnual?.toFixed(2)}</div>
+                        </div>
+                        </div>
+
+                        <div className={styles.col}>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>5 Day Return</div>
+                            <div
+                            className={styles.value}
+                            style={results.x5DayPriceReturnDaily < 0 ? { color: "red" } : { color: "green" }}
+                            >
+                            {results.x5DayPriceReturnDaily.toFixed(2)}%
+                            </div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>1 Month Return</div>
+                            <div
+                            className={styles.value}
+                            style={results.monthToDatePriceReturnDaily < 0 ? { color: "red" } : { color: "green" }}
+                            >
+                            {results.monthToDatePriceReturnDaily.toFixed(2)}%
+                            </div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>6 Month Return</div>
+                            <div
+                            className={styles.value}
+                            style={results.x26WeekPriceReturnDaily < 0 ? { color: "red" } : { color: "green" }}
+                            >
+                            {results.x26WeekPriceReturnDaily.toFixed(2)}%
+                            </div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>1 Year Return</div>
+                            <div
+                            className={styles.value}
+                            style={results.x52WeekPriceReturnDaily < 0 ? { color: "red" } : { color: "green" }}
+                            >
+                            {results.x52WeekPriceReturnDaily.toFixed(2)}%
+                            </div>
+                        </div>
+                        </div>
+
+                        <div className={styles.col}>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>1 Year High</div>
+                            <div className={styles.value}>${results.rangeHigh}</div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>Ask Price</div>
+                            <div className={styles.value}>${results.price}</div>
+                        </div>
+                        <div className={styles.metric}>
+                            <div className={styles.label}>1 Year Low</div>
+                            <div className={styles.value}>${results.rangeLow}</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h1>Recommendation: {results.recommendation}</h1>
+                </div>
+
+
 
             </div>
+
+
             <div>
 
             </div>
