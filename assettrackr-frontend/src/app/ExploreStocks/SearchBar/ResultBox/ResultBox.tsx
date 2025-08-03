@@ -1,5 +1,8 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import styles from './ResultBox.module.css'
+import { useRouter } from "next/navigation";
 
 interface ResultBoxProps {
     lookupValue: string;
@@ -13,6 +16,8 @@ interface Result {
 export default function ResultBox( { lookupValue }:ResultBoxProps) {
 
     const [result, setResult] = useState<Result[] | null>(null);
+
+    const router = useRouter();
 
     useEffect(() => {
         async function fetchResponse() {
@@ -29,6 +34,7 @@ export default function ResultBox( { lookupValue }:ResultBoxProps) {
 
     const searchStocks = (symbol: string) => {
         console.log('the user clicked on ' + symbol)
+        router.push(`/DetailedStockView/${encodeURIComponent(symbol)}`);
     }
 
     return (
