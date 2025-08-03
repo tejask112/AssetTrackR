@@ -105,7 +105,7 @@ export default function DetailedStockView({ symbol }: Props) {
 
     return (
         <div className={styles.entireDiv}>
-            <div>
+            <div className={styles.companyStatsDiv}>
                 <div className={styles.companyVisuals}>
                     <div className={styles.imageDiv}>
                         <Image src={results.companyLogo} alt={symbol} className={styles.stockLogo} width={90} height={90} />
@@ -124,7 +124,8 @@ export default function DetailedStockView({ symbol }: Props) {
                     <h1 className={styles.priceHourlyChangeStats}>-19.36 (-8.27%)</h1>
                 </div>
 
-                <button>Trade {symbol} </button>
+                <button className={styles.tradeButton}>Trade {symbol}</button>
+                <button className={styles.companyInfoButton}>View Company Info</button>
 
             </div>
             <div>
