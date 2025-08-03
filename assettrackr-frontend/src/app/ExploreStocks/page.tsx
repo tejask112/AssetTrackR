@@ -1,6 +1,6 @@
 'use client';
 import styles from './page.module.css';
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import LoadingBar from './LoadingBar/LoadingBar';
 import StockRow from './StockRow/StockRow';
 import SearchBar from './SearchBar/SearchBar';
