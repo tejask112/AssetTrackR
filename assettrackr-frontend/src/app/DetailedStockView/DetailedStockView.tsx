@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from './DetailedStockView.module.css';
+import RecommendationChart from './RecommendationChart/RecommendationChart';
 
 interface Props {
     symbol: string;
@@ -102,7 +103,7 @@ export default function DetailedStockView({ symbol }: Props) {
         fetchDetailedStockData();
     }, [])
 
-    if (!results) { return (<h1>Loading</h1>) }
+    if (!results) { return (<div className={styles.entireDiv}> <h1>Loading...</h1> </div>) }
 
     return (
         <div className={styles.entireDiv}>
@@ -127,11 +128,11 @@ export default function DetailedStockView({ symbol }: Props) {
 
                 <div className={styles.buttonsDiv}>
                     <button className={styles.tradeButton}>Trade {symbol}</button>
-                    <button className={styles.fundamentalDataButton}>View Fundamental Data</button>
+                    <button className={styles.fundamentalDataButton}>View Financials</button>
                 </div>
 
                 <div className={styles.briefCompanyInfoCard}>
-                    <div className={styles.metricsTwoCol}>
+                    <div className={styles.metricsThreeCol}>
                         <div className={styles.col}>
                         <div className={styles.metric}>
                             <div className={styles.label}>Exchange</div>
@@ -208,7 +209,17 @@ export default function DetailedStockView({ symbol }: Props) {
                 </div>
 
                 <div>
-                    <h1>Recommendation: {results.recommendation}</h1>
+                    <div className={styles.recommendationSection}>
+                        <h1 className={styles.recommendationTitle}>Our Recommendation: </h1> 
+                        <h1 className={styles.recommendationResult}> {results.recommendation}</h1>
+                        <div className={styles.tooltip}>
+                            <button>Warning!</button>
+                            <div className={styles.tooltiptext}>⚠️ This tool is for informational purposes only and does not constitute
+                                financial advice. Investing carries risk and you could lose money. Always
+                                do your own research or consult a professional before making any trades.</div>
+                        </div>
+                    </div>
+                    <RecommendationChart data={results.recommendationTools} />
                 </div>
 
 
