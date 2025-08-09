@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from './DetailedStockView.module.css';
 import RecommendationChart from './RecommendationChart/RecommendationChart';
+import { Modal } from 'react-responsive-modal';
 
 interface Props {
     symbol: string;
@@ -93,6 +94,7 @@ interface ProfileDataResponse {
 export default function DetailedStockView({ symbol }: Props) {
 
     const [results, setResults] = useState<ProfileDataResponse | null>(null);
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchDetailedStockData() {
@@ -103,10 +105,23 @@ export default function DetailedStockView({ symbol }: Props) {
         fetchDetailedStockData();
     }, [])
 
+    const openFundamentalData = () => {
+        setOpen(true);
+    }
+
+    const closeFundamentalData = () => {
+        setOpen(false);
+    }
+
     if (!results) { return (<div className={styles.entireDiv}> <h1>Loading...</h1> </div>) }
 
     return (
         <div className={styles.entireDiv}>
+
+            <Modal open={open} onClose={closeFundamentalData} center>
+                <h2>Simple centered modal</h2>
+            </Modal>
+
             <div className={styles.companyStatsDiv}>
                 <div className={styles.companyVisuals}>
                     <div className={styles.imageDiv}>
@@ -128,7 +143,7 @@ export default function DetailedStockView({ symbol }: Props) {
 
                 <div className={styles.buttonsDiv}>
                     <button className={styles.tradeButton}>Trade {symbol}</button>
-                    <button className={styles.fundamentalDataButton}>View Financials</button>
+                    <button className={styles.fundamentalDataButton} onClick={openFundamentalData}>View Fundamental Data</button>
                 </div>
 
                 <div className={styles.briefCompanyInfoCard}>
@@ -226,11 +241,19 @@ export default function DetailedStockView({ symbol }: Props) {
 
             </div>
 
-
-            <div>
-
+            <div className={styles.graphicalDataDiv}>
+                <div>
+                    <div>
+                        <button>Line</button>
+                        <button>Candlestick</button>
+                        <button>OHLC</button>
+                    </div>
+                    <div>
+                        {/* <LineChartView timeseries={results.timeseries}/> */}
+                    </div>
+                    
+                </div>
             </div>
-
         </div>
     )
 

@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "lightweight-charts": "^5.0.8",
+    "lightweight-charts-react-wrapper": "^2.1.1",
     "next": "15.4.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-lightweight-charts": "^0.1.0",
+    "react-responsive-modal": "^7.0.0",
     "recharts": "^3.1.0"
   },
   "devDependencies": {
