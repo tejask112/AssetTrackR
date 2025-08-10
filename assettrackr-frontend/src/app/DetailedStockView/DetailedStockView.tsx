@@ -4,8 +4,8 @@ import * as React from 'react';
 import Image from "next/image";
 import styles from './DetailedStockView.module.css';
 import RecommendationChart from './RecommendationChart/RecommendationChart';
+import FundamentalDataModal from './FundamentalDataModal/FundamentalDataModal';
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box'
 
 interface Props {
     symbol: string;
@@ -30,7 +30,7 @@ interface TimeSeriesPoint {
     volume: string;
 }
 
-interface ProfileDataResponse {
+export interface ProfileDataResponse {
     // Company metadata
     companyName: string;
     companyDescription: string;
@@ -93,18 +93,6 @@ interface ProfileDataResponse {
     timeseries: TimeSeriesPoint[] | "Error";
 }
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 export default function DetailedStockView({ symbol }: Props) {
 
     const [results, setResults] = useState<ProfileDataResponse | null>(null);
@@ -121,8 +109,6 @@ export default function DetailedStockView({ symbol }: Props) {
         }
         fetchDetailedStockData();
     }, [])
-
-    
 
     if (!results) { return (<div className={styles.entireDiv}> <h1>Loading...</h1> </div>) }
 
@@ -151,9 +137,8 @@ export default function DetailedStockView({ symbol }: Props) {
                     <button className={styles.tradeButton}>Trade {symbol}</button>
                     <button className={styles.fundamentalDataButton} onClick={handleOpen}>View Fundamental Data</button>
                     <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                        <Box sx={style}>
-                            <h1>Fundamental data</h1>
-                        </Box>
+
+                        <FundamentalDataModal results={results}/>
                     </Modal>
                 </div>
 

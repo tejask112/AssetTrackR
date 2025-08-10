@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'Inter';
+  font-stretch: 75% 125%;
+  font-style: normal;
+  font-weight: 100 - 900;
+  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+}
+
+.fundamentalDataModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 400;
+  background-color: rgb(255, 255, 255);
+  padding: 50px 50px 50px 50px;
+  border-radius: 10px;
+  
+}
