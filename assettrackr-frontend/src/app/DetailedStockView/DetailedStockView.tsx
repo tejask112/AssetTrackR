@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import * as React from 'react';
 import Image from "next/image";
 import styles from './DetailedStockView.module.css';
 import RecommendationChart from './RecommendationChart/RecommendationChart';
-import { Modal } from 'react-responsive-modal';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box'
 
 interface Props {
     symbol: string;
@@ -91,10 +93,25 @@ interface ProfileDataResponse {
     timeseries: TimeSeriesPoint[] | "Error";
 }
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function DetailedStockView({ symbol }: Props) {
 
     const [results, setResults] = useState<ProfileDataResponse | null>(null);
-    const [open, setOpen] = useState<boolean>(false);
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose= () => setOpen(false);
 
     useEffect(() => {
         async function fetchDetailedStockData() {
@@ -105,23 +122,12 @@ export default function DetailedStockView({ symbol }: Props) {
         fetchDetailedStockData();
     }, [])
 
-    const openFundamentalData = () => {
-        setOpen(true);
-    }
-
-    const closeFundamentalData = () => {
-        setOpen(false);
-    }
+    
 
     if (!results) { return (<div className={styles.entireDiv}> <h1>Loading...</h1> </div>) }
 
     return (
         <div className={styles.entireDiv}>
-
-            <Modal open={open} onClose={closeFundamentalData} center>
-                <h2>Simple centered modal</h2>
-            </Modal>
-
             <div className={styles.companyStatsDiv}>
                 <div className={styles.companyVisuals}>
                     <div className={styles.imageDiv}>
@@ -143,7 +149,12 @@ export default function DetailedStockView({ symbol }: Props) {
 
                 <div className={styles.buttonsDiv}>
                     <button className={styles.tradeButton}>Trade {symbol}</button>
-                    <button className={styles.fundamentalDataButton} onClick={openFundamentalData}>View Fundamental Data</button>
+                    <button className={styles.fundamentalDataButton} onClick={handleOpen}>View Fundamental Data</button>
+                    <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                        <Box sx={style}>
+                            <h1>Fundamental data</h1>
+                        </Box>
+                    </Modal>
                 </div>
 
                 <div className={styles.briefCompanyInfoCard}>
