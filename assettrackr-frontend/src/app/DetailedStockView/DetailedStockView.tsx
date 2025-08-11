@@ -5,6 +5,7 @@ import Image from "next/image";
 import styles from './DetailedStockView.module.css';
 import RecommendationChart from './RecommendationChart/RecommendationChart';
 import FundamentalDataModal from './FundamentalDataModal/FundamentalDataModal';
+import LineDispChart from './Charts/LineChart/LineDispChart'
 import Modal from '@mui/material/Modal';
 
 interface Props {
@@ -41,6 +42,7 @@ export interface ProfileDataResponse {
     location: string;
     companyLogo: string;
     price: number;
+    priceTime: string;
     rangeLow: number;
     rangeHigh: number;
 
@@ -101,6 +103,45 @@ export default function DetailedStockView({ symbol }: Props) {
     const handleOpen = () => setOpen(true);
     const handleClose= () => setOpen(false);
 
+    const toUnixSecondsUTC = (s: string) => {
+        const [d, t] = s.split(' ');
+        const [Y, M, D] = d.split('-').map(Number);
+        const [h, m, sec] = t.split(':').map(Number);
+        return Math.floor(Date.UTC(Y, M - 1, D, h, m, sec) / 1000);
+    };
+
+    const toLineDataUTC = (rows: TimeSeriesPoint[]) =>
+    rows
+        .map(p => ({ time: toUnixSecondsUTC(p.datetime), value: parseFloat(p.close) }))
+        .sort((a, b) => a.time - b.time);
+
+    const lineData = React.useMemo(() => {
+        if (!results || !Array.isArray(results.timeseries)) return [];
+        return toLineDataUTC(results.timeseries);
+    }, [results]);
+
+    const [lineChart, setLineChart] = useState<boolean>(true);
+    const [candlestickChart, setCandlestickChart] = useState<boolean>(false);
+    const [ohlcChart, setOhlcChart] = useState<boolean>(false);
+
+    const showLineChart = () => {
+        setLineChart(true);
+        setCandlestickChart(false);
+        setOhlcChart(false);
+    }
+
+    const showCandlestickChart = () => {
+        setLineChart(false);
+        setCandlestickChart(true);
+        setOhlcChart(false);
+    }
+
+    const showOHLCChart = () => {
+        setLineChart(false);
+        setCandlestickChart(false);
+        setOhlcChart(true);
+    }
+
     useEffect(() => {
         async function fetchDetailedStockData() {
             const res = await fetch("/api/profile_data?query=" + encodeURIComponent(symbol));
@@ -127,7 +168,7 @@ export default function DetailedStockView({ symbol }: Props) {
                 <div className={styles.priceVisuals}>
                     <h1 className={styles.price}>{results.price}</h1>
                     <div className={styles.priceMetaData}>
-                        <h1 className={styles.hourText}>H</h1>
+                        <h1 className={styles.hourText}>{results.priceTime}</h1>
                         <h1>USD</h1>
                     </div>
                     <h1 className={styles.priceHourlyChangeStats}>-19.36 (-8.27%)</h1>
@@ -232,20 +273,21 @@ export default function DetailedStockView({ symbol }: Props) {
                     </div>
                     <RecommendationChart data={results.recommendationTools} />
                 </div>
-
-
-
             </div>
 
             <div className={styles.graphicalDataDiv}>
-                <div>
-                    <div>
-                        <button>Line</button>
-                        <button>Candlestick</button>
-                        <button>OHLC</button>
+                <h1 className={styles.timezoneHeading}>Time Zone: {results.exchangeTimezone.replace(/_/g, " ")}</h1>
+                
+                <div className={styles.div1}>
+                    <div className={styles.chartTypeButtons}>
+                        <button className={`${styles.chartTypeButton} ${lineChart ? styles.active : ""}`} onClick={showLineChart}>Line</button>
+                        <button className={`${styles.chartTypeButton} ${candlestickChart ? styles.active : ""}`} onClick={showCandlestickChart}>Candlestick</button>
+                        <button className={`${styles.chartTypeButton} ${ohlcChart ? styles.active : ""}`} onClick={showOHLCChart}>OHLC</button>
                     </div>
                     <div>
-                        {/* <LineChartView timeseries={results.timeseries}/> */}
+                        {lineChart && <LineDispChart data={lineData} height={550} />}
+
+                        
                     </div>
                     
                 </div>

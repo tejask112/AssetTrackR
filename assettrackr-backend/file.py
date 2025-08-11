@@ -251,210 +251,211 @@ def symbol_lookup():
 # ---------------- RETRIEVE COMPANY PROFILE DATA  ----------------
 @app.route('/api/profile_data', methods=["GET"])
 def profile_data():
-    # symbol = request.args.get("query", "")
+    symbol = request.args.get("query", "")
 
-    # companyProfileUrl = f"https://financialmodelingprep.com/stable/profile?symbol={symbol}&apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
-    # companyProfileResponse = requests.get(url=companyProfileUrl)
-    # companyProfileResponseJson = companyProfileResponse.json()
-    # companyProfileResult = companyProfileResponseJson[0] if isinstance(companyProfileResponseJson, list) and companyProfileResponseJson else {}
+    companyProfileUrl = f"https://financialmodelingprep.com/stable/profile?symbol={symbol}&apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
+    companyProfileResponse = requests.get(url=companyProfileUrl)
+    companyProfileResponseJson = companyProfileResponse.json()
+    companyProfileResult = companyProfileResponseJson[0] if isinstance(companyProfileResponseJson, list) and companyProfileResponseJson else {}
 
-    # basicFinancialsUrl = f"https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token=d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50"
-    # basicFinancialsResponse = requests.get(url=basicFinancialsUrl)
-    # basicFinancialsResult = basicFinancialsResponse.json()
-    # basicFinancialsResultMetric = basicFinancialsResult.get("metric")
+    basicFinancialsUrl = f"https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token=d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50"
+    basicFinancialsResponse = requests.get(url=basicFinancialsUrl)
+    basicFinancialsResult = basicFinancialsResponse.json()
+    basicFinancialsResultMetric = basicFinancialsResult.get("metric")
 
-    # recommendationToolsUrl = f"https://finnhub.io/api/v1/stock/recommendation?symbol={symbol}&token=d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50"
-    # recommendationToolsResponse = requests.get(url=recommendationToolsUrl)
-    # recommendationToolsResult = recommendationToolsResponse.json()
+    recommendationToolsUrl = f"https://finnhub.io/api/v1/stock/recommendation?symbol={symbol}&token=d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50"
+    recommendationToolsResponse = requests.get(url=recommendationToolsUrl)
+    recommendationToolsResult = recommendationToolsResponse.json()
 
-    # startDate = calculate5YagoDate()
-    # timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1h&start_date={startDate}&outputsize=5000&apikey=08a46fa054fe47238e842fe469d79430"
-    # timeSeriesResponse = requests.get(url=timeSeriesUrl)
-    # timeSeriesResult = timeSeriesResponse.json()
+    startDate = calculateStartDate()
+    timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1min&start_date={startDate}&outputsize=5000&apikey=08a46fa054fe47238e842fe469d79430"
+    timeSeriesResponse = requests.get(url=timeSeriesUrl)
+    timeSeriesResult = timeSeriesResponse.json()
 
-    # modified_data = {
-    #     # COMPANY METADATA
-    #     "companyName": companyProfileResult.get("companyName", "Error"),
-    #     "companyDescription": companyProfileResult.get("description", "Error"),
-    #     "exchange": companyProfileResult.get("exchange", "Error"),
-    #     "exchangeTimezone": timeSeriesResult.get("meta", "Error").get("exchange_timezone", "Error"),
-    #     "website": companyProfileResult.get("website", "Error"),
-    #     "industry": companyProfileResult.get("industry", "Error"),
-    #     "location": companyProfileResult.get("city","Error") + ", " + companyProfileResult.get("country", "Error"),
-    #     "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
-    #     "price": companyProfileResult.get("price", -1),
-    #     "range": companyProfileResult.get("range", "Error"),
+    modified_data = {
+        # COMPANY METADATA
+        "companyName": companyProfileResult.get("companyName", "Error"),
+        "companyDescription": companyProfileResult.get("description", "Error"),
+        "exchange": companyProfileResult.get("exchange", "Error"),
+        "exchangeTimezone": timeSeriesResult.get("meta", "Error").get("exchange_timezone", "Error"),
+        "website": companyProfileResult.get("website", "Error"),
+        "industry": companyProfileResult.get("industry", "Error"),
+        "location": companyProfileResult.get("city","Error") + ", " + companyProfileResult.get("country", "Error"),
+        "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
+        "price": timeSeriesResult.get("values", -1)[0].get("close", -1),
+        "priceTime": timeSeriesResult.get("values", -1)[0].get("datetime", -1)[10:19],
+        "range": companyProfileResult.get("range", "Error"),
 
-    #     # COMPANY FINANCIALS - Volume
-    #     "volume": companyProfileResult.get("volume", -1),
-    #     "averageVolume": companyProfileResult.get("averageVolume", -1),
-    #     "x10DayAverageTradingVolume": basicFinancialsResultMetric.get("10DayAverageTradingVolume", -1),
-    #     "x3MonthAverageTradingVolume": basicFinancialsResultMetric.get("3MonthAverageTradingVolume", -1),
+        # COMPANY FINANCIALS - Volume
+        "volume": companyProfileResult.get("volume", -1),
+        "averageVolume": companyProfileResult.get("averageVolume", -1),
+        "x10DayAverageTradingVolume": basicFinancialsResultMetric.get("10DayAverageTradingVolume", -1),
+        "x3MonthAverageTradingVolume": basicFinancialsResultMetric.get("3MonthAverageTradingVolume", -1),
 
-    #     # COMPANY FINANCIALS - Asset Turnover
-    #     "assetTurnoverAnnual": basicFinancialsResultMetric.get("assetTurnoverAnnual", -1),
-    #     "assetTurnoverTTM": basicFinancialsResultMetric.get("assetTurnoverTTM", -1),
+        # COMPANY FINANCIALS - Asset Turnover
+        "assetTurnoverAnnual": basicFinancialsResultMetric.get("assetTurnoverAnnual", -1),
+        "assetTurnoverTTM": basicFinancialsResultMetric.get("assetTurnoverTTM", -1),
 
-    #     # COMPANY FINANCIALS - Price Return over time
-    #     "x5DayPriceReturnDaily": basicFinancialsResultMetric.get("5DayPriceReturnDaily", -1),
-    #     "monthToDatePriceReturnDaily": basicFinancialsResultMetric.get("monthToDatePriceReturnDaily", -1),
-    #     "x13WeekPriceReturnDaily": basicFinancialsResultMetric.get("13WeekPriceReturnDaily", -1),
-    #     "x26WeekPriceReturnDaily": basicFinancialsResultMetric.get("26WeekPriceReturnDaily", -1),
-    #     "x52WeekPriceReturnDaily": basicFinancialsResultMetric.get("52WeekPriceReturnDaily", -1),
+        # COMPANY FINANCIALS - Price Return over time
+        "x5DayPriceReturnDaily": basicFinancialsResultMetric.get("5DayPriceReturnDaily", -1),
+        "monthToDatePriceReturnDaily": basicFinancialsResultMetric.get("monthToDatePriceReturnDaily", -1),
+        "x13WeekPriceReturnDaily": basicFinancialsResultMetric.get("13WeekPriceReturnDaily", -1),
+        "x26WeekPriceReturnDaily": basicFinancialsResultMetric.get("26WeekPriceReturnDaily", -1),
+        "x52WeekPriceReturnDaily": basicFinancialsResultMetric.get("52WeekPriceReturnDaily", -1),
         
-    #     # COMPANY FINANCIALS - Valuation & Market Cap
-    #     "marketCapitalisation": basicFinancialsResultMetric.get("marketCapitalization", -1),
-    #     "enterpriseValue": basicFinancialsResultMetric.get("enterpriseValue", -1),
-    #     "forwardPE": basicFinancialsResultMetric.get("forwardPE", -1),
-    #     "peAnnual": basicFinancialsResultMetric.get("peAnnual", -1),
+        # COMPANY FINANCIALS - Valuation & Market Cap
+        "marketCapitalisation": basicFinancialsResultMetric.get("marketCapitalization", -1),
+        "enterpriseValue": basicFinancialsResultMetric.get("enterpriseValue", -1),
+        "forwardPE": basicFinancialsResultMetric.get("forwardPE", -1),
+        "peAnnual": basicFinancialsResultMetric.get("peAnnual", -1),
 
-    #     # COMPANY FINANCIALS - Profitability & Margins
-    #     "grossMargin5Y": basicFinancialsResultMetric.get("grossMargin5Y", -1),
-    #     "grossMarginAnnual": basicFinancialsResultMetric.get("grossMarginAnnual", -1),
+        # COMPANY FINANCIALS - Profitability & Margins
+        "grossMargin5Y": basicFinancialsResultMetric.get("grossMargin5Y", -1),
+        "grossMarginAnnual": basicFinancialsResultMetric.get("grossMarginAnnual", -1),
 
-    #     "operatingMargin5Y": basicFinancialsResultMetric.get("operatingMargin5Y", -1),
-    #     "operatingMarginAnnual": basicFinancialsResultMetric.get("operatingMarginAnnual", -1),
+        "operatingMargin5Y": basicFinancialsResultMetric.get("operatingMargin5Y", -1),
+        "operatingMarginAnnual": basicFinancialsResultMetric.get("operatingMarginAnnual", -1),
 
-    #     "netProfitMargin5Y": basicFinancialsResultMetric.get("netProfitMargin5Y", -1),
-    #     "netProfitMargin5Y": basicFinancialsResultMetric.get("netProfitMargin5Y", -1),
+        "netProfitMargin5Y": basicFinancialsResultMetric.get("netProfitMargin5Y", -1),
+        "netProfitMargin5Y": basicFinancialsResultMetric.get("netProfitMargin5Y", -1),
 
-    #     "pretaxMargin5Y": basicFinancialsResultMetric.get("pretaxMargin5Y", -1),
-    #     "pretaxMarginAnnual": basicFinancialsResultMetric.get("pretaxMarginAnnual", -1),
+        "pretaxMargin5Y": basicFinancialsResultMetric.get("pretaxMargin5Y", -1),
+        "pretaxMarginAnnual": basicFinancialsResultMetric.get("pretaxMarginAnnual", -1),
 
-    #     "roe5Y": basicFinancialsResultMetric.get("roe5Y", -1),
-    #     "roeRfy": basicFinancialsResultMetric.get("roeRfy", -1),
+        "roe5Y": basicFinancialsResultMetric.get("roe5Y", -1),
+        "roeRfy": basicFinancialsResultMetric.get("roeRfy", -1),
 
-    #     "roi5Y": basicFinancialsResultMetric.get("roi5Y", -1),
-    #     "roiAnnual": basicFinancialsResultMetric.get("roiAnnual", -1),
+        "roi5Y": basicFinancialsResultMetric.get("roi5Y", -1),
+        "roiAnnual": basicFinancialsResultMetric.get("roiAnnual", -1),
 
-    #     "roa5Y": basicFinancialsResultMetric.get("roa5Y", -1),
-    #     "roaRfy": basicFinancialsResultMetric.get("roaRfy", -1),
+        "roa5Y": basicFinancialsResultMetric.get("roa5Y", -1),
+        "roaRfy": basicFinancialsResultMetric.get("roaRfy", -1),
 
-    #     # COMPANY FINANCIALS - Profitability & Margins
-    #     "dividendPerShareAnnual": basicFinancialsResultMetric.get("dividendPerShareAnnual", -1),
-    #     "dividendGrowthRate5Y": basicFinancialsResultMetric.get("dividendGrowthRate5Y", -1),
-    #     "payoutRatioAnnual": basicFinancialsResultMetric.get("payoutRatioAnnual", -1),
+        # COMPANY FINANCIALS - Profitability & Margins
+        "dividendPerShareAnnual": basicFinancialsResultMetric.get("dividendPerShareAnnual", -1),
+        "dividendGrowthRate5Y": basicFinancialsResultMetric.get("dividendGrowthRate5Y", -1),
+        "payoutRatioAnnual": basicFinancialsResultMetric.get("payoutRatioAnnual", -1),
 
-    #     # RECOMMENDATION TOOLS
-    #     "recommendationTools": recommendationToolsResult,
+        # RECOMMENDATION TOOLS
+        "recommendationTools": recommendationToolsResult,
 
-    #     # TIME SERIES DATA (interval=1hour)
-    #     "timeseries": timeSeriesResult.get("values", "Error")
-    # }
-
-    # return jsonify(modified_data)
-
-    output = {
-        "x10DayAverageTradingVolume": 49.73162,
-        "x10DayPriceReturnDaily": -1,
-        "x13WeekPriceReturnDaily": 16.4462,
-        "x26WeekPriceReturnDaily": -8.7801,
-        "x3MonthAverageTradingVolume": 47.85682,
-        "x52WeekPriceReturnDaily": 14.8519,
-        "x5DayPriceReturnDaily": -7.7495,
-        "assetTurnoverAnnual": 1.0209,
-        "assetTurnoverTTM": 1.0573,
-        "averageVolume": 42481574,
-        "companyDescription": "Amazon.com, Inc. engages in the retail sale of consumer products and subscriptions through online and physical stores in North America and internationally. The company operates through three segments: North America, International, and Amazon Web Services (AWS). Its products offered through its stores include merchandise and content purchased for resale; and products offered by third-party sellers The company also manufactures and sells electronic devices, including Kindle, Fire tablets, Fire TVs, Rings, Blink, eero, and Echo; and develops and produces media content. In addition, it offers programs that enable sellers to sell their products in its stores; and programs that allow authors, musicians, filmmakers, Twitch streamers, skill and app developers, and others to publish and sell content. Further, the company provides compute, storage, database, analytics, machine learning, and other services, as well as fulfillment, advertising, and digital content subscriptions. Additionally, it offers Amazon Prime, a membership program. The company serves consumers, sellers, developers, enterprises, content creators, and advertisers. Amazon.com, Inc. was incorporated in 1994 and is headquartered in Seattle, Washington.",
-        "companyLogo": "https://img.logo.dev/ticker/AMZN?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true",
-        "companyName": "Amazon.com, Inc.",
-        "dividendGrowthRate5Y": -1,
-        "dividendPerShareAnnual": -1,
-        "enterpriseValue": 2272838.5,
-        "exchange": "NASDAQ",
-        "exchangeTimezone": "America/New_York",
-        "forwardPE": 33.1247183049276,
-        "grossMargin5Y": 44.25,
-        "grossMarginAnnual": 48.85,
-        "industry": "Specialty Retail",
-        "location": "Seattle, US",
-        "marketCapitalisation": 228643534565,
-        "monthToDatePriceReturnDaily": -8.2696,
-        "netProfitMargin5Y": 5.34,
-        "operatingMargin5Y": 6.15,
-        "operatingMarginAnnual": 10.75,
-        "payoutRatioAnnual": -1,
-        "peAnnual": 38.48,
-        "pretaxMargin5Y": 6.1,
-        "pretaxMarginAnnual": 10.76,
-        "price": 214.75,
-        "rangeLow": 151.61,
-        "rangeHigh": 242.52,
-        "recommendation": "Buy",
-        "recommendationTools": [
-            {
-                "buy": 50,
-                "hold": 5,
-                "period": "2025-07-01",
-                "sell": 0,
-                "strongBuy": 24,
-                "strongSell": 0,
-                "symbol": "AMZN"
-            },
-            {
-                "buy": 50,
-                "hold": 5,
-                "period": "2025-06-01",
-                "sell": 0,
-                "strongBuy": 24,
-                "strongSell": 0,
-                "symbol": "AMZN"
-            },
-            {
-                "buy": 51,
-                "hold": 6,
-                "period": "2025-05-01",
-                "sell": 0,
-                "strongBuy": 22,
-                "strongSell": 0,
-                "symbol": "AMZN"
-            },
-            {
-                "buy": 50,
-                "hold": 4,
-                "period": "2025-04-01",
-                "sell": 0,
-                "strongBuy": 23,
-                "strongSell": 0,
-                "symbol": "AMZN"
-            }
-        ],
-        "roa5Y": 5.84,
-        "roaRfy": 9.48,
-        "roe5Y": 16.18,
-        "roeRfy": 20.72,
-        "roi5Y": 10.89,
-        "roiAnnual": 16.38,
-        "timeseries": [
-            {
-                "datetime": "2025-08-01 15:30:00",
-                "open": "214.875",
-                "high": "215.99001",
-                "low": "214.49001",
-                "close": "214.81000",
-                "volume": "9525800"
-            },
-            {
-                "datetime": "2025-08-01 14:30:00",
-                "open": "214.23500",
-                "high": "215.22000",
-                "low": "214.14999",
-                "close": "214.88000",
-                "volume": "10907741"
-            },
-            {
-                "datetime": "2025-08-01 13:30:00",
-                "open": "214.33929",
-                "high": "214.75999",
-                "low": "212.80000",
-                "close": "214.24921",
-                "volume": "10841492"
-            }
-        ],
-        "volume": 119615582,
-        "website": "https://www.amazon.com"
+        # TIME SERIES DATA (interval=1hour)
+        "timeseries": timeSeriesResult.get("values", "Error")
     }
-    return jsonify(output)
+
+    return jsonify(modified_data)
+
+    # output = {
+    #     "x10DayAverageTradingVolume": 49.73162,
+    #     "x10DayPriceReturnDaily": -1,
+    #     "x13WeekPriceReturnDaily": 16.4462,
+    #     "x26WeekPriceReturnDaily": -8.7801,
+    #     "x3MonthAverageTradingVolume": 47.85682,
+    #     "x52WeekPriceReturnDaily": 14.8519,
+    #     "x5DayPriceReturnDaily": -7.7495,
+    #     "assetTurnoverAnnual": 1.0209,
+    #     "assetTurnoverTTM": 1.0573,
+    #     "averageVolume": 42481574,
+    #     "companyDescription": "Amazon.com, Inc. engages in the retail sale of consumer products and subscriptions through online and physical stores in North America and internationally. The company operates through three segments: North America, International, and Amazon Web Services (AWS). Its products offered through its stores include merchandise and content purchased for resale; and products offered by third-party sellers The company also manufactures and sells electronic devices, including Kindle, Fire tablets, Fire TVs, Rings, Blink, eero, and Echo; and develops and produces media content. In addition, it offers programs that enable sellers to sell their products in its stores; and programs that allow authors, musicians, filmmakers, Twitch streamers, skill and app developers, and others to publish and sell content. Further, the company provides compute, storage, database, analytics, machine learning, and other services, as well as fulfillment, advertising, and digital content subscriptions. Additionally, it offers Amazon Prime, a membership program. The company serves consumers, sellers, developers, enterprises, content creators, and advertisers. Amazon.com, Inc. was incorporated in 1994 and is headquartered in Seattle, Washington.",
+    #     "companyLogo": "https://img.logo.dev/ticker/AMZN?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true",
+    #     "companyName": "Amazon.com, Inc.",
+    #     "dividendGrowthRate5Y": -1,
+    #     "dividendPerShareAnnual": -1,
+    #     "enterpriseValue": 2272838.5,
+    #     "exchange": "NASDAQ",
+    #     "exchangeTimezone": "America/New_York",
+    #     "forwardPE": 33.1247183049276,
+    #     "grossMargin5Y": 44.25,
+    #     "grossMarginAnnual": 48.85,
+    #     "industry": "Specialty Retail",
+    #     "location": "Seattle, US",
+    #     "marketCapitalisation": 228643534565,
+    #     "monthToDatePriceReturnDaily": -8.2696,
+    #     "netProfitMargin5Y": 5.34,
+    #     "operatingMargin5Y": 6.15,
+    #     "operatingMarginAnnual": 10.75,
+    #     "payoutRatioAnnual": -1,
+    #     "peAnnual": 38.48,
+    #     "pretaxMargin5Y": 6.1,
+    #     "pretaxMarginAnnual": 10.76,
+    #     "price": 214.75,
+    #     "rangeLow": 151.61,
+    #     "rangeHigh": 242.52,
+    #     "recommendation": "Buy",
+    #     "recommendationTools": [
+    #         {
+    #             "buy": 50,
+    #             "hold": 5,
+    #             "period": "2025-07-01",
+    #             "sell": 0,
+    #             "strongBuy": 24,
+    #             "strongSell": 0,
+    #             "symbol": "AMZN"
+    #         },
+    #         {
+    #             "buy": 50,
+    #             "hold": 5,
+    #             "period": "2025-06-01",
+    #             "sell": 0,
+    #             "strongBuy": 24,
+    #             "strongSell": 0,
+    #             "symbol": "AMZN"
+    #         },
+    #         {
+    #             "buy": 51,
+    #             "hold": 6,
+    #             "period": "2025-05-01",
+    #             "sell": 0,
+    #             "strongBuy": 22,
+    #             "strongSell": 0,
+    #             "symbol": "AMZN"
+    #         },
+    #         {
+    #             "buy": 50,
+    #             "hold": 4,
+    #             "period": "2025-04-01",
+    #             "sell": 0,
+    #             "strongBuy": 23,
+    #             "strongSell": 0,
+    #             "symbol": "AMZN"
+    #         }
+    #     ],
+    #     "roa5Y": 5.84,
+    #     "roaRfy": 9.48,
+    #     "roe5Y": 16.18,
+    #     "roeRfy": 20.72,
+    #     "roi5Y": 10.89,
+    #     "roiAnnual": 16.38,
+    #     "timeseries": [
+    #         {
+    #             "datetime": "2025-08-01 15:30:00",
+    #             "open": "214.875",
+    #             "high": "215.99001",
+    #             "low": "214.49001",
+    #             "close": "214.81000",
+    #             "volume": "9525800"
+    #         },
+    #         {
+    #             "datetime": "2025-08-01 14:30:00",
+    #             "open": "214.23500",
+    #             "high": "215.22000",
+    #             "low": "214.14999",
+    #             "close": "214.88000",
+    #             "volume": "10907741"
+    #         },
+    #         {
+    #             "datetime": "2025-08-01 13:30:00",
+    #             "open": "214.33929",
+    #             "high": "214.75999",
+    #             "low": "212.80000",
+    #             "close": "214.24921",
+    #             "volume": "10841492"
+    #         }
+    #     ],
+    #     "volume": 119615582,
+    #     "website": "https://www.amazon.com"
+    # }
+    # return jsonify(output)
 
 
 

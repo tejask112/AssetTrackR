@@ -32,6 +32,25 @@
   margin: 0;
 }
 
+.chartTypeButtons{
+  display: flex;
+}
+
+.chartTypeButton {
+  font-size: 1.2rem;
+  width: 120px;
+  height: 46px;
+}
+
+.chartTypeButton:hover {
+  cursor: pointer;
+  border-bottom: 2px solid #5e89ff;
+}
+
+.active {
+  border-bottom: 2px solid #4879ff;
+}
+
 .col {
   display: flex;
   flex: 1;
@@ -201,9 +220,20 @@
   word-break: break-word;
 }
 
+.timezoneHeading {
+  font-size: 1rem;   
+  font-weight: 500;              
+  color: #555;               
+  margin: 0 0 8px 0;            
+  padding: 4px 8px;           
+  background-color: #f7f7f7;    
+  border-radius: 6px;            
+  display: inline-block;       
+  border: 1px solid #cbcbcb;    
+  font-family: "Segoe UI", Arial, sans-serif;
+}
 
 
-/* From Uiverse.io by gouthamnetha02 */ 
 .tooltip {
   position: relative;
   display: inline-block;
@@ -260,3 +290,10 @@
   border-style: solid;
   border-color: #333 transparent transparent transparent;
 }
+
+.div1{
+  width: 1100px;
+  height: 800px;
+}
+
+
