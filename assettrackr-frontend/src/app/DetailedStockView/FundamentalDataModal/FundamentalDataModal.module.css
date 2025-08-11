@@ -6,129 +6,145 @@
   src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
 }
 
-.root {
-  --ink: #1f2d55;
-  --ink-dim: #6f7a9e;
-  --border: #e7e9f2;
-  --pos: #1a7f37;
-  --neg: #c63b3b;
-}
-
-/* Wider, taller; reduce scrolling */
+/* -------- Modal shell (same size), now vertically scrollable -------- */
 .modal {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(1380px, 96vw);   /* wider */
-  max-height: min(92vh, 1200px); /* taller before scrolling */
+  width: min(1600px, 96vw);
+  max-height: min(92vh, 1200px);
   background: #fff;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border, #e5e7eb);
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.12);
   padding: 22px 26px;
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* key change: allow vertical scroll when content exceeds modal */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable; /* keeps layout from shifting when scrollbar appears */
 }
 
-/* Top bar */
+/* -------- Header -------- */
 .header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
+  margin-bottom: 10px;
 }
 
 .title {
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
   font-weight: 700;
-  margin: 0;
-  color: #111938;
+  font-size: 1.35rem; /* readable but not huge */
+  letter-spacing: -0.01em;
+  color: #111827;
 }
 
 .subTitle {
   margin-top: 4px;
-  color: var(--ink-dim);
-  font-size: 0.92rem;
+  color: #6b7280;
+  font-size: 0.95rem;
 }
 
 .link {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: #2a5bd7;
+  align-self: center;
   text-decoration: none;
+  color: #0a66c2;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid var(--border, #e5e7eb);
+  padding: 6px 10px;
+  border-radius: 8px;
 }
 .link:hover { text-decoration: underline; }
 
+/* -------- Company description (never cropped) -------- */
 .desc {
-  margin: 10px 0 4px 0;
-  color: #3b456c;
-  font-size: 0.95rem;
-  line-height: 1.35;
-  overflow: hidden;
+  margin: 8px 0 14px;
+  line-height: 1.55;
+  color: #1f2937;
+  overflow: visible;              /* ensure no clipping */
+  white-space: normal;            /* allow wrapping */
+  overflow-wrap: anywhere;        /* avoid long-URL overflow */
+  hyphens: auto;
 }
 
-/* Sections */
+/* -------- Section blocks -------- */
 .section {
-  padding: 14px 0;
-  border-top: 1px solid var(--border);
-}
-.section:first-of-type {
-  border-top: none;
-  padding-top: 8px;
+  margin-top: 14px;
+  padding-top: 6px;
 }
 
+/* Subtle, compact section label */
 .sectionLabel {
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: #323a56;
-  margin-bottom: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: .06em;
+  color: #6b7280;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  margin-bottom: 10px;
 }
 
-/* Dense, simple grid: 3 columns desktop, 2 tablet, 1 mobile */
+/* -------- Metric grid -------- */
 .grid {
   display: grid;
-  gap: 8px 16px;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
 }
 
-@media (max-width: 1100px) {
-  .grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+@media (max-width: 1200px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (max-width: 640px) {
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 540px) {
   .grid { grid-template-columns: 1fr; }
 }
 
-/* Flat label/value cell (no cards) */
+/* -------- Metric cards -------- */
 .cell {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: baseline;
-  gap: 12px;
-  padding: 6px 0;
-  border-bottom: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: #fafbfc;
+  border-radius: 10px;
 }
-.cell:last-child { border-bottom: none; }
 
 .k {
-  color: var(--ink-dim);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
+  color: #6b7280;
   font-weight: 600;
 }
+
 .v {
-  color: var(--ink);
-  font-size: 1rem;
+  font-variant-numeric: tabular-nums; /* aligned numbers for quicker scanning */
+  letter-spacing: 0.01em;
   font-weight: 700;
+  font-size: 1rem;
+  color: #111827;
 }
 
-/* Returns coloring */
-.pos { color: var(--pos); }
-.neg { color: var(--neg); }
+/* -------- Positive/negative coloring -------- */
+.pos { color: #0b8a3f; }   /* green-ish */
+.neg { color: #b42318; }   /* red-ish */
 
-/* Make body scroll, not header */
-.modal { overflow: hidden; }
-.section { overflow: hidden; }
+/* Slight hover affordance without being flashy */
+.cell:hover {
+  background: #f6f8fa;
+}
+
+/* Optional: nicer scrollbars where supported (kept subtle) */
+.modal::-webkit-scrollbar { width: 10px; }
+.modal::-webkit-scrollbar-track { background: #f0f2f4; border-radius: 10px; }
+.modal::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.modal::-webkit-scrollbar-thumb:hover { background: #b6c2cf; }

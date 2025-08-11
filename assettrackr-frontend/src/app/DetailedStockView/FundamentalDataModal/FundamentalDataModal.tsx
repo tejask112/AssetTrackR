@@ -43,19 +43,16 @@ export default function FundamentalDataModal({ results }: FundamentalDataModalPr
   return (
     <Box className={styles.modal}>
       
-      {/* Top bar */}
       <div className={styles.header}>
         <div>
           <div className={styles.title}>{results.companyName}</div>
           <div className={styles.subTitle}>{results.industry} · {results.exchange} · {results.location}</div>
         </div>
-        <a className={styles.link} href={results.website} target="_blank" rel="noreferrer">Website ↗</a>
+        <a className={styles.link} href={results.website} target="_blank" rel="noreferrer">{results.website} ↗</a>
       </div>
 
-      {/* Description (single line clamp) */}
       <p className={styles.desc}>{results.companyDescription}</p>
 
-      {/* Simple sections with dense grid */}
       <div className={styles.section}>
         <div className={styles.sectionLabel}>Volume & Liquidity</div>
         <div className={styles.grid}>
