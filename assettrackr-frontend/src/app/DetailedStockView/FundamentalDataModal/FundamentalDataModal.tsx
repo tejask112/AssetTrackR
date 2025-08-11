@@ -15,19 +15,68 @@ export interface TimeSeriesPoint {
   datetime: string; open: string; high: string; low: string; close: string; volume: string;
 }
 export interface ProfileDataResponse {
-  companyName: string; companyDescription: string; exchange: string; exchangeTimezone: string;
-  website: string; industry: string; location: string; companyLogo: string; price: number;
-  rangeLow: number; rangeHigh: number;
-  volume: number; averageVolume: number; x10DayAverageTradingVolume: number; x3MonthAverageTradingVolume: number;
-  assetTurnoverAnnual: number; assetTurnoverTTM: number;
-  x5DayPriceReturnDaily: number; monthToDatePriceReturnDaily: number; x13WeekPriceReturnDaily: number;
-  x26WeekPriceReturnDaily: number; x52WeekPriceReturnDaily: number;
-  marketCapitalisation: number; enterpriseValue: number; forwardPE: number; peAnnual: number;
-  grossMargin5Y: number; grossMarginAnnual: number; operatingMargin5Y: number; operatingMarginAnnual: number;
-  netProfitMargin5Y: number; pretaxMargin5Y: number; pretaxMarginAnnual: number;
-  roe5Y: number; roeRfy: number; roi5Y: number; roiAnnual: number; roa5Y: number; roaRfy: number;
-  dividendPerShareAnnual: number; dividendGrowthRate5Y: number; payoutRatioAnnual: number;
-  recommendation: string; recommendationTools: Recommendation[]; timeseries: TimeSeriesPoint[] | 'Error';
+    // Company metadata
+    companyName: string;
+    companyDescription: string;
+    exchange: string;
+    exchangeTimezone: string;
+    website: string;
+    industry: string;
+    location: string;
+    companyLogo: string;
+    price: number;
+    priceTimeShort: string;
+    priceTimeLong: string;
+    rangeLow: number;
+    rangeHigh: number;
+
+    // Volume / liquidity
+    volume: number;
+    averageVolume: number;
+    x10DayAverageTradingVolume: number;
+    x3MonthAverageTradingVolume: number;
+
+    // Asset turnover
+    assetTurnoverAnnual: number;
+    assetTurnoverTTM: number;
+
+    // Price returns / momentum
+    x5DayPriceReturnDaily: number;
+    monthToDatePriceReturnDaily: number;
+    x13WeekPriceReturnDaily: number;
+    x26WeekPriceReturnDaily: number;
+    x52WeekPriceReturnDaily: number;
+
+    // Valuation & market cap
+    marketCapitalisation: number;
+    enterpriseValue: number;
+    forwardPE: number;
+    peAnnual: number;
+
+    // Profitability & margins
+    grossMargin5Y: number;
+    grossMarginAnnual: number;
+    operatingMargin5Y: number;
+    operatingMarginAnnual: number;
+    netProfitMargin5Y: number;
+    pretaxMargin5Y: number;
+    pretaxMarginAnnual: number;
+    roe5Y: number;
+    roeRfy: number;
+    roi5Y: number;
+    roiAnnual: number;
+    roa5Y: number;
+    roaRfy: number;
+
+    // Dividend / payout
+    dividendPerShareAnnual: number;
+    dividendGrowthRate5Y: number;
+    payoutRatioAnnual: number;
+
+    // Other
+    recommendation: string;
+    recommendationTools: Recommendation[];
+    timeseries: TimeSeriesPoint[] | "Error";
 }
 
 interface FundamentalDataModalProp {
@@ -63,9 +112,9 @@ export default function FundamentalDataModal({ results }: FundamentalDataModalPr
           <div className={styles.cell}><span className={styles.k}>Avg Volume</span><span className={styles.v}>{num(results.averageVolume)}</span></div>
           <div className={styles.cell}><span className={styles.k}>10D Avg</span><span className={styles.v}>{num(results.x10DayAverageTradingVolume)}</span></div>
           <div className={styles.cell}><span className={styles.k}>3M Avg</span><span className={styles.v}>{num(results.x3MonthAverageTradingVolume)}</span></div>
-          <div className={styles.cell}><span className={styles.k}>1Y High</span><span className={styles.v}>{currency(results.rangeHigh)}</span></div>
-          <div className={styles.cell}><span className={styles.k}>1Y Low</span><span className={styles.v}>{currency(results.rangeLow)}</span></div>
-          <div className={styles.cell}><span className={styles.k}>Last Price</span><span className={styles.v}>{currency(results.price)}</span></div>
+          <div className={styles.cell}><span className={styles.k}>1Y High</span><span className={styles.v}>${results.rangeHigh}</span></div>
+          <div className={styles.cell}><span className={styles.k}>1Y Low</span><span className={styles.v}>${results.rangeLow}</span></div>
+          <div className={styles.cell}><span className={styles.k}>Last Price</span><span className={styles.v}>{results.price} | {results.priceTimeLong}</span></div>
         </div>
       </div>
 

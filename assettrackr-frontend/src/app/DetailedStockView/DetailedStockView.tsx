@@ -42,7 +42,8 @@ export interface ProfileDataResponse {
     location: string;
     companyLogo: string;
     price: number;
-    priceTime: string;
+    priceTimeShort: string;
+    priceTimeLong: string;
     rangeLow: number;
     rangeHigh: number;
 
@@ -168,7 +169,7 @@ export default function DetailedStockView({ symbol }: Props) {
                 <div className={styles.priceVisuals}>
                     <h1 className={styles.price}>{results.price}</h1>
                     <div className={styles.priceMetaData}>
-                        <h1 className={styles.hourText}>{results.priceTime}</h1>
+                        <h1 className={styles.hourText}>{results.priceTimeShort}</h1>
                         <h1>USD</h1>
                     </div>
                     <h1 className={styles.priceHourlyChangeStats}>-19.36 (-8.27%)</h1>

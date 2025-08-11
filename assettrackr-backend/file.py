@@ -283,8 +283,10 @@ def profile_data():
         "location": companyProfileResult.get("city","Error") + ", " + companyProfileResult.get("country", "Error"),
         "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
         "price": timeSeriesResult.get("values", -1)[0].get("close", -1),
-        "priceTime": timeSeriesResult.get("values", -1)[0].get("datetime", -1)[10:19],
-        "range": companyProfileResult.get("range", "Error"),
+        "priceTimeShort": timeSeriesResult.get("values", -1)[0].get("datetime", -1)[10:19],
+        "priceTimeLong": timeSeriesResult.get("values", -1)[0].get("datetime", -1),
+        "rangeLow": companyProfileResult.get("range", "Error").split("-")[0],
+        "rangeHigh": companyProfileResult.get("range", "Error").split("-")[1],
 
         # COMPANY FINANCIALS - Volume
         "volume": companyProfileResult.get("volume", -1),
