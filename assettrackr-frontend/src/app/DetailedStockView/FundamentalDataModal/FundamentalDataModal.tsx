@@ -35,10 +35,13 @@ interface FundamentalDataModalProp {
 }
 
 export default function FundamentalDataModal({ results }: FundamentalDataModalProp) {
-  const pct = (n?: number) => (typeof n === 'number' ? `${n.toFixed(2)}%` : '—');
-  const num = (n?: number) => (typeof n === 'number' ? n.toLocaleString() : '—');
-  const currency = (n?: number) => (typeof n === 'number' ? `$${n.toLocaleString()}` : '—');
-  const posNegClass = (n?: number) => (typeof n === 'number' ? (n < 0 ? styles.neg : styles.pos) : '');
+  const MISSING = ' - ';
+  const isValid = (n?: number): n is number => typeof n === 'number' && n !== -1 && Number.isFinite(n);
+
+  const pct = (n?: number) => (isValid(n) ? `${n.toFixed(2)}%` : MISSING);
+  const num = (n?: number) => (isValid(n) ? n.toLocaleString() : MISSING);
+  const currency = (n?: number) => (isValid(n) ? `$${n.toLocaleString()}` : MISSING);
+  const posNegClass = (n?: number) => (isValid(n) ? (n < 0 ? styles.neg : styles.pos) : '');
 
   return (
     <Box className={styles.modal}>

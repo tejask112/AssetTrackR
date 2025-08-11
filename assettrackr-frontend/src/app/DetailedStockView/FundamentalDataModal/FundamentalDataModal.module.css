@@ -6,7 +6,6 @@
   src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
 }
 
-/* -------- Modal shell (same size), now vertically scrollable -------- */
 .modal {
   position: absolute;
   top: 50%;
@@ -22,14 +21,11 @@
   display: flex;
   flex-direction: column;
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-
-  /* key change: allow vertical scroll when content exceeds modal */
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-gutter: stable; /* keeps layout from shifting when scrollbar appears */
+  scrollbar-gutter: stable;
 }
 
-/* -------- Header -------- */
 .header {
   display: flex;
   align-items: flex-start;
@@ -40,7 +36,7 @@
 
 .title {
   font-weight: 700;
-  font-size: 1.35rem; /* readable but not huge */
+  font-size: 1.35rem;
   letter-spacing: -0.01em;
   color: #111827;
 }
@@ -63,24 +59,21 @@
 }
 .link:hover { text-decoration: underline; }
 
-/* -------- Company description (never cropped) -------- */
 .desc {
   margin: 8px 0 14px;
   line-height: 1.55;
   color: #1f2937;
-  overflow: visible;              /* ensure no clipping */
-  white-space: normal;            /* allow wrapping */
-  overflow-wrap: anywhere;        /* avoid long-URL overflow */
+  overflow: visible;            
+  white-space: normal;            
+  overflow-wrap: anywhere;      
   hyphens: auto;
 }
 
-/* -------- Section blocks -------- */
 .section {
   margin-top: 14px;
   padding-top: 6px;
 }
 
-/* Subtle, compact section label */
 .sectionLabel {
   font-size: 0.78rem;
   font-weight: 700;
@@ -92,7 +85,6 @@
   margin-bottom: 10px;
 }
 
-/* -------- Metric grid -------- */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -109,7 +101,6 @@
   .grid { grid-template-columns: 1fr; }
 }
 
-/* -------- Metric cards -------- */
 .cell {
   display: flex;
   flex-direction: column;
@@ -127,23 +118,20 @@
 }
 
 .v {
-  font-variant-numeric: tabular-nums; /* aligned numbers for quicker scanning */
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
   font-weight: 700;
   font-size: 1rem;
   color: #111827;
 }
 
-/* -------- Positive/negative coloring -------- */
 .pos { color: #0b8a3f; }   /* green-ish */
 .neg { color: #b42318; }   /* red-ish */
 
-/* Slight hover affordance without being flashy */
 .cell:hover {
   background: #f6f8fa;
 }
 
-/* Optional: nicer scrollbars where supported (kept subtle) */
 .modal::-webkit-scrollbar { width: 10px; }
 .modal::-webkit-scrollbar-track { background: #f0f2f4; border-radius: 10px; }
 .modal::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
