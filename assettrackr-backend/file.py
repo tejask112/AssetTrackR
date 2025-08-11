@@ -92,6 +92,24 @@ def calculate24HclosingPriceDiff(bars):
     pct = (diff / price_24h) * 100 if price_24h != 0 else 0.0
     return diff, pct
 
+def getRecommendation(recommendationTools):
+    if len(recommendationTools)<=0:
+        return "Unavailable"
+    
+    latestMonthJson = recommendationTools[0]
+    categories = ["buy", "hold", "sell", "strongBuy", "strongSell"]
+    topCategory = max(categories, key=lambda k: latestMonthJson[k])
+
+    categoryConversion = {
+        "strongBuy": "Strong Buy",
+        "buy": "Buy",
+        "hold": "Hold",
+        "sell": "Sell",
+        "strongSell": "Strong Sell"
+    }
+
+    return categoryConversion[topCategory]
+
 
 # ---------------- RETRIEVES TODAYS TOP GAINERS (STOCKS) ----------------
 @app.route('/api/biggest_stock_gainers')
@@ -340,140 +358,13 @@ def profile_data():
 
         # RECOMMENDATION TOOLS
         "recommendationTools": recommendationToolsResult,
+        "recommendation": getRecommendation(recommendationToolsResult),
 
         # TIME SERIES DATA (interval=1hour)
         "timeseries": timeSeriesResult.get("values", "Error")
     }
 
     return jsonify(modified_data)
-
-    # output = {
-    #     "x10DayAverageTradingVolume": 49.73162,
-    #     "x10DayPriceReturnDaily": -1,
-    #     "x13WeekPriceReturnDaily": 16.4462,
-    #     "x26WeekPriceReturnDaily": -8.7801,
-    #     "x3MonthAverageTradingVolume": 47.85682,
-    #     "x52WeekPriceReturnDaily": 14.8519,
-    #     "x5DayPriceReturnDaily": -7.7495,
-    #     "assetTurnoverAnnual": 1.0209,
-    #     "assetTurnoverTTM": 1.0573,
-    #     "averageVolume": 42481574,
-    #     "companyDescription": "Amazon.com, Inc. engages in the retail sale of consumer products and subscriptions through online and physical stores in North America and internationally. The company operates through three segments: North America, International, and Amazon Web Services (AWS). Its products offered through its stores include merchandise and content purchased for resale; and products offered by third-party sellers The company also manufactures and sells electronic devices, including Kindle, Fire tablets, Fire TVs, Rings, Blink, eero, and Echo; and develops and produces media content. In addition, it offers programs that enable sellers to sell their products in its stores; and programs that allow authors, musicians, filmmakers, Twitch streamers, skill and app developers, and others to publish and sell content. Further, the company provides compute, storage, database, analytics, machine learning, and other services, as well as fulfillment, advertising, and digital content subscriptions. Additionally, it offers Amazon Prime, a membership program. The company serves consumers, sellers, developers, enterprises, content creators, and advertisers. Amazon.com, Inc. was incorporated in 1994 and is headquartered in Seattle, Washington.",
-    #     "companyLogo": "https://img.logo.dev/ticker/AMZN?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true",
-    #     "companyName": "Amazon.com, Inc.",
-    #     "dividendGrowthRate5Y": -1,
-    #     "dividendPerShareAnnual": -1,
-    #     "enterpriseValue": 2272838.5,
-    #     "exchange": "NASDAQ",
-    #     "exchangeTimezone": "America/New_York",
-    #     "forwardPE": 33.1247183049276,
-    #     "grossMargin5Y": 44.25,
-    #     "grossMarginAnnual": 48.85,
-    #     "industry": "Specialty Retail",
-    #     "location": "Seattle, US",
-    #     "marketCapitalisation": 228643534565,
-    #     "monthToDatePriceReturnDaily": -8.2696,
-    #     "netProfitMargin5Y": 5.34,
-    #     "operatingMargin5Y": 6.15,
-    #     "operatingMarginAnnual": 10.75,
-    #     "payoutRatioAnnual": -1,
-    #     "peAnnual": 38.48,
-    #     "pretaxMargin5Y": 6.1,
-    #     "pretaxMarginAnnual": 10.76,
-    #     "price": 214.75,
-    #     "rangeLow": 151.61,
-    #     "rangeHigh": 242.52,
-    #     "recommendation": "Buy",
-    #     "recommendationTools": [
-    #         {
-    #             "buy": 50,
-    #             "hold": 5,
-    #             "period": "2025-07-01",
-    #             "sell": 0,
-    #             "strongBuy": 24,
-    #             "strongSell": 0,
-    #             "symbol": "AMZN"
-    #         },
-    #         {
-    #             "buy": 50,
-    #             "hold": 5,
-    #             "period": "2025-06-01",
-    #             "sell": 0,
-    #             "strongBuy": 24,
-    #             "strongSell": 0,
-    #             "symbol": "AMZN"
-    #         },
-    #         {
-    #             "buy": 51,
-    #             "hold": 6,
-    #             "period": "2025-05-01",
-    #             "sell": 0,
-    #             "strongBuy": 22,
-    #             "strongSell": 0,
-    #             "symbol": "AMZN"
-    #         },
-    #         {
-    #             "buy": 50,
-    #             "hold": 4,
-    #             "period": "2025-04-01",
-    #             "sell": 0,
-    #             "strongBuy": 23,
-    #             "strongSell": 0,
-    #             "symbol": "AMZN"
-    #         }
-    #     ],
-    #     "roa5Y": 5.84,
-    #     "roaRfy": 9.48,
-    #     "roe5Y": 16.18,
-    #     "roeRfy": 20.72,
-    #     "roi5Y": 10.89,
-    #     "roiAnnual": 16.38,
-    #     "timeseries": [
-    #         {
-    #             "datetime": "2025-08-01 15:30:00",
-    #             "open": "214.875",
-    #             "high": "215.99001",
-    #             "low": "214.49001",
-    #             "close": "214.81000",
-    #             "volume": "9525800"
-    #         },
-    #         {
-    #             "datetime": "2025-08-01 14:30:00",
-    #             "open": "214.23500",
-    #             "high": "215.22000",
-    #             "low": "214.14999",
-    #             "close": "214.88000",
-    #             "volume": "10907741"
-    #         },
-    #         {
-    #             "datetime": "2025-08-01 13:30:00",
-    #             "open": "214.33929",
-    #             "high": "214.75999",
-    #             "low": "212.80000",
-    #             "close": "214.24921",
-    #             "volume": "10841492"
-    #         }
-    #     ],
-    #     "volume": 119615582,
-    #     "website": "https://www.amazon.com"
-    # }
-    # return jsonify(output)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

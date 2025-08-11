@@ -167,7 +167,7 @@ export default function DetailedStockView({ symbol }: Props) {
                     </div>
                 </div>
                 <div className={styles.priceVisuals}>
-                    <h1 className={styles.price}>{results.price}</h1>
+                    <h1 className={styles.price}>{Number(results.price).toFixed(2)}</h1>
                     <div className={styles.priceMetaData}>
                         <h1 className={styles.hourText}>{results.priceTimeShort}</h1>
                         <h1>USD</h1>
@@ -251,7 +251,7 @@ export default function DetailedStockView({ symbol }: Props) {
                         </div>
                         <div className={styles.metric}>
                             <div className={styles.label}>Ask Price</div>
-                            <div className={styles.value}>${results.price}</div>
+                            <div className={styles.value}>${Number(results.price).toFixed(2)}</div>
                         </div>
                         <div className={styles.metric}>
                             <div className={styles.label}>1 Year Low</div>
