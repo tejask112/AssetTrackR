@@ -1,13 +1,13 @@
 # All functions below are REST API calls that are used in AssetTrackR's 'Explore Stocks' page.
 
 from flask import Blueprint, jsonify, request, current_app as app
-import os, requests, pandas as pd
+import os, requests
 import finnhub
 
 from ..utils.dates import calculateStartDate, calculateEndDate, calculate5YagoDate
-from ..services.market_data import calculateAllHistoricalBarsFromAPI, calculate24HclosingPriceDiff
+from ..services.explore_stocks_data import calculateAllHistoricalBarsFromAPI, calculate24HclosingPriceDiff
 
-bp = Blueprint("market", __name__)
+bp = Blueprint("explore_stocks", __name__)
 
 ALPACA_KEY = os.getenv("ALPACA_KEY", "")
 ALPACA_SECRET = os.getenv("ALPACA_SECRET", "")
@@ -22,7 +22,7 @@ headers = {
 }
 
 # ---------------- RETRIEVES TODAYS TOP GAINERS (STOCKS) ----------------
-@app.route('/api/biggest_stock_gainers')
+@bp.route('/biggest_stock_gainers')
 def biggest_stock_gainers():
     urlTopGainers = "https://financialmodelingprep.com/stable/biggest-gainers?apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
     try:
@@ -65,7 +65,7 @@ def biggest_stock_gainers():
     return jsonify(output)
 
 # ---------------- RETRIEVES TODAYS TOP LOSERS (STOCKS) ----------------
-@app.route('/api/biggest_stock_losers')
+@bp.route('/biggest_stock_losers')
 def biggest_stock_losers():
     urlTopLosers = "https://financialmodelingprep.com/stable/biggest-losers?apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
     try:
@@ -107,7 +107,7 @@ def biggest_stock_losers():
     return jsonify(output)
 
 # ---------------- RETRIEVES MOST ACTIVELY TRADED (STOCKS) ----------------
-@app.route('/api/most_actively_traded')
+@bp.route('/most_actively_traded')
 def most_actively_traded():
     stockMap = [
         { "symbol": 'NVDA', "name": 'NVIDIA' },
@@ -154,7 +154,7 @@ def most_actively_traded():
     return jsonify(output)
 
 # ---------------- SEARCH BAR TO FIND STOCKS | EXPLORE PAGE  ----------------
-@app.route('/api/symbol_lookup', methods=["GET"])
+@bp.route('/symbol_lookup', methods=["GET"])
 def symbol_lookup():
     finnhub_client = finnhub.Client(api_key="d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50")
 

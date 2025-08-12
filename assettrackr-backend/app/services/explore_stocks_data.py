@@ -1,4 +1,13 @@
-import requests, pandas as pd
+import os, requests, pandas as pd
+
+ALPACA_KEY = os.getenv("ALPACA_KEY", "")
+ALPACA_SECRET = os.getenv("ALPACA_SECRET", "")
+
+headers = {
+    "accept": "application/json",
+    "APCA-API-KEY-ID": ALPACA_KEY,
+    "APCA-API-SECRET-KEY": ALPACA_SECRET,
+}
 
 def calculateAllHistoricalBarsFromAPI(listOfStocks, start_date, end_date):
     allSymbolsList = [s['symbol'] for s in listOfStocks]
