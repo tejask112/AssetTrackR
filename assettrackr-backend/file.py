@@ -9,11 +9,12 @@ app = Flask(__name__)
 CORS(app)
 
 headers = {
-        "accept": "application/json",
-        "APCA-API-KEY-ID": "PKSBHQZ8SKVL9FA4OE75",
-        "APCA-API-SECRET-KEY": "bLa4uLT72RV2GAJjUf7hQBQfShk1a0jfioav79kF"
-        }
+    "accept": "application/json",
+    "APCA-API-KEY-ID": "PKSBHQZ8SKVL9FA4OE75",
+    "APCA-API-SECRET-KEY": "bLa4uLT72RV2GAJjUf7hQBQfShk1a0jfioav79kF"
+}
 
+# ---------------- HELPER FUNCTIONS ----------------
 def calculateStartDate():
     current_date = datetime.now(timezone.utc)
     start_date_obj = current_date - timedelta(days=7)
@@ -109,6 +110,9 @@ def getRecommendation(recommendationTools):
     }
 
     return categoryConversion[topCategory]
+
+#---------------- SET UP WEBSOCKET FOR LIVE PRICES ----------------
+def setupWS():
 
 
 # ---------------- RETRIEVES TODAYS TOP GAINERS (STOCKS) ----------------
@@ -366,6 +370,8 @@ def profile_data():
 
     return jsonify(modified_data)
 
+# @app.route('/api/ws_live_price', methods=["GET"])
+# def ws_live_price():
 
 
 if __name__ == '__main__':
