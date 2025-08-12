@@ -114,7 +114,7 @@ export default function FundamentalDataModal({ results }: FundamentalDataModalPr
           <div className={styles.cell}><span className={styles.k}>3M Avg</span><span className={styles.v}>{num(results.x3MonthAverageTradingVolume)}</span></div>
           <div className={styles.cell}><span className={styles.k}>1Y High</span><span className={styles.v}>${results.rangeHigh}</span></div>
           <div className={styles.cell}><span className={styles.k}>1Y Low</span><span className={styles.v}>${results.rangeLow}</span></div>
-          <div className={styles.cell}><span className={styles.k}>Last Price</span><span className={styles.v}>{results.price} | {results.priceTimeLong}</span></div>
+          <div className={styles.cell}><span className={styles.k}>Last Price</span><span className={styles.v}>${results.price} | {results.priceTimeLong}</span></div>
         </div>
       </div>
 
