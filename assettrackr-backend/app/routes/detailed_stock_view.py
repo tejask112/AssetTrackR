@@ -12,28 +12,29 @@ ALPACA_SECRET = os.getenv("ALPACA_SECRET", "")
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
 FMP_KEY = os.getenv("FMP_KEY", "")
 TWELVE_API_KEY = os.getenv("TWELVE_API_KEY", "")
+LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
 # ---------------- RETRIEVE COMPANY PROFILE DATA  ----------------
 @bp.route('/profile_data', methods=["GET"])
 def profile_data():
     symbol = request.args.get("query", "")
 
-    companyProfileUrl = f"https://financialmodelingprep.com/stable/profile?symbol={symbol}&apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
+    companyProfileUrl = f"https://financialmodelingprep.com/stable/profile?symbol={symbol}&apikey={FMP_KEY}"
     companyProfileResponse = requests.get(url=companyProfileUrl)
     companyProfileResponseJson = companyProfileResponse.json()
     companyProfileResult = companyProfileResponseJson[0] if isinstance(companyProfileResponseJson, list) and companyProfileResponseJson else {}
 
-    basicFinancialsUrl = f"https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token=d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50"
+    basicFinancialsUrl = f"https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token={FINNHUB_API_KEY}"
     basicFinancialsResponse = requests.get(url=basicFinancialsUrl)
     basicFinancialsResult = basicFinancialsResponse.json()
     basicFinancialsResultMetric = basicFinancialsResult.get("metric")
 
-    recommendationToolsUrl = f"https://finnhub.io/api/v1/stock/recommendation?symbol={symbol}&token=d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50"
+    recommendationToolsUrl = f"https://finnhub.io/api/v1/stock/recommendation?symbol={symbol}&token={FINNHUB_API_KEY}"
     recommendationToolsResponse = requests.get(url=recommendationToolsUrl)
     recommendationToolsResult = recommendationToolsResponse.json()
 
     startDate = calculateStartDate()
-    timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1min&start_date={startDate}&outputsize=5000&apikey=08a46fa054fe47238e842fe469d79430"
+    timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1min&start_date={startDate}&outputsize=5000&apikey={TWELVE_API_KEY}"
     timeSeriesResponse = requests.get(url=timeSeriesUrl)
     timeSeriesResult = timeSeriesResponse.json()
 
@@ -46,7 +47,7 @@ def profile_data():
         "website": companyProfileResult.get("website", "Error"),
         "industry": companyProfileResult.get("industry", "Error"),
         "location": companyProfileResult.get("city","Error") + ", " + companyProfileResult.get("country", "Error"),
-        "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
+        "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token={LOGO_DEV_KEY}&retina=true',
         "price": timeSeriesResult.get("values", -1)[0].get("close", -1),
         "priceTimeShort": timeSeriesResult.get("values", -1)[0].get("datetime", -1)[10:19],
         "priceTimeLong": timeSeriesResult.get("values", -1)[0].get("datetime", -1),

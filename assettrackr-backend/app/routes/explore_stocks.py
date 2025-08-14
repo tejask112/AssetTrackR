@@ -14,6 +14,7 @@ ALPACA_SECRET = os.getenv("ALPACA_SECRET", "")
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
 FMP_KEY = os.getenv("FMP_KEY", "")
 TWELVE_API_KEY = os.getenv("TWELVE_API_KEY", "")
+LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
 headers = {
     "accept": "application/json",
@@ -24,7 +25,7 @@ headers = {
 # ---------------- RETRIEVES TODAYS TOP GAINERS (STOCKS) ----------------
 @bp.route('/biggest_stock_gainers')
 def biggest_stock_gainers():
-    urlTopGainers = "https://financialmodelingprep.com/stable/biggest-gainers?apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
+    urlTopGainers = f"https://financialmodelingprep.com/stable/biggest-gainers?apikey={FMP_KEY}"
     try:
         response = requests.get(urlTopGainers, timeout=5)
         response.raise_for_status()
@@ -55,7 +56,7 @@ def biggest_stock_gainers():
             "closing_price_7D": closingPrices,
             "change": s["change"],
             "exchange": s["exchange"],
-            "logo": f'https://img.logo.dev/ticker/{symbolName}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
+            "logo": f'https://img.logo.dev/ticker/{symbolName}?token={LOGO_DEV_KEY}&retina=true',
             "name": s["name"],
             "percentage_change": s["changesPercentage"],
         }
@@ -67,7 +68,7 @@ def biggest_stock_gainers():
 # ---------------- RETRIEVES TODAYS TOP LOSERS (STOCKS) ----------------
 @bp.route('/biggest_stock_losers')
 def biggest_stock_losers():
-    urlTopLosers = "https://financialmodelingprep.com/stable/biggest-losers?apikey=JbWRPbI6VGapru3LipUIte6b8TML23lg"
+    urlTopLosers = f"https://financialmodelingprep.com/stable/biggest-losers?apikey={FMP_KEY}"
     try:
         response = requests.get(urlTopLosers, timeout=5)
         response.raise_for_status()
@@ -97,7 +98,7 @@ def biggest_stock_losers():
             "closing_price_7D": closingPrices,
             "change": s["change"],
             "exchange": s["exchange"],
-            "logo": f'https://img.logo.dev/ticker/{symbolName}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
+            "logo": f'https://img.logo.dev/ticker/{symbolName}?token={LOGO_DEV_KEY}&retina=true',
             "name": s["name"],
             "percentage_change": s["changesPercentage"],
         }
@@ -145,7 +146,7 @@ def most_actively_traded():
             "closing_price_7D": closingPrices,
             "change": diff,
             "exchange": "unsure", #NEED TO FIX
-            "logo": f'https://img.logo.dev/ticker/{symbolName}?token=pk_OFx05JtoRi2yAQ4wnd9Ezw&retina=true',
+            "logo": f'https://img.logo.dev/ticker/{symbolName}?token={LOGO_DEV_KEY}&retina=true',
             "name": s['name'],
             "percentage_change": pct,
         }
@@ -156,7 +157,7 @@ def most_actively_traded():
 # ---------------- SEARCH BAR TO FIND STOCKS | EXPLORE PAGE  ----------------
 @bp.route('/symbol_lookup', methods=["GET"])
 def symbol_lookup():
-    finnhub_client = finnhub.Client(api_key="d1vs1apr01qmbi8prd4gd1vs1apr01qmbi8prd50")
+    finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
 
     query = request.args.get("query", "")
     response = finnhub_client.symbol_lookup(query=query)
