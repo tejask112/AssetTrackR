@@ -1,28 +1,16 @@
-import os, websocket, json
-from dotenv import load_dotenv, find_dotenv
+# manage the websockets
 
-load_dotenv(find_dotenv())
-FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
+# model:
+#
+#                                                            /---WS---> client 1
+#   Finnhub <----WS----> AssetTrackR websocket_manager.py  <----WS----> client 2
+#                                                            \---WS---> client 3
+#
 
-def on_message(ws, message):
-    print(message)
-
-def on_error(ws, error):
-    print(error)
-
-def on_close(ws):
-    print("### closed ###")
-
-def on_open(ws):
-    ws.send('{"type":"subscribe", "symbol":"AAPL"}')
-
-if __name__ == "__main__":
-    websocket.enableTrace(True)
-    ws = websocket.WebSocketApp(
-        f"wss://ws.finnhub.io?token={FINNHUB_API_KEY}",
-        on_message = on_message,
-        on_error = on_error,
-        on_close = on_close
-    )
-    ws.on_open = on_open
-    ws.run_forever()
+# when client connects to websocket_manager:
+#   are we already connected to finnhub?
+#       yes -> pass
+#       no -> set up a websocket connection with finhubb
+#   subscribe the symbol/ticker to the websocket request to finhubb
+#   receive the latest price for all the subscribed symbol/tickers
+#   go through each one, and send the latest price back to the client who requested it
