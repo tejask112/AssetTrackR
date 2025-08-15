@@ -19,11 +19,7 @@ type Props = {
   colors?: Colors;
 };
 
-export default function LineDispChart({
-  data,
-  height = 300,
-  colors = {},
-}: Props) {
+export default function LineDispChart({ data, height = 300, colors = {} }: Props) {
   const {
     backgroundColor = 'white',
     lineColor = '#2962FF',
@@ -35,7 +31,6 @@ export default function LineDispChart({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
-
 
   const normalize = (arr: LinePoint[]) =>
     arr

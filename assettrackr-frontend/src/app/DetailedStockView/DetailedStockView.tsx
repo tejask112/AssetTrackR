@@ -6,6 +6,8 @@ import styles from './DetailedStockView.module.css';
 import RecommendationChart from './RecommendationChart/RecommendationChart';
 import FundamentalDataModal from './FundamentalDataModal/FundamentalDataModal';
 import LineDispChart from './Charts/LineChart/LineDispChart'
+import CandleStickChart from './Charts/CandleStickChart/CandleStickChart'
+
 import Modal from '@mui/material/Modal';
 
 interface Props {
@@ -287,7 +289,8 @@ export default function DetailedStockView({ symbol }: Props) {
                     </div>
                     <div>
                         {lineChart && <LineDispChart data={lineData} height={550} />}
-
+                        {candlestickChart && Array.isArray(results.timeseries) && ( <CandleStickChart data={results.timeseries} height={550} />)}
+                        
                         
                     </div>
                     
