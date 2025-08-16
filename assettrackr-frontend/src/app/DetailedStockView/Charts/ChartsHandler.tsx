@@ -71,6 +71,20 @@ export default function ChartsHandler( { data }:Props) {
                 {candlestickChart && Array.isArray(data) && ( <CandleStickChart data={data} height={550} />)}
                 {ohlcChart && Array.isArray(data) && ( <OHLCChart data={data} height={550} /> )}
             </div>
+            <div className={styles.timeSelectorDiv}>
+                <h1 className={styles.heading}>Time Frame</h1>
+                <div className={styles.segment}>
+                <button className={styles.btn}>1 Hour</button>
+                <button className={styles.btn}>4 Hours</button>
+                <button className={styles.btn}>1 Day</button>
+                <button className={styles.btn}>5 Days</button>
+                <button className={styles.btn}>1 Month</button>
+                <button className={styles.btn}>6 Months</button>
+                <button className={styles.btn}>1 Year</button>
+                </div>  
+
+            </div>
+            
         </div>
        
     )
