@@ -5,10 +5,8 @@ import Image from "next/image";
 import styles from './DetailedStockView.module.css';
 import RecommendationChart from './RecommendationChart/RecommendationChart';
 import FundamentalDataModal from './FundamentalDataModal/FundamentalDataModal';
-import LineDispChart from './Charts/LineChart/LineDispChart'
-import CandleStickChart from './Charts/CandleStickChart/CandleStickChart'
-import OHLCChart from './Charts/OHLCDispChart/OHLCDispChart'
 import Modal from '@mui/material/Modal';
+import ChartsHandler from "./Charts/ChartsHandler";
 
 interface Props {
     symbol: string;
@@ -105,45 +103,6 @@ export default function DetailedStockView({ symbol }: Props) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose= () => setOpen(false);
-
-    const toUnixSecondsUTC = (s: string) => {
-        const [d, t] = s.split(' ');
-        const [Y, M, D] = d.split('-').map(Number);
-        const [h, m, sec] = t.split(':').map(Number);
-        return Math.floor(Date.UTC(Y, M - 1, D, h, m, sec) / 1000);
-    };
-
-    const toLineDataUTC = (rows: TimeSeriesPoint[]) =>
-    rows
-        .map(p => ({ time: toUnixSecondsUTC(p.datetime), value: parseFloat(p.close) }))
-        .sort((a, b) => a.time - b.time);
-
-    const lineData = React.useMemo(() => {
-        if (!results || !Array.isArray(results.timeseries)) return [];
-        return toLineDataUTC(results.timeseries);
-    }, [results]);
-
-    const [lineChart, setLineChart] = useState<boolean>(true);
-    const [candlestickChart, setCandlestickChart] = useState<boolean>(false);
-    const [ohlcChart, setOhlcChart] = useState<boolean>(false);
-
-    const showLineChart = () => {
-        setLineChart(true);
-        setCandlestickChart(false);
-        setOhlcChart(false);
-    }
-
-    const showCandlestickChart = () => {
-        setLineChart(false);
-        setCandlestickChart(true);
-        setOhlcChart(false);
-    }
-
-    const showOHLCChart = () => {
-        setLineChart(false);
-        setCandlestickChart(false);
-        setOhlcChart(true);
-    }
 
     useEffect(() => {
         async function fetchDetailedStockData() {
@@ -280,20 +239,7 @@ export default function DetailedStockView({ symbol }: Props) {
 
             <div className={styles.graphicalDataDiv}>
                 <h1 className={styles.timezoneHeading}>Time Zone: {results.exchangeTimezone.replace(/_/g, " ")}</h1>
-                
-                <div className={styles.div1}>
-                    <div className={styles.chartTypeButtons}>
-                        <button className={`${styles.chartTypeButton} ${lineChart ? styles.active : ""}`} onClick={showLineChart}>Line</button>
-                        <button className={`${styles.chartTypeButton} ${candlestickChart ? styles.active : ""}`} onClick={showCandlestickChart}>Candlestick</button>
-                        <button className={`${styles.chartTypeButton} ${ohlcChart ? styles.active : ""}`} onClick={showOHLCChart}>OHLC</button>
-                    </div>
-                    <div>
-                        {lineChart && <LineDispChart data={lineData} height={550} />}
-                        {candlestickChart && Array.isArray(results.timeseries) && ( <CandleStickChart data={results.timeseries} height={550} />)}
-                        {ohlcChart && Array.isArray(results.timeseries) && ( <OHLCChart data={results.timeseries} height={550} /> )}
-                    </div>
-                    
-                </div>
+                <ChartsHandler data={results.timeseries}/>
             </div>
         </div>
     )
