@@ -61,16 +61,15 @@ export default function ChartsHandler( { data }:Props) {
         setOhlcChart(true);
     }
 
-    const [timeFrame, setTimeFrame] = useState<TimeFrame>('1Hour'); // <-- not String
+    const [timeFrame, setTimeFrame] = useState<TimeFrame>('5Day');
 
-    // Optional helpers
-    const set1Hour  = () => setTimeFrame('1Hour');
-    const set4Hour  = () => setTimeFrame('4Hour');
-    const set1Day   = () => setTimeFrame('1Day');
-    const set5Day   = () => setTimeFrame('5Day');
+    const set1Hour = () => setTimeFrame('1Hour');
+    const set4Hour = () => setTimeFrame('4Hour');
+    const set1Day = () => setTimeFrame('1Day');
+    const set5Day = () => setTimeFrame('5Day');
     const set1Month = () => setTimeFrame('1Month');
     const set6Month = () => setTimeFrame('6Month');
-    const set1Year  = () => setTimeFrame('1Year');
+    const set1Year = () => setTimeFrame('1Year');
 
     return (
         <div className={styles.chartDiv}>
@@ -87,13 +86,13 @@ export default function ChartsHandler( { data }:Props) {
             <div className={styles.timeSelectorDiv}>
                 <h1 className={styles.heading}>Time Frame</h1>
                 <div className={styles.segment}>
-                    <button className={styles.btn} onClick={set1Hour}>1 Hour</button>
-                    <button className={styles.btn} onClick={set4Hour}>4 Hours</button>
-                    <button className={styles.btn} onClick={set1Day}>1 Day</button>
-                    <button className={styles.btn} onClick={set5Day}>5 Days</button>
-                    <button className={styles.btn} onClick={set1Month}>1 Month</button>
-                    <button className={styles.btn} onClick={set6Month}>6 Months</button>
-                    <button className={styles.btn} onClick={set1Year}>1 Year</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '1Hour'? "true" : "false"} onClick={set1Hour}>1 Hour</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '4Hour'? "true" : "false"} onClick={set4Hour}>4 Hours</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '1Day'? "true" : "false"} onClick={set1Day}>1 Day</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '5Day'? "true" : "false"} onClick={set5Day}>5 Days</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '1Month'? "true" : "false"} onClick={set1Month}>1 Month</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '6Month'? "true" : "false"} onClick={set6Month}>6 Months</button>
+                    <button className={styles.btn} aria-pressed={timeFrame == '1Year'? "true" : "false"} onClick={set1Year}>1 Year</button>
                 </div>  
 
             </div>
