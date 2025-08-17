@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import {createChart, ColorType, AreaSeries, type IChartApi, type ISeriesApi,} from 'lightweight-charts';
+import {
+  createChart,
+  ColorType,
+  AreaSeries,
+  type IChartApi,
+  type ISeriesApi,
+  type AreaData,
+  type UTCTimestamp,
+} from 'lightweight-charts';
 
 export type LinePoint = { time: number | string | Date; value: number };
 
@@ -13,13 +21,22 @@ type Colors = {
   areaBottomColor?: string;
 };
 
+export type TimeFrame = '1Hour' | '4Hour' | '1Day' | '5Day' | '1Month' | '6Month' | '1Year';
+
+
 type Props = {
   data: LinePoint[];
   height?: number;
   colors?: Colors;
+  timeFrame: TimeFrame;
 };
 
-export default function LineDispChart({ data, height = 300, colors = {} }: Props) {
+export default function LineDispChart({
+  data,
+  height = 300,
+  colors = {},
+  timeFrame,
+}: Props) {
   const {
     backgroundColor = 'white',
     lineColor = '#2962FF',
@@ -31,27 +48,80 @@ export default function LineDispChart({ data, height = 300, colors = {} }: Props
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
+  const normalizedDataRef = useRef<AreaData<UTCTimestamp>[]>([]);
 
-  const normalize = (arr: LinePoint[]) =>
+  const toUTCTimestamp = (t: LinePoint['time']): UTCTimestamp => {
+    let n: number;
+    if (t instanceof Date) n = Math.floor(t.getTime() / 1000);
+    else if (typeof t === 'number') n = t > 1e12 ? Math.floor(t / 1000) : t;
+    else n = Math.floor(new Date(t).getTime() / 1000);
+    return n as UTCTimestamp;
+  };
+
+  const normalize = (arr: LinePoint[]): AreaData<UTCTimestamp>[] =>
     arr
-      .map(p => {
-        let t = p.time as any;
-        if (t instanceof Date) t = Math.floor(t.getTime() / 1000);
-        else if (typeof t === 'number') t = t > 1e12 ? Math.floor(t / 1000) : t; 
-        else t = Math.floor(new Date(t).getTime() / 1000);
-        return { time: t, value: p.value };
-      })
-      .sort((a, b) => a.time - b.time);
+      .map((p) => ({ time: toUTCTimestamp(p.time), value: p.value }))
+      .sort((a, b) => (a.time as number) - (b.time as number));
+
+  const computeFrom = (toSec: UTCTimestamp, frame: TimeFrame): UTCTimestamp => {
+    const toDate = new Date((toSec as number) * 1000);
+    const fromDate = new Date(toDate.getTime());
+
+    switch (frame) {
+      case '1Hour':
+        fromDate.setHours(toDate.getHours() - 1);
+        break;
+      case '4Hour':
+        fromDate.setHours(toDate.getHours() - 4);
+        break;
+      case '1Day':
+        fromDate.setDate(toDate.getDate() - 1);
+        break;
+      case '5Day':
+        fromDate.setDate(toDate.getDate() - 5);
+        break;
+      case '1Month':
+        fromDate.setMonth(toDate.getMonth() - 1);
+        break;
+      case '6Month':
+        fromDate.setMonth(toDate.getMonth() - 6);
+        break;
+      case '1Year':
+        fromDate.setFullYear(toDate.getFullYear() - 1);
+        break;
+    }
+    return Math.floor(fromDate.getTime() / 1000) as UTCTimestamp;
+  };
+
+  const applyTimeFrame = () => {
+    const chart = chartRef.current;
+    const data = normalizedDataRef.current;
+    if (!chart || data.length === 0) return;
+
+    const to = data[data.length - 1].time as UTCTimestamp;
+    let from = computeFrom(to, timeFrame);
+    const first = data[0].time as UTCTimestamp;
+    if ((from as number) < (first as number)) from = first;
+
+    chart.timeScale().applyOptions({
+      timeVisible: true,
+      secondsVisible: timeFrame === '1Hour' || timeFrame === '4Hour',
+    });
+
+    chart.timeScale().setVisibleRange({ from, to });
+  };
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+    const isIntraday = timeFrame === '1Hour' || timeFrame === '4Hour';
 
     const chart = createChart(containerRef.current, {
       layout: { background: { type: ColorType.Solid, color: backgroundColor }, textColor },
       height,
       width: containerRef.current.clientWidth,
       rightPriceScale: { borderVisible: false },
-      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: true },
+      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: isIntraday },
       grid: { vertLines: { color: '#e5e7eb' }, horzLines: { color: '#e5e7eb' } },
       crosshair: { mode: 1 },
     });
@@ -63,10 +133,13 @@ export default function LineDispChart({ data, height = 300, colors = {} }: Props
       bottomColor: areaBottomColor,
     });
     seriesRef.current = s;
-    s.setData(normalize(data));
-    chart.timeScale().fitContent();
 
-    const ro = new ResizeObserver(entries => {
+    const nd = normalize(data);
+    normalizedDataRef.current = nd;
+    s.setData(nd);
+    applyTimeFrame();
+
+    const ro = new ResizeObserver((entries) => {
       const { width } = entries[0].contentRect;
       chart.applyOptions({ width: Math.floor(width) });
     });
@@ -81,8 +154,17 @@ export default function LineDispChart({ data, height = 300, colors = {} }: Props
   }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor, height]);
 
   useEffect(() => {
-    if (seriesRef.current) seriesRef.current.setData(normalize(data));
+    const s = seriesRef.current;
+    if (!s) return;
+    const nd = normalize(data);
+    normalizedDataRef.current = nd;
+    s.setData(nd);
+    applyTimeFrame();
   }, [data]);
+
+  useEffect(() => {
+    applyTimeFrame();
+  }, [timeFrame]);
 
   return <div ref={containerRef} style={{ width: '100%' }} />;
 }

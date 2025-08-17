@@ -18,6 +18,8 @@ interface TimeSeriesPoint {
     volume: string;
 }
 
+type TimeFrame = '1Hour' | '4Hour' | '1Day' | '5Day' | '1Month' | '6Month' | '1Year';
+
 export default function ChartsHandler( { data }:Props) {
 
     const toUnixSecondsUTC = (s: string) => {
@@ -59,6 +61,17 @@ export default function ChartsHandler( { data }:Props) {
         setOhlcChart(true);
     }
 
+    const [timeFrame, setTimeFrame] = useState<TimeFrame>('1Hour'); // <-- not String
+
+    // Optional helpers
+    const set1Hour  = () => setTimeFrame('1Hour');
+    const set4Hour  = () => setTimeFrame('4Hour');
+    const set1Day   = () => setTimeFrame('1Day');
+    const set5Day   = () => setTimeFrame('5Day');
+    const set1Month = () => setTimeFrame('1Month');
+    const set6Month = () => setTimeFrame('6Month');
+    const set1Year  = () => setTimeFrame('1Year');
+
     return (
         <div className={styles.chartDiv}>
             <div className={styles.chartTypeButtons}>
@@ -67,20 +80,20 @@ export default function ChartsHandler( { data }:Props) {
                 <button className={`${styles.chartTypeButton} ${ohlcChart ? styles.active : ""}`} onClick={showOHLCChart}>OHLC</button>
             </div>
             <div>
-                {lineChart && <LineDispChart data={lineData} height={550} />}
+                {lineChart && <LineDispChart data={lineData} timeFrame={timeFrame} height={550} />}
                 {candlestickChart && Array.isArray(data) && ( <CandleStickChart data={data} height={550} />)}
                 {ohlcChart && Array.isArray(data) && ( <OHLCChart data={data} height={550} /> )}
             </div>
             <div className={styles.timeSelectorDiv}>
                 <h1 className={styles.heading}>Time Frame</h1>
                 <div className={styles.segment}>
-                <button className={styles.btn}>1 Hour</button>
-                <button className={styles.btn}>4 Hours</button>
-                <button className={styles.btn}>1 Day</button>
-                <button className={styles.btn}>5 Days</button>
-                <button className={styles.btn}>1 Month</button>
-                <button className={styles.btn}>6 Months</button>
-                <button className={styles.btn}>1 Year</button>
+                    <button className={styles.btn} onClick={set1Hour}>1 Hour</button>
+                    <button className={styles.btn} onClick={set4Hour}>4 Hours</button>
+                    <button className={styles.btn} onClick={set1Day}>1 Day</button>
+                    <button className={styles.btn} onClick={set5Day}>5 Days</button>
+                    <button className={styles.btn} onClick={set1Month}>1 Month</button>
+                    <button className={styles.btn} onClick={set6Month}>6 Months</button>
+                    <button className={styles.btn} onClick={set1Year}>1 Year</button>
                 </div>  
 
             </div>
