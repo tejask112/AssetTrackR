@@ -1,7 +1,18 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef } from "react";
-import { createChart, ColorType, CandlestickSeries, HistogramSeries, type IChartApi, type ISeriesApi, type CandlestickData, type HistogramData, type Time } from "lightweight-charts";
+import {
+  createChart,
+  ColorType,
+  CandlestickSeries,
+  HistogramSeries,
+  type IChartApi,
+  type ISeriesApi,
+  type CandlestickData,
+  type HistogramData,
+  type Time,
+  type UTCTimestamp,
+} from "lightweight-charts";
 
 export interface TimeSeriesPoint {
   datetime: string;
@@ -29,14 +40,31 @@ type Colors = {
   tooltipBorder?: string;
 };
 
+export type TimeFrame =
+  | "1Hour"
+  | "4Hour"
+  | "1Day"
+  | "5Day"
+  | "1Month"
+  | "6Month"
+  | "1Year";
+
 type Props = {
   data: TimeSeriesPoint[];
   height?: number;
   colors?: Colors;
   showVolume?: boolean;
+  /** NEW: control the visible window */
+  timeFrame: TimeFrame;
 };
 
-export default function CandleStickChart({ data, height = 300, colors = {}, showVolume = true }: Props) {
+export default function CandleStickChart({
+  data,
+  height = 300,
+  colors = {},
+  showVolume = true,
+  timeFrame,
+}: Props) {
   const {
     backgroundColor = "white",
     textColor = "black",
@@ -54,9 +82,9 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
     tooltipBorder = "black",
   } = colors;
 
-  const rootRef = useRef<HTMLDivElement | null>(null);   
-  const canvasRef = useRef<HTMLDivElement | null>(null);   
-  const tooltipRef = useRef<HTMLDivElement | null>(null);  
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   const chartRef = useRef<IChartApi | null>(null);
   const candleRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
@@ -100,6 +128,57 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
     return m;
   }, [volumes]);
 
+  /** --- NEW: timeframe helpers --- */
+  const computeFrom = (toSec: UTCTimestamp, frame: TimeFrame): UTCTimestamp => {
+    const toDate = new Date((toSec as number) * 1000);
+    const fromDate = new Date(toDate.getTime());
+
+    switch (frame) {
+      case "1Hour":
+        fromDate.setHours(toDate.getHours() - 1);
+        break;
+      case "4Hour":
+        fromDate.setHours(toDate.getHours() - 4);
+        break;
+      case "1Day":
+        fromDate.setDate(toDate.getDate() - 1);
+        break;
+      case "5Day":
+        fromDate.setDate(toDate.getDate() - 5);
+        break;
+      case "1Month":
+        fromDate.setMonth(toDate.getMonth() - 1);
+        break;
+      case "6Month":
+        fromDate.setMonth(toDate.getMonth() - 6);
+        break;
+      case "1Year":
+        fromDate.setFullYear(toDate.getFullYear() - 1);
+        break;
+    }
+    return Math.floor(fromDate.getTime() / 1000) as UTCTimestamp;
+  };
+
+  const applyTimeFrame = () => {
+    const chart = chartRef.current;
+    if (!chart || candles.length === 0) return;
+
+    const to = candles[candles.length - 1].time as UTCTimestamp;
+    let from = computeFrom(to, timeFrame);
+    const first = candles[0].time as UTCTimestamp;
+    if ((from as number) < (first as number)) from = first;
+
+    const isIntraday = timeFrame === "1Hour" || timeFrame === "4Hour";
+
+    chart.timeScale().applyOptions({
+      timeVisible: true,
+      secondsVisible: isIntraday,
+    });
+
+    chart.timeScale().setVisibleRange({ from, to });
+  };
+  /** --- end timeframe helpers --- */
+
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -108,7 +187,7 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
       height,
       width: canvasRef.current.clientWidth,
       rightPriceScale: { borderVisible: false },
-      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: true },
+      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: false },
       grid: { vertLines: { color: gridColor }, horzLines: { color: gridColor } },
       crosshair: { mode: 1 },
     });
@@ -138,7 +217,8 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
       volume.setData(volumes);
     }
 
-    chart.timeScale().fitContent();
+    // was: fitContent(); now we respect the selected timeframe
+    applyTimeFrame();
 
     const ro = new ResizeObserver((entries) => {
       const { width } = entries[0].contentRect;
@@ -162,7 +242,7 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
         return;
       }
 
-      const t = (param.time as number) * 1000; 
+      const t = (param.time as number) * 1000;
       const dt = new Date(t);
       const volFromSeries =
         showVolume && volumeRef.current
@@ -172,10 +252,7 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
         volFromSeries ?? volByTime.get(param.time as number) ?? undefined;
 
       const fmt2 = (n: number) => (Number.isFinite(n) ? n.toFixed(2) : "-");
-      const volStr =
-        volume !== undefined
-          ? Number(volume).toLocaleString()
-          : "—";
+      const volStr = volume !== undefined ? Number(volume).toLocaleString() : "—";
 
       tip.innerHTML = `
         <div style="font-weight:600;margin-bottom:4px;">${dt.toLocaleString()}</div>
@@ -193,10 +270,10 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
       const pad = 12;
 
       let left = x + pad;
-      if (left + tw > container.clientWidth) left = x - tw - pad;
+      if (left + tw > container!.clientWidth) left = x - tw - pad;
 
       let top = y + pad;
-      if (top + th > container.clientHeight) top = y - th - pad;
+      if (top + th > container!.clientHeight) top = y - th - pad;
 
       tip.style.left = `${left}px`;
       tip.style.top = `${top}px`;
@@ -212,6 +289,7 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
       volumeRef.current = null;
       chartRef.current = null;
     };
+    // NOTE: we purposefully do not include timeFrame here to avoid re-creating the chart.
   }, [
     backgroundColor,
     textColor,
@@ -228,6 +306,18 @@ export default function CandleStickChart({ data, height = 300, colors = {}, show
     volumes,
     volByTime,
   ]);
+
+  // If incoming data changes, refresh series and keep the selected timeframe.
+  useEffect(() => {
+    candleRef.current?.setData(candles);
+    if (showVolume) volumeRef.current?.setData(volumes);
+    applyTimeFrame();
+  }, [candles, volumes, showVolume]);
+
+  // React to timeframe changes.
+  useEffect(() => {
+    applyTimeFrame();
+  }, [timeFrame]);
 
   return (
     <div ref={rootRef} style={{ position: "relative", width: "100%" }}>

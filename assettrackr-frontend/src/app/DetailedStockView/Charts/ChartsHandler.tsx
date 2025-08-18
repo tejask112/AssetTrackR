@@ -80,7 +80,7 @@ export default function ChartsHandler( { data }:Props) {
             </div>
             <div>
                 {lineChart && <LineDispChart data={lineData} timeFrame={timeFrame} height={550} />}
-                {candlestickChart && Array.isArray(data) && ( <CandleStickChart data={data} height={550} />)}
+                {candlestickChart && Array.isArray(data) && (  <CandleStickChart data={data} timeFrame={timeFrame} height={550} /> )}
                 {ohlcChart && Array.isArray(data) && ( <OHLCChart data={data} height={550} /> )}
             </div>
             <div className={styles.timeSelectorDiv}>
