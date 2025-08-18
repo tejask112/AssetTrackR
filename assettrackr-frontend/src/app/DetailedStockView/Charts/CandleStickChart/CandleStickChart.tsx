@@ -54,7 +54,6 @@ type Props = {
   height?: number;
   colors?: Colors;
   showVolume?: boolean;
-  /** NEW: control the visible window */
   timeFrame: TimeFrame;
 };
 
@@ -128,7 +127,6 @@ export default function CandleStickChart({
     return m;
   }, [volumes]);
 
-  /** --- NEW: timeframe helpers --- */
   const computeFrom = (toSec: UTCTimestamp, frame: TimeFrame): UTCTimestamp => {
     const toDate = new Date((toSec as number) * 1000);
     const fromDate = new Date(toDate.getTime());
@@ -177,7 +175,6 @@ export default function CandleStickChart({
 
     chart.timeScale().setVisibleRange({ from, to });
   };
-  /** --- end timeframe helpers --- */
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -217,7 +214,6 @@ export default function CandleStickChart({
       volume.setData(volumes);
     }
 
-    // was: fitContent(); now we respect the selected timeframe
     applyTimeFrame();
 
     const ro = new ResizeObserver((entries) => {
@@ -289,7 +285,6 @@ export default function CandleStickChart({
       volumeRef.current = null;
       chartRef.current = null;
     };
-    // NOTE: we purposefully do not include timeFrame here to avoid re-creating the chart.
   }, [
     backgroundColor,
     textColor,
@@ -307,14 +302,12 @@ export default function CandleStickChart({
     volByTime,
   ]);
 
-  // If incoming data changes, refresh series and keep the selected timeframe.
   useEffect(() => {
     candleRef.current?.setData(candles);
     if (showVolume) volumeRef.current?.setData(volumes);
     applyTimeFrame();
   }, [candles, volumes, showVolume]);
 
-  // React to timeframe changes.
   useEffect(() => {
     applyTimeFrame();
   }, [timeFrame]);

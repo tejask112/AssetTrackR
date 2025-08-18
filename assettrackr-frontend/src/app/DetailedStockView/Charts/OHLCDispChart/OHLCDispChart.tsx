@@ -11,6 +11,7 @@ import {
   type BarData,
   type HistogramData,
   type Time,
+  type UTCTimestamp,
 } from "lightweight-charts";
 
 export interface TimeSeriesPoint {
@@ -23,24 +24,26 @@ export interface TimeSeriesPoint {
 }
 
 type Colors = {
-  // chart
   backgroundColor?: string;
   textColor?: string;
   gridColor?: string;
-
-  // OHLC bars
   upColor?: string;
   downColor?: string;
-
-  // volume overlay
   volumeUpColor?: string;
   volumeDownColor?: string;
-
-  // tooltip
   tooltipBg?: string;
   tooltipText?: string;
   tooltipBorder?: string;
 };
+
+export type TimeFrame =
+  | "1Hour"
+  | "4Hour"
+  | "1Day"
+  | "5Day"
+  | "1Month"
+  | "6Month"
+  | "1Year";
 
 type Props = {
   data: TimeSeriesPoint[];
@@ -48,7 +51,8 @@ type Props = {
   colors?: Colors;
   showVolume?: boolean;
   thinBars?: boolean;
-  openVisible?: boolean; 
+  openVisible?: boolean;
+  timeFrame: TimeFrame;
 };
 
 export default function OHLCChart({
@@ -58,6 +62,7 @@ export default function OHLCChart({
   showVolume = true,
   thinBars = true,
   openVisible = true,
+  timeFrame,
 }: Props) {
   const {
     backgroundColor = "white",
@@ -72,8 +77,8 @@ export default function OHLCChart({
     tooltipBorder = "black",
   } = colors;
 
-  const rootRef = useRef<HTMLDivElement | null>(null);  
-  const canvasRef = useRef<HTMLDivElement | null>(null);  
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   const chartRef = useRef<IChartApi | null>(null);
@@ -118,15 +123,66 @@ export default function OHLCChart({
     return m;
   }, [volumes]);
 
+  const computeFrom = (toSec: UTCTimestamp, frame: TimeFrame): UTCTimestamp => {
+    const toDate = new Date((toSec as number) * 1000);
+    const fromDate = new Date(toDate.getTime());
+
+    switch (frame) {
+      case "1Hour":
+        fromDate.setHours(toDate.getHours() - 1);
+        break;
+      case "4Hour":
+        fromDate.setHours(toDate.getHours() - 4);
+        break;
+      case "1Day":
+        fromDate.setDate(toDate.getDate() - 1);
+        break;
+      case "5Day":
+        fromDate.setDate(toDate.getDate() - 5);
+        break;
+      case "1Month":
+        fromDate.setMonth(toDate.getMonth() - 1);
+        break;
+      case "6Month":
+        fromDate.setMonth(toDate.getMonth() - 6);
+        break;
+      case "1Year":
+        fromDate.setFullYear(toDate.getFullYear() - 1);
+        break;
+    }
+    return Math.floor(fromDate.getTime() / 1000) as UTCTimestamp;
+  };
+
+  const applyTimeFrame = () => {
+    const chart = chartRef.current;
+    if (!chart || bars.length === 0) return;
+
+    const to = bars[bars.length - 1].time as UTCTimestamp;
+    let from = computeFrom(to, timeFrame);
+    const first = bars[0].time as UTCTimestamp;
+    if ((from as number) < (first as number)) from = first;
+
+    const isIntraday = timeFrame === "1Hour" || timeFrame === "4Hour";
+
+    chart.timeScale().applyOptions({
+      timeVisible: true,
+      secondsVisible: isIntraday,
+    });
+
+    chart.timeScale().setVisibleRange({ from, to });
+  };
+
   useEffect(() => {
     if (!canvasRef.current) return;
+
+    const isIntraday = timeFrame === "1Hour" || timeFrame === "4Hour";
 
     const chart = createChart(canvasRef.current, {
       layout: { background: { type: ColorType.Solid, color: backgroundColor }, textColor },
       height,
       width: canvasRef.current.clientWidth,
       rightPriceScale: { borderVisible: false },
-      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: true },
+      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: isIntraday },
       grid: { vertLines: { color: gridColor }, horzLines: { color: gridColor } },
       crosshair: { mode: 1 },
     });
@@ -147,14 +203,14 @@ export default function OHLCChart({
 
     if (showVolume) {
       const volume = chart.addSeries(HistogramSeries, {
-        priceScaleId: "", 
+        priceScaleId: "",
         priceFormat: { type: "volume" },
       });
       volumeRef.current = volume;
       volume.setData(volumes);
     }
 
-    chart.timeScale().fitContent();
+    applyTimeFrame();
 
     const ro = new ResizeObserver((entries) => {
       const { width } = entries[0].contentRect;
@@ -199,7 +255,7 @@ export default function OHLCChart({
       `;
 
       const { x, y } = param.point;
-      const container = rootRef.current;
+      const container = rootRef.current!;
 
       tip.style.display = "block";
       const tw = tip.offsetWidth;
@@ -239,12 +295,18 @@ export default function OHLCChart({
     bars,
     volumes,
     volByTime,
+    timeFrame,
   ]);
 
   useEffect(() => {
     ohlcRef.current?.setData(bars);
     if (showVolume && volumeRef.current) volumeRef.current.setData(volumes);
+    applyTimeFrame();
   }, [bars, volumes, showVolume]);
+
+  useEffect(() => {
+    applyTimeFrame();
+  }, [timeFrame]);
 
   return (
     <div ref={rootRef} style={{ position: "relative", width: "100%" }}>
