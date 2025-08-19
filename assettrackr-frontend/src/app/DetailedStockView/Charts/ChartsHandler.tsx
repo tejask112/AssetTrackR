@@ -7,6 +7,7 @@ import styles from './ChartsHandler.module.css'
 
 interface Props {
     data: TimeSeriesPoint[] | "Error";
+    symbol: string;
 }
 
 interface TimeSeriesPoint {
@@ -20,7 +21,7 @@ interface TimeSeriesPoint {
 
 type TimeFrame = '1Hour' | '4Hour' | '1Day' | '5Day' | '1Month' | '6Month' | '1Year';
 
-export default function ChartsHandler( { data }:Props) {
+export default function ChartsHandler( { data, symbol }:Props) {
 
     const toUnixSecondsUTC = (s: string) => {
         const [d, t] = s.split(' ');
@@ -94,7 +95,6 @@ export default function ChartsHandler( { data }:Props) {
                     <button className={styles.btn} aria-pressed={timeFrame == '6Month'? "true" : "false"} onClick={set6Month}>6 Months</button>
                     <button className={styles.btn} aria-pressed={timeFrame == '1Year'? "true" : "false"} onClick={set1Year}>1 Year</button>
                 </div>  
-
             </div>
             
         </div>

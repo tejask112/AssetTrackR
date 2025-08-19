@@ -113,7 +113,7 @@ export default function DetailedStockView({ symbol }: Props) {
         fetchDetailedStockData();
     }, [])
 
-    if (!results) { return (<div className={styles.entireDiv}> <h1>Loading...</h1> </div>) }
+    if (!results) { return (<div className={styles.entireDiv}> <h1>Connecting...</h1> </div>) }
 
     return (
         <div className={styles.entireDiv}>
@@ -239,7 +239,7 @@ export default function DetailedStockView({ symbol }: Props) {
 
             <div className={styles.graphicalDataDiv}>
                 <h1 className={styles.timezoneHeading}>Time Zone: {results.exchangeTimezone.replace(/_/g, " ")}</h1>
-                <ChartsHandler data={results.timeseries}/>
+                <ChartsHandler data={results.timeseries} symbol={symbol}/>
             </div>
         </div>
     )

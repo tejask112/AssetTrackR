@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import requests
 import os, websocket, json
 
-from ..utils.dates import calculateStartDate
+from ..utils.dates import calculateStartDate, calculate5YagoDate
 from ..utils.recommendations import getRecommendation
 
 bp = Blueprint("detailed_stock_view", __name__)
@@ -13,6 +13,35 @@ FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
 FMP_KEY = os.getenv("FMP_KEY", "")
 TWELVE_API_KEY = os.getenv("TWELVE_API_KEY", "")
 LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
+
+def get_time_series(symbol):
+    # retrieve minutely data from past 7 days
+    minutelyStartDate = calculateStartDate() # date 7 days ago
+
+    minutelyInterval = "1min"
+    minutelyTimeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval={minutelyInterval}&start_date={minutelyStartDate}&outputsize=5000&apikey={TWELVE_API_KEY}"
+    minutelyTimeSeriesResponse =  (requests.get(url=minutelyTimeSeriesUrl)).json()
+
+    extraMetaData = minutelyTimeSeriesResponse.get("meta", {})
+    minutelyTimeSeriesData = minutelyTimeSeriesResponse.get("values", [])
+
+    cutoffTime = minutelyTimeSeriesData[-1].get("datetime","Error")
+    print(f"CUTOFF TIME: {cutoffTime}")
+
+    # retrieve hourly data from past 5 years
+    hourlyInterval = "1h"
+    hourlyTimeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval={hourlyInterval}&end_date={cutoffTime}&outputsize=5000&apikey={TWELVE_API_KEY}"
+    hourlyTimeSeriesData = ((requests.get(url=hourlyTimeSeriesUrl)).json()).get("values",["Error"])
+    hourlyTimeSeriesData.pop(0)
+
+    # combine both results
+    fullTimeSeries = minutelyTimeSeriesData + hourlyTimeSeriesData
+    output = {
+        "meta": extraMetaData,
+        "values": fullTimeSeries,
+    }
+
+    return output
 
 # ---------------- RETRIEVE COMPANY PROFILE DATA  ----------------
 @bp.route('/profile_data', methods=["GET"])
@@ -33,10 +62,7 @@ def profile_data():
     recommendationToolsResponse = requests.get(url=recommendationToolsUrl)
     recommendationToolsResult = recommendationToolsResponse.json()
 
-    startDate = calculateStartDate()
-    timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1min&start_date={startDate}&outputsize=5000&apikey={TWELVE_API_KEY}"
-    timeSeriesResponse = requests.get(url=timeSeriesUrl)
-    timeSeriesResult = timeSeriesResponse.json()
+    timeSeriesResult = get_time_series(symbol)
 
     modified_data = {
         # COMPANY METADATA
@@ -108,8 +134,8 @@ def profile_data():
         "recommendationTools": recommendationToolsResult,
         "recommendation": getRecommendation(recommendationToolsResult),
 
-        # TIME SERIES DATA (interval=1hour)
-        "timeseries": timeSeriesResult.get("values", "Error")
+        # TIME SERIES DATA
+        "timeseries": timeSeriesResult.get("values", [])
     }
 
     return jsonify(modified_data)
