@@ -128,13 +128,78 @@ export default function DetailedStockView({ symbol }: Props) {
     const set6Month = () => setTimeFrame('6Month');
     const set1Year = () => setTimeFrame('1Year');
 
-        // Percentage change
+    // ---------------------- Percentage change ----------------------
 
     const [percentageChange, setPercentageChange] = useState<number | null>(null)
+
+    // one hour
+    const [oneHourIndex, setOneHourIndex] = useState<number>(59);
+    const [oneHourPercentage, setOneHourPercentage] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (results != null && Array.isArray(results.timeseries)) {
+            const closeStr = results.timeseries.at(oneHourIndex)?.close;
+            const closeInt = closeStr == null ? null : Number(closeStr);
+            if (closeInt != null) {
+                const percentageDiff = Number((((results.price - closeInt) / closeInt) * 100).toFixed(4));
+                console.log("User clicked on 1Hr - Percentage Change: " + percentageDiff)
+                setOneHourPercentage(percentageDiff);
+            }
+
+        }
+    }, [results, oneHourIndex])
+
+    // four hours
+    const [fourHoursIndex, setFourHoursIndex] = useState<number>(239);
+    const [fourHourPercentage, setFourHoursPercentage] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (results != null && Array.isArray(results.timeseries)) {
+            const closeStr = results.timeseries.at(fourHoursIndex)?.close;
+            const closeInt = closeStr == null ? null : Number(closeStr);
+            if (closeInt != null) {
+                const percentageDiff = Number((((results.price - closeInt) / closeInt) * 100).toFixed(4));
+                console.log("User clicked on 4Hr - Percentage Change: " + percentageDiff)
+                setFourHoursPercentage(percentageDiff);
+            }
+
+        }
+    }, [results, fourHoursIndex])
+
+    // 1 day
+    const [oneDayIndex, setOneDayIndex] = useState<number>(389);
+    const [oneDayPercentage, setOneDayPercentage] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (results != null && Array.isArray(results.timeseries)) {
+            const closeStr = results.timeseries.at(oneDayIndex)?.close;
+            const closeInt = closeStr == null ? null : Number(closeStr);
+            if (closeInt != null) {
+                const percentageDiff = Number((((results.price - closeInt) / closeInt) * 100).toFixed(4));
+                console.log("User clicked on 4Hr - Percentage Change: " + percentageDiff)
+                setOneDayPercentage(percentageDiff);
+            }
+
+        }
+    }, [results, fourHoursIndex])
+
+    
 
     useEffect(() => {
         if (results != null) {
             switch (timeFrame) {
+                case '1Hour':
+                    setPercentageChange(oneHourPercentage);
+                    break
+                case '4Hour':
+                    setPercentageChange(fourHourPercentage);
+                    break;
+                case '1Day':
+                    setOneDayPercentage(oneDayPercentage);
+                    break;
+                case '5Day':
+                    setPercentageChange(results.x5DayPriceReturnDaily);
+                    break;
                 case '1Month':
                     setPercentageChange(results.monthToDatePriceReturnDaily);
                     break;
@@ -149,6 +214,10 @@ export default function DetailedStockView({ symbol }: Props) {
             }
         }
     }, [timeFrame, results])
+
+ 
+    
+ 
 
     // wait for the api to return a response
     if (!results) { return (<LoadingBar></LoadingBar>) }
