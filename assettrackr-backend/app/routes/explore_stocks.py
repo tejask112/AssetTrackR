@@ -5,7 +5,7 @@ import os, requests
 import finnhub
 
 from ..utils.dates import calculateStartDate, calculateEndDate, calculate5YagoDate
-from ..services.explore_stocks_data import calculateAllHistoricalBarsFromAPI, calculate24HclosingPriceDiff
+from ..services.explore_stocks_service import calculateAllHistoricalBarsFromAPI, calculate24HclosingPriceDiff
 
 bp = Blueprint("explore_stocks", __name__)
 
