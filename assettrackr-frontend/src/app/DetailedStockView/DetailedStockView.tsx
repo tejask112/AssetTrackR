@@ -7,6 +7,7 @@ import RecommendationChart from './RecommendationChart/RecommendationChart';
 import FundamentalDataModal from './FundamentalDataModal/FundamentalDataModal';
 import Modal from '@mui/material/Modal';
 import ChartsHandler from "./Charts/ChartsHandler";
+import LoadingBar from "./LoadingBar/LoadingBar";
 
 interface Props {
     symbol: string;
@@ -96,6 +97,8 @@ export interface ProfileDataResponse {
     timeseries: TimeSeriesPoint[] | "Error";
 }
 
+type TimeFrame = '1Hour' | '4Hour' | '1Day' | '5Day' | '1Month' | '6Month' | '1Year';
+
 export default function DetailedStockView({ symbol }: Props) {
 
     const [results, setResults] = useState<ProfileDataResponse | null>(null);
@@ -113,7 +116,42 @@ export default function DetailedStockView({ symbol }: Props) {
         fetchDetailedStockData();
     }, [])
 
-    if (!results) { return (<div className={styles.entireDiv}> <h1>Connecting...</h1> </div>) }
+    // ---------------------- Handling the Time-Frame for the Charts ----------------------
+
+    const [timeFrame, setTimeFrame] = useState<TimeFrame>('5Day');
+
+    const set1Hour = () => setTimeFrame('1Hour');
+    const set4Hour = () => setTimeFrame('4Hour');
+    const set1Day = () => setTimeFrame('1Day');
+    const set5Day = () => setTimeFrame('5Day');
+    const set1Month = () => setTimeFrame('1Month');
+    const set6Month = () => setTimeFrame('6Month');
+    const set1Year = () => setTimeFrame('1Year');
+
+        // Percentage change
+
+    const [percentageChange, setPercentageChange] = useState<number | null>(null)
+
+    useEffect(() => {
+        if (results != null) {
+            switch (timeFrame) {
+                case '1Month':
+                    setPercentageChange(results.monthToDatePriceReturnDaily);
+                    break;
+                case '6Month':
+                    setPercentageChange(results.x26WeekPriceReturnDaily);
+                    break;
+                case '1Year':
+                    setPercentageChange(results.x52WeekPriceReturnDaily);
+                    break;
+                default:
+                    setPercentageChange(results.x5DayPriceReturnDaily);
+            }
+        }
+    }, [timeFrame, results])
+
+    // wait for the api to return a response
+    if (!results) { return (<LoadingBar></LoadingBar>) }
 
     return (
         <div className={styles.entireDiv}>
@@ -133,7 +171,7 @@ export default function DetailedStockView({ symbol }: Props) {
                         <h1 className={styles.hourText}>{results.priceTimeShort}</h1>
                         <h1>USD</h1>
                     </div>
-                    <h1 className={styles.priceHourlyChangeStats}>-19.36 (-8.27%)</h1>
+                    <h1 className={styles.priceHourlyChangeStats}>{percentageChange}%</h1>
                 </div>
 
                 <div className={styles.buttonsDiv}>
@@ -239,7 +277,19 @@ export default function DetailedStockView({ symbol }: Props) {
 
             <div className={styles.graphicalDataDiv}>
                 <h1 className={styles.timezoneHeading}>Time Zone: {results.exchangeTimezone.replace(/_/g, " ")}</h1>
-                <ChartsHandler data={results.timeseries} symbol={symbol}/>
+                <ChartsHandler data={results.timeseries} timeFrame={timeFrame}/>
+                <div className={styles.timeSelectorDiv}>
+                    <h1 className={styles.heading}>Time Frame</h1>
+                    <div className={styles.segment}>
+                        <button className={styles.btn} aria-pressed={timeFrame == '1Hour'? "true" : "false"} onClick={set1Hour}>1 Hour</button>
+                        <button className={styles.btn} aria-pressed={timeFrame == '4Hour'? "true" : "false"} onClick={set4Hour}>4 Hours</button>
+                        <button className={styles.btn} aria-pressed={timeFrame == '1Day'? "true" : "false"} onClick={set1Day}>1 Day</button>
+                        <button className={styles.btn} aria-pressed={timeFrame == '5Day'? "true" : "false"} onClick={set5Day}>5 Days</button>
+                        <button className={styles.btn} aria-pressed={timeFrame == '1Month'? "true" : "false"} onClick={set1Month}>1 Month</button>
+                        <button className={styles.btn} aria-pressed={timeFrame == '6Month'? "true" : "false"} onClick={set6Month}>6 Months</button>
+                        <button className={styles.btn} aria-pressed={timeFrame == '1Year'? "true" : "false"} onClick={set1Year}>1 Year</button>
+                    </div>  
+            </div>
             </div>
         </div>
     )
