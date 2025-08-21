@@ -240,7 +240,9 @@ export default function DetailedStockView({ symbol }: Props) {
                         <h1 className={styles.hourText}>{results.priceTimeShort}</h1>
                         <h1>USD</h1>
                     </div>
-                    <h1 className={styles.priceHourlyChangeStats}>{percentageChange}%</h1>
+                    <h1 className={styles.priceHourlyChangeStats} style={{color:percentageChange == null? undefined : percentageChange > 0? "green": percentageChange < 0  ? "red": undefined}}>
+                        {percentageChange!=null && percentageChange>0 ? "+"+percentageChange : percentageChange}%
+                    </h1>
                 </div>
 
                 <div className={styles.buttonsDiv}>
