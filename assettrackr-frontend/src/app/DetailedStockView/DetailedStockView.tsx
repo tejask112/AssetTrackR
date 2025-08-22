@@ -8,6 +8,7 @@ import FundamentalDataModal from './FundamentalDataModal/FundamentalDataModal';
 import Modal from '@mui/material/Modal';
 import ChartsHandler from "./Charts/ChartsHandler";
 import LoadingBar from "./LoadingBar/LoadingBar";
+import TradeModal from "./TradeModal/TradeModal"
 
 interface Props {
     symbol: string;
@@ -103,10 +104,17 @@ export default function DetailedStockView({ symbol }: Props) {
 
     const [results, setResults] = useState<ProfileDataResponse | null>(null);
 
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose= () => setOpen(false);
+    // modal handlers
+    const [openFundamentalData, setOpenFundamentalData] = React.useState(false);
+    const handleOpenFundamentalData = () => setOpenFundamentalData(true);
+    const handleCloseFundamentalData = () => setOpenFundamentalData(false);
 
+    const [openTradeModal, setOpenTradeModal] = React.useState(false);
+    const handleOpenTradeModal = () => setOpenTradeModal(true);
+    const handleCloseTradeModal = () => setOpenTradeModal(false);
+
+
+    // get back end api response
     useEffect(() => {
         async function fetchDetailedStockData() {
             const res = await fetch("/api/profile_data?query=" + encodeURIComponent(symbol));
@@ -176,14 +184,11 @@ export default function DetailedStockView({ symbol }: Props) {
             const closeInt = closeStr == null ? null : Number(closeStr);
             if (closeInt != null) {
                 const percentageDiff = Number((((results.price - closeInt) / closeInt) * 100).toFixed(4));
-                console.log("User clicked on 4Hr - Percentage Change: " + percentageDiff)
+                console.log("User clicked on 1Day - Percentage Change: " + percentageDiff)
                 setOneDayPercentage(percentageDiff);
             }
-
         }
-    }, [results, fourHoursIndex])
-
-    
+    }, [results, oneDayIndex])
 
     useEffect(() => {
         if (results != null) {
@@ -195,7 +200,7 @@ export default function DetailedStockView({ symbol }: Props) {
                     setPercentageChange(fourHourPercentage);
                     break;
                 case '1Day':
-                    setOneDayPercentage(oneDayPercentage);
+                    setPercentageChange(oneDayPercentage);
                     break;
                 case '5Day':
                     setPercentageChange(results.x5DayPriceReturnDaily);
@@ -215,11 +220,7 @@ export default function DetailedStockView({ symbol }: Props) {
         }
     }, [timeFrame, results])
 
- 
-    
- 
-
-    // wait for the api to return a response
+    // ---------------------- wait for the api to return a response ----------------------
     if (!results) { return (<LoadingBar></LoadingBar>) }
 
     return (
@@ -246,10 +247,15 @@ export default function DetailedStockView({ symbol }: Props) {
                 </div>
 
                 <div className={styles.buttonsDiv}>
-                    <button className={styles.tradeButton}>Trade {symbol}</button>
-                    <button className={styles.fundamentalDataButton} onClick={handleOpen}>View Fundamental Data</button>
-                    <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                    {/* trade button modal*/}
+                    <button className={styles.tradeButton} onClick={handleOpenTradeModal}>Trade {symbol}</button>
+                    <Modal open={openTradeModal} onClose={handleCloseTradeModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                        <TradeModal symbol={symbol} price={results.price}/>
+                    </Modal>
 
+                    {/* fundamental data button modal*/}
+                    <button className={styles.fundamentalDataButton} onClick={handleOpenFundamentalData}>View Fundamental Data</button>
+                    <Modal open={openFundamentalData} onClose={handleCloseFundamentalData} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                         <FundamentalDataModal results={results}/>
                     </Modal>
                 </div>

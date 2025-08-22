@@ -1,0 +1,101 @@
+
+.dropDownActionLabel{
+    font-size: 1.25rem;
+}
+
+.entireDiv{
+    display: flex;
+}
+
+.formButtons{
+  display: flex;
+  gap: 12px;  
+  width: 100%;
+  margin-top: 12px;
+}
+
+.formButtons button,
+.formClear,
+.formPreview{
+  flex: 1 1 0;
+  min-width: 0;      
+  padding: 10px 14px;   
+  white-space: nowrap;  
+}
+
+.formClear{
+    background-color: rgb(217, 217, 217);
+    border-radius: 10px;
+}
+.formClear:hover {
+    background-color: rgb(198, 198, 198);
+}
+.formClear:active {
+    background-color:  rgb(180, 180, 180);
+}
+
+.formPreview{
+    background: green;
+    border-radius: 10px;
+    color: white;
+}
+.formPreview:hover {
+    background: rgb(0, 111, 0);
+}
+.formPreview:active {
+    background: rgb(0, 95, 0);
+}
+
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(800px, 96vw);
+  max-height: min(92vh, 1200px);
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+.price{
+    font-size: 2rem;
+}
+
+.quantityInput{
+    min-width: 25px;
+}
+
+.quantityLabel{
+    font-size: 1.25rem;
+}
+
+.title{
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.titleDiv{
+    margin-right: 5%;
+}
+
+.userDiv{
+    flex: 1;
+    display: flex;          
+    flex-direction: column; 
+    gap: 12px;             
+    align-items: flex-start;
+}
+
+.userDiv form {
+  width: 100%;
+}
