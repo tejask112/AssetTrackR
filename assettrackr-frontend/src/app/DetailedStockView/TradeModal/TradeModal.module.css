@@ -99,3 +99,118 @@
 .userDiv form {
   width: 100%;
 }
+
+
+
+/* -------- Preview section polish (add-only) -------- */
+
+.previewSection{
+  margin-top: 12px;
+}
+
+/* the thin grey line between the form and preview (lives in the preview area) */
+.previewDivider{
+  border-top: 1px solid #e5e7eb; /* grey-200 */
+  margin: 6px 0 14px;
+}
+
+/* card-like preview container */
+.previewDiv{
+  background: #f9fafb;                 /* grey-50 */
+  border: 1px solid #e5e7eb;            /* grey-200 */
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.previewHeader{
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;                       /* grey-900 */
+}
+
+/* tidy rows: label on left, value on right */
+.previewDiv p{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  margin: 0;
+  border-bottom: 1px dashed #e5e7eb;    /* subtle separators */
+}
+.previewDiv p:last-of-type{
+  border-bottom: none;
+}
+
+.k{
+  color: #6b7280;                       /* grey-500 */
+  font-size: 0.95rem;
+}
+.v{
+  font-weight: 600;
+}
+
+/* action buttons under the preview */
+.previewActions{
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.previewActions button{
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+}
+
+/* cancel: light grey */
+.previewCancel{
+  background-color: rgb(217, 217, 217);                  /* grey-100 */
+}
+.previewCancel:hover{  background-color: rgb(198, 198, 198); }  /* grey-200 */
+.previewCancel:active{ background-color:  rgb(180, 180, 180); } /* grey-300 */
+
+/* submit: green to match your existing style */
+.previewSubmit{
+  background: green;
+  color: #fff;
+}
+.previewSubmit:hover{ background: rgb(0, 111, 0); }
+.previewSubmit:active{ background: rgb(0, 95, 0); }
+
+/* accessible focus */
+.previewActions button:focus-visible{
+  outline: 2px solid #3b82f6;           /* blue-500 */
+  outline-offset: 2px;
+}
+
+
+.formPreview:disabled,
+.previewSubmit:disabled,
+.previewCancel:disabled,
+.formClear:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+  filter: saturate(0.5);
+}
+
+
+
+
+
+.confirmedText{
+    font-size: 1.75rem;
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+
+.confirmedExtraText{
+    font-size: 1.1rem;
+    font-weight: 300;
+}
