@@ -142,11 +142,10 @@ export default function ( {symbol, price}:Props) {
                     <div>
                         <h1 className={styles.confirmedText}>Confirmed</h1>
                         <h1 className={styles.confirmedExtraText}>Your order to {form.action.toLowerCase()} {form.symbol} has been received by our system and it will be executed shortly.</h1>
-                        <h1 className={styles.confirmedExtraText}>You may click out of this window now</h1>
+                        <h1 className={styles.confirmedExtraText}>You may view your trades in the Trade History tab.</h1><br/>
+                        <h1 className={styles.confirmedExtraText}>You may click out of this window now.</h1>
                     </div>
                 )}
-
-
             </Box>
         </div>
         

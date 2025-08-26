@@ -87,6 +87,7 @@
 
 .graphicalDataDiv {
   margin-left: 35px;
+  flex: 1 1 0;
 }
 
 .hourText {

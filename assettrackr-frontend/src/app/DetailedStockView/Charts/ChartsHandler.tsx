@@ -71,9 +71,9 @@ export default function ChartsHandler( { data, timeFrame }:Props) {
                 <button className={`${styles.chartTypeButton} ${ohlcChart ? styles.active : ""}`} onClick={showOHLCChart}>OHLC</button>
             </div>
             <div>
-                {lineChart && <LineDispChart data={lineData} timeFrame={timeFrame} height={550} />}
-                {candlestickChart && Array.isArray(data) && (  <CandleStickChart data={data} timeFrame={timeFrame} height={550} /> )}
-                {ohlcChart && Array.isArray(data) && ( <OHLCChart data={data} timeFrame={timeFrame} height={550} /> )}
+                {lineChart && <LineDispChart data={lineData} timeFrame={timeFrame} height={600} />}
+                {candlestickChart && Array.isArray(data) && (  <CandleStickChart data={data} timeFrame={timeFrame} height={600} /> )}
+                {ohlcChart && Array.isArray(data) && ( <OHLCChart data={data} timeFrame={timeFrame} height={600} /> )}
             </div>
             
         </div>

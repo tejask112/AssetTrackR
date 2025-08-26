@@ -166,5 +166,5 @@ export default function LineDispChart({
     applyTimeFrame();
   }, [timeFrame]);
 
-  return <div ref={containerRef} style={{ width: '100%' }} />;
+  return <div ref={containerRef} style={{ flex: '1 1 0', width: '100%', }} />;
 }
