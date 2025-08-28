@@ -2,4 +2,5 @@
 venv/
 env/
 .env
-firebase.json
+.env.*
+!.env.example
