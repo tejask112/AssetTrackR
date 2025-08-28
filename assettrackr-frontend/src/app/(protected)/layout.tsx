@@ -20,11 +20,9 @@ export const metadata: Metadata = {
 
 export default function ProtectedLayout( {children}: { children: React.ReactNode }) {
     return (
-        <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <NavBar/>
-                {children}
-            </body>
-        </html>
+      <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NavBar />
+        {children}
+      </div>
     )
 }

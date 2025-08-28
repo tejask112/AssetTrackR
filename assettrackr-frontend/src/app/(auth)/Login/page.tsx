@@ -10,16 +10,35 @@ export default function Login() {
     const [password, setPassword] = useState('');
 
     async function loginEmail(e: React.FormEvent) {
-        console.log(`EMAIL: ${email} | PASSWORD: ${password}`)
         e.preventDefault();
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (email + password)
-        console.log(`Success! JWT: ${idToken}`)
-        await fetch('/api/hello-flask', {
+        const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (email + password)#
+
+        // verifies the JWT 
+        const res = await fetch('/api/hello-flask', {
             method: 'POST',
-            headers: { 'Authorisation': `Bearer ${idToken}` }
+            headers: { Authorization: `Bearer ${idToken}` },
         });
-        redirect("/Home")
+        if (!res.ok) {
+            console.error('Flask rejected:', res.status);
+        } else {
+            console.log('Login verified');
+        }
+
+        // sets up a session
+        const res2 = await fetch('/api/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+        })
+        if (!res2.ok) {
+            console.error('Failed to create session');
+        } else {
+            console.log('Session created');
+            redirect("/Home");
+        }
+
+        
     }
 
     // async function loginGoogle() {

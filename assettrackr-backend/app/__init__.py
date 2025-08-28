@@ -21,14 +21,7 @@ def create_app():
     app.register_blueprint(loginHandler_bp, url_prefix="/api")
 
     # firebase admin
-    key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "firebase.json")
-    if os.path.exists(key_path):
-        cred = credentials.Certificate(key_path)
-    else:
-        saJson = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
-        if not saJson:
-            raise RuntimeError("Unable to find Firebase credentials")
-        cred = credentials.Certificate(json.loads(saJson))
+    cred = credentials.Certificate("firebase-adminsdk.json")
     firebase_admin.initialize_app(cred)
 
     @app.get("/api/health")
