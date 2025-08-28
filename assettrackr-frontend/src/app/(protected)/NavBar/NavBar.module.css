@@ -6,6 +6,12 @@
   font-style: normal;
 }
 
+.bottomRow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .button {
     background-color: #323a56;
     font-family: 'Inter', Arial;
@@ -28,19 +34,52 @@
 }
 
 .buttonDiv {
-    padding: 2px 0px 0px 75px;
+    padding: 2px 0px 0px 0px;
 }
 
 .logo {
     font-family: 'Inter', Arial;
     font-size: 2rem;
     font-weight: 500;
-    padding: 5px 0px 10px 100px;
+    padding: 5px 0px 10px 25px;
+}
+
+.logOut {
+    background-color: #323a56;
+    border: 0px solid white;
+    font-family: 'Inter', Arial;
+    font-size: 1.1rem;
+    font-weight: 200;
+    padding: 0px 20px 0px 20px;
+    transition: background-color 0.1s ease;   
+    cursor: pointer;
+}
+.logOut:hover {
+    background-color: #3a425d;
+    font-weight: 200;
+}
+.logOut:active {
+    transform: scale(0.99);
+    background-color: #545d77;
+    font-weight: 200;
 }
 
 .topBar {
+    padding-left: 75px;
+    padding-right: 75px;
     background-color: #323a56;
     color: white;
 }
 
+.user{
+    padding: 5px 10px 5px 10px;
+    font-weight: 300;
+    font-size: 1.2rem;
+}
+
+.userData{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; 
+}
 

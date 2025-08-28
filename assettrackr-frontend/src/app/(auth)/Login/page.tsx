@@ -1,13 +1,22 @@
-"use client"
-import React, { useState } from 'react';
-import { auth } from '../firebaseClient'
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { redirect } from "next/navigation";
+"use client";
+import React, { useState } from "react";
+import { auth } from "../firebaseClient";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useRouter, useSearchParams } from "next/navigation";
+
+function safeRedirect(p: string | null): string {
+    if (p && p.startsWith('/') && !p.startsWith('//')) { return p; }
+    return '/Home';
+}
 
 export default function Login() {
     
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectTo = safeRedirect(searchParams.get("redirect"));
 
     async function loginEmail(e: React.FormEvent) {
         e.preventDefault();
@@ -35,10 +44,8 @@ export default function Login() {
             console.error('Failed to create session');
         } else {
             console.log('Session created');
-            redirect("/Home");
-        }
-
-        
+            router.replace(redirectTo);
+        }        
     }
 
     // async function loginGoogle() {
