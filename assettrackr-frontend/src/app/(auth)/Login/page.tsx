@@ -1,23 +1,43 @@
 "use client"
-
-
-const firebaseConfig = {
-//   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-//   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-//   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-//   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-
-    apiKey: "AIzaSyCTHbUKYhQ0z7VCQomGj4x8PNMLjIlk3-Y",
-    authDomain: "assettrackr-76d1d.firebaseapp.com",
-    projectId: "assettrackr-76d1d",
-    appId: "1:618780661855:web:efe3a4afc4cbeda49e63ea",
-};
-
+import React, { useState } from 'react';
+import { auth } from '../firebaseClient'
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { redirect } from "next/navigation";
 
 export default function Login() {
     
-    return(
-        <h1>hi</h1>
-    )
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
+    async function loginEmail(e: React.FormEvent) {
+        console.log(`EMAIL: ${email} | PASSWORD: ${password}`)
+        e.preventDefault();
+        const { user } = await signInWithEmailAndPassword(auth, email, password);
+        const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (email + password)
+        console.log(`Success! JWT: ${idToken}`)
+        await fetch('/api/hello-flask', {
+            method: 'POST',
+            headers: { 'Authorisation': `Bearer ${idToken}` }
+        });
+        redirect("/Home")
+    }
+
+    async function loginGoogle() {
+        const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
+        const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
+        await fetch('/api/hello-flask', {
+            method: 'POST',
+            headers: { 'Authorisation': `Bearer ${idToken}` }
+        });
+        redirect("/Home")
+    }
+
+    return (
+        <form onSubmit={loginEmail}>
+            <input type='text' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}></input>
+            <input type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <button type='submit'>Log in</button>
+        </form>
+    );
+    
 }
