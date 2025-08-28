@@ -22,15 +22,15 @@ export default function Login() {
         redirect("/Home")
     }
 
-    async function loginGoogle() {
-        const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
-        const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
-        await fetch('/api/hello-flask', {
-            method: 'POST',
-            headers: { 'Authorisation': `Bearer ${idToken}` }
-        });
-        redirect("/Home")
-    }
+    // async function loginGoogle() {
+    //     const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
+    //     const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
+    //     await fetch('/api/hello-flask', {
+    //         method: 'POST',
+    //         headers: { 'Authorisation': `Bearer ${idToken}` }
+    //     });
+    //     redirect("/Home")
+    // }
 
     return (
         <form onSubmit={loginEmail}>
