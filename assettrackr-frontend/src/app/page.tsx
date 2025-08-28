@@ -1,9 +1,8 @@
-import Home from './Home/Home'
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function page() {
-  return (
-    <div>
-      <Home/>
-    </div>
-  );
+export default async function page() {
+  const cookieStore = await cookies();
+  const hasSession = cookieStore.has("session");
+  redirect(hasSession ? "/Home" : "/Login");
 }
