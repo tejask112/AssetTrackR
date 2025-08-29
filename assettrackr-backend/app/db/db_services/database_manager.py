@@ -27,11 +27,11 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
+    uid = Column(String(128), primary_key=True)
     email = Column(String(255), unique=True, nullable=False)
 
     def __repr__(self):
-        return f"<User id:{self.id} email={self.email!r}>"
+        return f"<User id:{self.uid} email={self.email!r}>"
     
 def init_db():
     # create tables (only for dev - use Alembic when migrating)

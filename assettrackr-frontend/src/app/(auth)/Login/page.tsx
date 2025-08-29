@@ -27,7 +27,7 @@ export default function Login() {
         const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (email + password)#
 
         // verifies the JWT 
-        const res = await fetch('/api/hello-flask', {
+        const res = await fetch('/api/authenticate', {
             method: 'POST',
             headers: { Authorization: `Bearer ${idToken}` },
         });
@@ -73,6 +73,20 @@ export default function Login() {
             const cred = await createUserWithEmailAndPassword(auth, emailReg, passwordReg);
 
             const idTokenReg = await cred.user.getIdToken();
+
+            // verifies the JWT + initialises the user (since they're new)
+            const resInitialise = await fetch('/api/initialise_user', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${idTokenReg}` },
+            });
+            if (!resInitialise.ok) {
+                console.error('Flask rejected:', resInitialise.status);
+                throw new Error("error in register new user - initialising user")
+            } else {
+                console.log('Login verified');
+            }
+
+            // sets up a session
             const resReg = await fetch("/api/session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -82,11 +96,7 @@ export default function Login() {
             console.log('Session created');
             router.replace(redirectTo);
         } catch (err: any) {
-            const code = err?.code || "";
-            if (code === "auth/email-already-in-use") console.log("That email is already registered.");
-            else if (code === "auth/invalid-email") console.log("Please enter a valid email address.");
-            else if (code === "auth/weak-password") console.log("Password is too weak (min 6 chars).");
-            else console.log(err.message || "Registration failed.");
+            console.log(err.message || "Registration failed.");
         }
         
         

@@ -1,20 +1,27 @@
 # all login related api calls
 
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, g
 from firebase_admin import auth
 from functools import wraps
 import datetime
+
+from ..db.db_services.userAccounts.database_userAccounts import create_user
 
 bp = Blueprint("login_handler", __name__)
 
 def require_auth(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
+        print("login_handler: Authenticating...")
+
         auth_header = request.headers.get("Authorization", "")
         parts = auth_header.split()
-        if len(parts) != 2 or parts[0].lower() != "bearer":
+
+        # looking for "Authorization: Bearer <ID_TOKEN>" in request header
+        if len(parts) != 2 or parts[0].lower() != "bearer": 
             return jsonify({"error": "Missing token"}), 401
         try:
+            # verify the JWT is issued by Firebase + hasnt expired.
             decoded = auth.verify_id_token(parts[1]) 
             request.user = decoded
         except Exception:
@@ -22,14 +29,28 @@ def require_auth(f):
         return f(*args, **kwargs)
     return wrapper
 
-@bp.route("/hello-flask", methods=["POST"])
+@bp.route("/authenticate", methods=["POST"])
 @require_auth
-def profile():
-    print("received a login request")
+def authenticate():
+    print("login_handler: Received a login request...")
     return jsonify({"ok": True, "uid": request.user["uid"]})
+
+@bp.route("/initialise_user", methods=["POST"])
+@require_auth
+def initialise_user():
+    print("login_handler: Recived an initilisation request...")
+
+    uid = request.user["uid"]
+    email = request.user["email"]
+    
+    create_user(g.db, uid, email)
+
+    return jsonify({"ok": True, "uid": request.user["uid"]})
+
 
 @bp.route("/session", methods=["POST"])
 def create_session():
+    print("login_handler: Creating session...")
     data = request.get_json(silent=True) or {}
     idToken = data.get("idToken")
     if not idToken:

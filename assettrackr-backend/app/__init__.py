@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials
 
-from .services.database_manager import SessionLocal, init_db
+from .db.db_services.database_manager import SessionLocal, init_db
 
 load_dotenv()
 
@@ -36,7 +36,7 @@ def create_app():
     from .routes.explore_stocks import bp as exploreStocks_bp
     from .routes.detailed_stock_view import bp as detailedStockView_bp
     from .routes.login_handler import bp as loginHandler_bp
-    from .routes.database_access import bp as databaseAccess_bp
+    from .db.db_routes.database_routes import bp as databaseAccess_bp
 
     app.register_blueprint(exploreStocks_bp, url_prefix="/api")
     app.register_blueprint(detailedStockView_bp, url_prefix="/api")
