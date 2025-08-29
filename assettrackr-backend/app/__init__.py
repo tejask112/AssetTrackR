@@ -16,16 +16,22 @@ def create_app():
 
     init_db()
 
-    @app.before_request
+    # creates a new database session per HTTP request
+    @app.before_request 
     def create_session():
         g.db = SessionLocal()
 
     @app.teardown_request
     def remove_session(exc):
-        if (exc):
-            g.db.rollback()
-        g.db.remove()
-        SessionLocal.remove()
+        db = getattr(g, "db", None)
+        if db is None:
+            return
+        try: 
+            if exc:
+                db.rollback() # in case of error, rollback to previous version.
+        finally:
+            db.close()
+            SessionLocal.remove()
 
     from .routes.explore_stocks import bp as exploreStocks_bp
     from .routes.detailed_stock_view import bp as detailedStockView_bp
