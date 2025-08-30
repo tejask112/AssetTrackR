@@ -2,6 +2,7 @@
 import { Box } from '@mui/material';
 import styles from './TradeModal.module.css'
 import React, { useState } from 'react';
+import { auth } from '../../../(auth)/firebaseClient'
 
 interface Props {
     symbol: string;
@@ -70,9 +71,36 @@ export default function ( {symbol, price}:Props) {
 
     const [submitted, setSubmitted] = useState<boolean>(false);
 
-    const submitOrder = () => {
-        console.log("ORDER RECEIVED:", form)
-        setSubmitted(true);
+    async function submitOrder() {
+        const user = auth.currentUser;
+        if (!user) {
+            window.alert("User not authenticated");
+            return;
+        } 
+        const jwt = await user.getIdToken();
+
+        const payload = {
+            uid: user.uid,
+            jwt: jwt,
+            ticker: form.symbol,
+            action: form.action,
+            quantity: form.quantity
+        };
+
+        try {
+            const res = await fetch('/api/submit_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) {
+                window.alert("Your order was unable to be placed. Please try again later")
+                return;
+            }
+            setSubmitted(true);
+        } catch (error) {
+            window.alert("Your order was unable to be placed. Please try again later")
+        }
     }
 
     

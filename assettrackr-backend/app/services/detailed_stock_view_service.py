@@ -37,3 +37,6 @@ def get_time_series(symbol):
     }
 
     return output
+
+def retrieveLatestPrice(ticker):
+    return 100

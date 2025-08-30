@@ -1,9 +1,11 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
 import requests
 import os 
 
 from ..utils.recommendations import getRecommendation
 from ..services.detailed_stock_view_service import get_time_series
+from ..db.db_services.trades.database_trades import log_trade
+
 
 bp = Blueprint("detailed_stock_view", __name__)
 
@@ -110,3 +112,33 @@ def profile_data():
     }
 
     return jsonify(modified_data)
+
+@bp.route('/submit_order', methods=["POST"])
+def submit_order():
+    print("detailed_stock_view: received order..")
+    data = request.get_json(silent=True) or {}
+
+    try:
+        uid = data["uid"]
+        jwt = data["jwt"]
+        ticker = data["ticker"]
+        action = data["action"]
+        quantity = int(data["quantity"])
+    except KeyError as e:
+        return jsonify(
+            { "error": f"Missing field: {e.args[0]}" }, 400
+        )
+    
+    # verify the JWT
+
+    tradingType = "Over The Counter (OTC)"
+    try:
+        log_trade(g.db, uid, ticker, action, quantity, tradingType)
+    except:
+        return jsonify(
+            { "error": "Unable to log trade" }, 401
+        )
+
+    return jsonify(
+        { "ok": True }
+    )
