@@ -4,7 +4,9 @@ import os
 
 from ..utils.recommendations import getRecommendation
 from ..services.detailed_stock_view_service import get_time_series
+
 from ..db.db_services.trades.database_trades import log_trade
+from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio
 
 
 bp = Blueprint("detailed_stock_view", __name__)
@@ -129,11 +131,17 @@ def submit_order():
             { "error": f"Missing field: {e.args[0]}" }, 400
         )
     
+    print(f"detailed_stock_view: action={action}")
+
     # verify the JWT
 
     tradingType = "Over The Counter (OTC)"
     try:
         log_trade(g.db, uid, ticker, action, quantity, tradingType)
+        if action=="BUY":
+            add_to_portfolio(g.db, uid, ticker, quantity)
+        elif action=="SELL":
+            remove_from_portfolio(g.db, uid, ticker, quantity)
     except:
         return jsonify(
             { "error": "Unable to log trade" }, 401

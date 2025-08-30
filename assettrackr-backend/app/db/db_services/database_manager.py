@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base, relationship
 
 DATABASE_URL = os.getenv(
@@ -70,10 +70,15 @@ class Trades(Base):
 # Table containing all stocks a user holds
 class Portfolio(Base):
     __tablename__ = "portfolio"
-    po_id = Column(String(128), primary_key=True, default=lambda: str(uuid.uuid4()))
-    uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), nullable=False, index=True)
-    ticker = Column(String(8), nullable=False)
+    uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, nullable=False, index=True)
+    ticker = Column(String(8), primary_key=True, nullable=False)
     quantity = Column(Numeric(18, 4), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("quantity >= 0", name="portfolio_quantity_nonneg"),
+    )
+
+    user = relationship("User", back_populates="portfolio")
 
     
 def init_db():

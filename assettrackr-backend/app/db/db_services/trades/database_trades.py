@@ -1,4 +1,3 @@
-from flask import g
 from datetime import datetime, timezone
 
 from ..database_manager import Trades
@@ -18,6 +17,8 @@ def log_trade(db, uid, ticker, action, quantity, tradingType):
 
     date = datetime.now(timezone.utc)
     # marketHour = datetime.datetime.now(pytz.timeZone('America/New_York'))
+
+    ticker = ticker.upper()
 
     print("database_trades: logging order to database...")
     trade = Trades (
