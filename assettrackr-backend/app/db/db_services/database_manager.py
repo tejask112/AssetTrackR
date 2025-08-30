@@ -41,24 +41,39 @@ class User(Base):
         passive_deletes=True
     )
 
+    portfolio = relationship (
+        "Portfolio",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
     def __repr__(self):
         return f"<User id:{self.uid} email={self.email!r} cash={self.cash!r}>"
 
-# Trades Table
+# Table containing all trades eg BUY, SELL history
 class Trades(Base):
     __tablename__ = "trades"
     trade_id = Column(String(128), primary_key=True, default=lambda: str(uuid.uuid4()))
     uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), nullable=False, index=True)
     date = Column(DateTime(timezone=True), nullable=False)
-    ticker = Column(String(128), nullable=False)
+    ticker = Column(String(8), nullable=False)
     status = Column(String(128), nullable=False)
     action = Column(String(128), nullable=False)
-    quantity = Column(Integer, nullable=False)
+    quantity = Column(Numeric(18, 4), nullable=False)
     execution_price = Column(Numeric(18, 4), nullable=False)
     execution_total_price = Column(Numeric(18, 4), nullable=False)
     trading_type = Column(String(128)) #eg Over the Counter (OTC)
     
     user = relationship("User", back_populates="trades")
+
+# Table containing all stocks a user holds
+class Portfolio(Base):
+    __tablename__ = "portfolio"
+    po_id = Column(String(128), primary_key=True, default=lambda: str(uuid.uuid4()))
+    uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), nullable=False, index=True)
+    ticker = Column(String(8), nullable=False)
+    quantity = Column(Numeric(18, 4), nullable=False)
 
     
 def init_db():
