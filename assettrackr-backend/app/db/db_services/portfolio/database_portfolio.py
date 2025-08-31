@@ -8,9 +8,9 @@ from ..database_manager import Portfolio
 # ---------------- ADD OWNERSHIP OF STOCK TO PORTFOLIO  ----------------
 def add_to_portfolio(db, uid, ticker, quantity):
     if not all([uid, ticker, quantity]):
-        raise ValueError("uid, ticker, quantity are required")
+        raise ValueError("Internal Server Error")
     if quantity <= 0:
-        raise ValueError("Quantity must be greater than 0")
+        raise ValueError("You attempted to process a transaction for quantity 0")
     
     print("database_portfolio: adding purchase to portfolio")
 
@@ -33,11 +33,11 @@ def add_to_portfolio(db, uid, ticker, quantity):
 
 def remove_from_portfolio(db, uid, ticker, quantity):
     if not all([uid, ticker, quantity]):
-        raise ValueError("uid, ticker, quantity are required")
+        raise ValueError("Internal Server Error")
     
     quantity = Decimal(str(quantity))
     if quantity <= 0:
-        raise ValueError("Quantity must be greater than 0")
+        raise ValueError("You attempted to process a transaction for quantity 0")
 
     ticker = ticker.upper()
 
@@ -47,12 +47,12 @@ def remove_from_portfolio(db, uid, ticker, quantity):
     ).first()
 
     if current_row is None:
-        raise ValueError(f"database_portfolio: No {ticker} found for user {uid}")
+        raise ValueError(f"At the time of the transaction, you did not own any stocks for {ticker} ")
     
     current_quantity = current_row.quantity
     
     if current_quantity < quantity:
-        raise ValueError(f"database_portfolio: Insufficient quantity. Have {current_quantity}, trying to remove {quantity}")
+        raise ValueError(f"Insufficient quantity. At the time of the transaction you owned {current_quantity}, but tried to sell {quantity}")
 
     update_stmt = (
         sa.update(Portfolio)
@@ -64,7 +64,7 @@ def remove_from_portfolio(db, uid, ticker, quantity):
     new_quantity = result.scalar_one_or_none()
 
     if new_quantity is None:
-        raise ValueError(f"database_portfolio: Update failed - no rows affected")
+        raise ValueError(f"Internal Server Error")
 
     if new_quantity == 0:
         delete_stmt = (

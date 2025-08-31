@@ -8,12 +8,17 @@ def get_user_trades(db, uid):
     return db.query(Trades).filter(Trades.user_uid == uid).order_by(Trades.placed_at.desc()).all()
 
 # ---------------- LOG A TRADE  ----------------
-def log_trade(db, uid, ticker, status, action, quantity, tradingType):
-    if not all([uid, ticker, status, action, quantity, tradingType]):
-        raise ValueError("uid, ticker, status, action, quantity, tradingType are required")
+def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, tradingType):
+    if any(param is None for param in [uid, ticker, status, status_tooltip, action, quantity, tradingType]):
+        raise ValueError("Internal Server Error")
 
-    execution_price = retrieveLatestPrice(ticker)
-    execution_total_price = execution_price * quantity
+    if status=="REJECTED":
+        execution_price = 0
+        execution_total_price = 0
+    else:
+        execution_price = retrieveLatestPrice(ticker)
+        execution_total_price = execution_price * quantity
+        status_tooltip = "Success"
 
     date = datetime.now(timezone.utc)
     # marketHour = datetime.datetime.now(pytz.timeZone('America/New_York'))
@@ -26,6 +31,7 @@ def log_trade(db, uid, ticker, status, action, quantity, tradingType):
         date=date,
         ticker=ticker,
         status=status,
+        status_tooltip=status_tooltip,
         action=action,
         quantity=quantity,
         execution_price=execution_price,

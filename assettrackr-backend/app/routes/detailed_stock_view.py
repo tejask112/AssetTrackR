@@ -144,13 +144,14 @@ def submit_order():
             remove_from_portfolio(g.db, uid, ticker, quantity)
         
         status = "FILLED"
-        log_trade(g.db, uid, ticker, status, action, quantity, tradingType)
-
+        status_tooltip = ""
+        log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, tradingType)
         return jsonify({ "ok": True })
 
     except Exception as exception:
         status = "REJECTED"
-        log_trade(g.db, uid, ticker, status, action, quantity, tradingType)
+        status_tooltip = str(exception)
+        log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, tradingType)
         print(f"detailed_stock_view: Error = {exception}")
         return jsonify({"error": str(exception)}), 400
     

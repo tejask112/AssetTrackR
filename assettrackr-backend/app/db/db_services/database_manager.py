@@ -59,6 +59,7 @@ class Trades(Base):
     date = Column(DateTime(timezone=True), nullable=False)
     ticker = Column(String(8), nullable=False)
     status = Column(String(128), nullable=False)
+    status_tooltip = Column(String(128))
     action = Column(String(128), nullable=False)
     quantity = Column(Numeric(18, 4), nullable=False)
     execution_price = Column(Numeric(18, 4), nullable=False)
