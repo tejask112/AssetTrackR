@@ -29,6 +29,8 @@ def add_to_portfolio(db, uid, ticker, quantity):
     db.execute(stmt).one()
     db.commit()
 
+    return True
+
 def remove_from_portfolio(db, uid, ticker, quantity):
     if not all([uid, ticker, quantity]):
         raise ValueError("uid, ticker, quantity are required")
@@ -36,33 +38,41 @@ def remove_from_portfolio(db, uid, ticker, quantity):
     quantity = Decimal(str(quantity))
     if quantity <= 0:
         raise ValueError("Quantity must be greater than 0")
-    
-    print("database_portfolio: removing from portfolio")
 
     ticker = ticker.upper()
 
-    # update ... returning -> only runs when (uid, ticker) exists and quantity>=quantity. it returns the new quantity as 'new_quantity'
-    update_cte = (
+    current_row = db.execute(
+        sa.select(Portfolio.uid, Portfolio.ticker, Portfolio.quantity)
+        .where(Portfolio.uid == uid, Portfolio.ticker == ticker)
+    ).first()
+
+    if current_row is None:
+        raise ValueError(f"database_portfolio: No {ticker} found for user {uid}")
+    
+    current_quantity = current_row.quantity
+    
+    if current_quantity < quantity:
+        raise ValueError(f"database_portfolio: Insufficient quantity. Have {current_quantity}, trying to remove {quantity}")
+
+    update_stmt = (
         sa.update(Portfolio)
         .where(Portfolio.uid == uid, Portfolio.ticker == ticker, Portfolio.quantity >= quantity)
         .values(quantity=Portfolio.quantity - quantity)
-        .returning(Portfolio.uid.label("uid"), Portfolio.ticker.label("ticker"), Portfolio.quantity.label("new_quantity"))
-        .cte("upd")
+        .returning(Portfolio.quantity)
     )
-
-    # uses "update" to delete the row if new_quantity==0
-    delete_cte = (
-        sa.delete(Portfolio)
-        .where(Portfolio.uid == update_cte.c.uid, Portfolio.ticker == update_cte.c.ticker, update_cte.c.new_quantity == 0)
-        .returning(sa.literal(0).label("new_quantity"))
-        .cte("del")
-    )
-
-    # chooses delete.new_quantity if a delete happened, otherwise picks updated.new_quantity
-    stmt = (sa.select(delete_cte.c.new_quantity).union_all(sa.select(update_cte.c.new_quantity)).limit(1))
-    new_quantity = db.execute(stmt).scalar_one_or_none()
+    result = db.execute(update_stmt)
+    new_quantity = result.scalar_one_or_none()
 
     if new_quantity is None:
-        raise ValueError(f"database_portfolio: No {ticker} found or insufficient quantity to remove {quantity}") 
-    
+        raise ValueError(f"database_portfolio: Update failed - no rows affected")
+
+    if new_quantity == 0:
+        delete_stmt = (
+            sa.delete(Portfolio)
+            .where(Portfolio.uid == uid, Portfolio.ticker == ticker)
+        )
+        db.execute(delete_stmt)
+
     db.commit()
+
+    return True

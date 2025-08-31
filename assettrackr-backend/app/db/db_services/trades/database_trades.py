@@ -8,9 +8,9 @@ def get_user_trades(db, uid):
     return db.query(Trades).filter(Trades.user_uid == uid).order_by(Trades.placed_at.desc()).all()
 
 # ---------------- LOG A TRADE  ----------------
-def log_trade(db, uid, ticker, action, quantity, tradingType):
-    if not all([uid, ticker, action, quantity, tradingType]):
-        raise ValueError("uid, ticker, action, quantity, tradingType are required")
+def log_trade(db, uid, ticker, status, action, quantity, tradingType):
+    if not all([uid, ticker, status, action, quantity, tradingType]):
+        raise ValueError("uid, ticker, status, action, quantity, tradingType are required")
 
     execution_price = retrieveLatestPrice(ticker)
     execution_total_price = execution_price * quantity
@@ -25,7 +25,7 @@ def log_trade(db, uid, ticker, action, quantity, tradingType):
         uid=uid,
         date=date,
         ticker=ticker,
-        status="Filled",
+        status=status,
         action=action,
         quantity=quantity,
         execution_price=execution_price,

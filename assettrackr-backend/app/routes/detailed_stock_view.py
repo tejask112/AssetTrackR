@@ -136,17 +136,21 @@ def submit_order():
     # verify the JWT
 
     tradingType = "Over The Counter (OTC)"
+    
     try:
-        log_trade(g.db, uid, ticker, action, quantity, tradingType)
         if action=="BUY":
             add_to_portfolio(g.db, uid, ticker, quantity)
         elif action=="SELL":
             remove_from_portfolio(g.db, uid, ticker, quantity)
-    except:
-        return jsonify(
-            { "error": "Unable to log trade" }, 401
-        )
+        
+        status = "FILLED"
+        log_trade(g.db, uid, ticker, status, action, quantity, tradingType)
 
-    return jsonify(
-        { "ok": True }
-    )
+        return jsonify({ "ok": True })
+
+    except Exception as exception:
+        status = "REJECTED"
+        log_trade(g.db, uid, ticker, status, action, quantity, tradingType)
+        print(f"detailed_stock_view: Error = {exception}")
+        return jsonify({"error": str(exception)}), 400
+    
