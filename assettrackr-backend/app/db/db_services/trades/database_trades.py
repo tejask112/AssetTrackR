@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import select
+from zoneinfo import ZoneInfo 
 
 from ..database_manager import Trades
 from ....services.detailed_stock_view_service import retrieveLatestPrice
@@ -28,15 +29,14 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, trading
         execution_total_price = execution_price * quantity
         status_tooltip = "Success"
 
-    date = datetime.now(timezone.utc)
-    # marketHour = datetime.datetime.now(pytz.timeZone('America/New_York'))
+    utc_now = datetime.now(tz=ZoneInfo("UTC"))
 
     ticker = ticker.upper()
 
     print("database_trades: logging order to database...")
     trade = Trades (
         uid=uid,
-        date=date,
+        date=utc_now,
         ticker=ticker,
         status=status,
         status_tooltip=status_tooltip,

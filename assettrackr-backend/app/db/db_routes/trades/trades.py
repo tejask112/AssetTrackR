@@ -24,7 +24,7 @@ def trade_history():
             d["execution_price"] = float(d["execution_price"])
 
         if isinstance(d["execution_total_price"], Decimal): 
-            d["execution_price"] = float(d["execution_total_price"]) 
+            d["execution_total_price"] = float(d["execution_total_price"]) 
 
         if hasattr(d["date"], "isoformat"): 
             d["date"] = d["date"].isoformat()
