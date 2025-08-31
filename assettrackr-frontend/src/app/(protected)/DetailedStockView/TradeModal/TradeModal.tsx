@@ -70,6 +70,8 @@ export default function ( {symbol, price}:Props) {
     }
 
     const [submitted, setSubmitted] = useState<boolean>(false);
+    const [failed, setFailed] = useState<boolean>(false);
+    const [failedMessage, setFailedMessage] = useState<boolean>(false);
 
     async function submitOrder() {
         const user = auth.currentUser;
@@ -87,20 +89,19 @@ export default function ( {symbol, price}:Props) {
             quantity: form.quantity
         };
 
-        try {
-            const res = await fetch('/api/submit_order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) {
-                window.alert("Your order was unable to be placed. Please try again later")
-                return;
-            }
+        const res = await fetch('/api/submit_order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            setFailed(true)
+            setFailedMessage(data.error ?? 'Unknown Error')
+        } else {
             setSubmitted(true);
-        } catch (error) {
-            window.alert(`Your order was not successful. \nReason: ${error}`)
         }
+           
     }
 
     
@@ -108,7 +109,7 @@ export default function ( {symbol, price}:Props) {
     return (
         <div>
             <Box className={styles.modal}>
-                {!submitted && (
+                {!submitted && !failed && (
                     <>
                         <div className={styles.entireDiv}>
                             <div className={styles.titleDiv}>
@@ -168,10 +169,20 @@ export default function ( {symbol, price}:Props) {
 
                 {submitted && (
                     <div>
-                        <h1 className={styles.confirmedText}>Received</h1>
-                        <h1 className={styles.confirmedExtraText}>Your order to {form.action.toLowerCase()} {form.symbol} has been received by our system and it will be executed shortly.</h1>
-                        <h1 className={styles.confirmedExtraText}>You may view your trades in the Trade History tab.</h1><br/>
-                        <h1 className={styles.confirmedExtraText}>You may click out of this window now.</h1>
+                        <h1 className={styles.submittedText}>Received</h1>
+                        <h1 className={styles.submittedExtraText}>Your order to {form.action.toLowerCase()} {form.symbol} has been received by our system and it will be executed shortly.</h1>
+                        <h1 className={styles.submittedExtraText}>You may view this trade in the Trade History tab.</h1><br/>
+                        <h1 className={styles.submittedExtraText}>You may click out of this window now.</h1>
+                    </div>
+                )}
+
+                {failed && (
+                    <div>
+                        <h1 className={styles.submittedText}>Failed</h1>
+                        <h1 className={styles.submittedExtraText}>Your order to {form.action.toLowerCase()} {form.symbol} has not been successful.</h1>
+                        <h1 className={styles.submittedExtraText}>Error: {failedMessage}</h1>
+                        <h1 className={styles.submittedExtraText}>You may view this trade in the Trade History tab.</h1><br/>
+                        <h1 className={styles.submittedExtraText}>You may click out of this window now.</h1>
                     </div>
                 )}
             </Box>

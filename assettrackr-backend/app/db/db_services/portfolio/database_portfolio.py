@@ -4,6 +4,7 @@ from sqlalchemy import update, delete, select, func, literal
 from decimal import Decimal
 
 from ..database_manager import Portfolio
+from ...db_utils.format_numbers import format_quantity
 
 # ---------------- ADD OWNERSHIP OF STOCK TO PORTFOLIO  ----------------
 def add_to_portfolio(db, uid, ticker, quantity):
@@ -52,7 +53,7 @@ def remove_from_portfolio(db, uid, ticker, quantity):
     current_quantity = current_row.quantity
     
     if current_quantity < quantity:
-        raise ValueError(f"Insufficient quantity. At the time of the transaction you owned {current_quantity}, but tried to sell {quantity}")
+        raise ValueError(f"Insufficient quantity. At the time of the transaction you owned {format_quantity(current_quantity)}, but tried to sell {format_quantity(quantity)}")
 
     update_stmt = (
         sa.update(Portfolio)
@@ -64,7 +65,7 @@ def remove_from_portfolio(db, uid, ticker, quantity):
     new_quantity = result.scalar_one_or_none()
 
     if new_quantity is None:
-        raise ValueError(f"Internal Server Error")
+        raise ValueError(f"Internal Server Error. Please try again later.")
 
     if new_quantity == 0:
         delete_stmt = (
