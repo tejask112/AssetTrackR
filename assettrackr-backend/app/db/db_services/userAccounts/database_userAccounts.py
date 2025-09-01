@@ -1,5 +1,6 @@
 from flask import g
 from sqlalchemy.dialects.postgresql import insert
+import sqlalchemy as sa
 
 from ..database_manager import User
 
@@ -26,3 +27,51 @@ def create_user(db, uid, email):
     db.commit()
 
     list_users()
+
+# ---------------- CHECK IF USER HAS ENOUGH CASH FOR TRANSACTION  ----------------
+def checkLiquidCash(db, uid, total_price):
+    if not all([uid, total_price]):
+        raise ValueError("Internal Server Error")
+    
+    if total_price < 0:
+        raise ValueError("Internal Server Error")
+    
+    current_user = db.execute(
+        sa.select(User.uid, User.cash)
+        .where(User.uid == uid)
+    ).first()
+
+    if current_user is None:
+        raise ValueError("Internal Server Error")
+    
+    print(f"database_userAccounts: Retrieved user record: {current_user}")
+    
+    current_cash_balance = current_user.cash
+    if (current_cash_balance <= total_price):
+        raise ValueError("You do not have sufficient funds to complete this transaction")
+    
+    return True
+    
+# ---------------- UPDATE USER'S CASH BALANCE  ----------------
+def updateLiquidCash(db, uid, total_price):
+    if not all([uid, total_price]):
+        raise ValueError("Internal Server Error")
+    
+    try:
+        checkLiquidCash(db, uid, total_price)
+
+        update_stmt = (
+            sa.update(User)
+            .where(User.uid == uid)
+            .values(cash = User.cash - total_price)
+            .returning(User.cash)
+        )
+        result = db.execute(update_stmt)
+        new_cash_balance = result.scalar_one_or_none()
+
+        if new_cash_balance is None:
+            raise ValueError(f"Internal Server Error")
+
+    except Exception as e:
+        raise ValueError(e)
+    

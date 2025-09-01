@@ -60,7 +60,7 @@ class Trades(Base):
     ticker = Column(String(8), nullable=False)
     status = Column(String(128), nullable=False)
     status_tooltip = Column(String(128))
-    quantity = Column(Numeric(18, 4), nullable=False)
+    quantity = Column(Numeric(28, 8), nullable=False)
     action = Column(String(128), nullable=False)
     execution_price = Column(Numeric(18, 4), nullable=False)
     execution_total_price = Column(Numeric(18, 4), nullable=False)

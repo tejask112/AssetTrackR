@@ -4,9 +4,10 @@ import os
 
 from ..utils.recommendations import getRecommendation
 from ..services.detailed_stock_view_service import get_time_series
+from ..services.detailed_stock_view_service import retrieveLatestPrice
 
 from ..db.db_services.trades.database_trades import log_trade
-from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio
+from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
 
 
@@ -141,17 +142,22 @@ def submit_order():
     
     try:
         # check if market is open NY 9:30am - 4pm
+        execution_price = retrieveLatestPrice(ticker)
         if (checkMarketOpen()):
             status="FILLED"
             if action=="BUY":
-                add_to_portfolio(g.db, uid, ticker, quantity)
+                add_to_portfolio(g.db, uid, ticker, quantity, execution_price)
             elif action=="SELL":
-                remove_from_portfolio(g.db, uid, ticker, quantity)
+                remove_from_portfolio(g.db, uid, ticker, quantity, execution_price)
         else:
             status="QUEUED"
+            if action=="BUY":
+                check_add_to_portfolio(g.db, uid, ticker, quantity, execution_price)
+            elif action=="SELL":
+                check_remove_from_portfolio(g.db, uid, ticker, quantity)
 
         status_tooltip = ""
-        res = log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, tradingType)
+        res = log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, execution_price, tradingType)
         if res=="QUEUED":
             marketOpens = checkWhenMarketOpens()
             return jsonify({ "ok": True, "message": str(marketOpens) })
@@ -161,7 +167,7 @@ def submit_order():
     except Exception as exception:
         status = "REJECTED"
         status_tooltip = str(exception)
-        log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, tradingType)
+        log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, execution_price, tradingType)
         print(f"detailed_stock_view: Error = {exception}")
         return jsonify({"error": str(exception)}), 400
     

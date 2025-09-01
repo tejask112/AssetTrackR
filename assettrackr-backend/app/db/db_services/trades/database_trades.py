@@ -3,7 +3,6 @@ from sqlalchemy import select
 from zoneinfo import ZoneInfo 
 
 from ..database_manager import Trades
-from ....services.detailed_stock_view_service import retrieveLatestPrice
 from ...db_utils.market_hours import checkMarketOpen
 
 # ---------------- FETCH ALL TRADES (for specific user) ----------------
@@ -18,8 +17,8 @@ def get_user_trades(db, uid):
     return res
 
 # ---------------- LOG A TRADE  ----------------
-def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, tradingType):
-    if any(param is None for param in [uid, ticker, status, status_tooltip, action, quantity, tradingType]):
+def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, execution_price, tradingType):
+    if any(param is None for param in [uid, ticker, status, status_tooltip, action, quantity, execution_price, tradingType]):
         raise ValueError("Internal Server Error")
 
     if status=="REJECTED":
@@ -27,7 +26,6 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, trading
         execution_total_price = 0
         tradingType = "-"
     else:
-        execution_price = retrieveLatestPrice(ticker)
         execution_total_price = execution_price * quantity
         status_tooltip = "Success"
 

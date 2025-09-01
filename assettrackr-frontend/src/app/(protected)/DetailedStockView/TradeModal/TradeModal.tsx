@@ -110,7 +110,16 @@ export default function ( {symbol, price}:Props) {
            
     }
 
-    
+    const formatUSD = (v: unknown) => {
+        if (v === '' || v == null) return '-'
+        const removeCommas = String(v).replace(/,/g, '').trim();
+        const numb = Number(removeCommas)
+        if (!Number.isFinite(numb)) return '-'
+        return numb.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })
+    }
 
     return (
         <div>
@@ -137,7 +146,7 @@ export default function ( {symbol, price}:Props) {
                                     {/* Input to choose quantity (how many stocks to buy) */}
                                     <div>
                                     <label className={styles.quantityLabel}>
-                                        Quantity: <input type='number' name='quantity' className={styles.quantityInput} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} ></input>
+                                        Quantity: <input type='number' name='quantity' className={styles.quantityInput} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} max="99999999999999999999.99999999" min="0"></input>
                                     </label>
                                     <button>Select Max</button>
                                     </div>
@@ -157,10 +166,10 @@ export default function ( {symbol, price}:Props) {
                                 <div className={styles.previewDiv}>
                                     <h2 className={styles.previewHeader}>Order Preview</h2>
                                     <p><span className={styles.k}>Action</span><span className={styles.v}>{form.action}</span></p>
-                                    <p><span className={styles.k}>Quantity</span><span className={styles.v}>{form.quantity}</span></p>
+                                    <p><span className={styles.k}>Quantity</span><span className={styles.v}>{form.quantity.toLocaleString()}</span></p>
                                     <p><span className={styles.k}>Symbol</span><span className={styles.v}>{form.symbol}</span></p>
-                                    <p><span className={styles.k}>Estimated Price</span><span className={styles.v}>{Number(form.price).toFixed(2)} USD</span></p>
-                                    <p><span className={styles.k}>Estimated Total Price</span><span className={styles.v}>{Number(form.totalPrice).toFixed(2)} USD</span></p>
+                                    <p><span className={styles.k}>Estimated Price</span><span className={styles.v}>{formatUSD(form.price)} USD</span></p>
+                                    <p><span className={styles.k}>Estimated Total Price</span><span className={styles.v}>{formatUSD(form.totalPrice)} USD</span></p>
                                 </div>
 
                                 <div className={styles.previewActions}>
