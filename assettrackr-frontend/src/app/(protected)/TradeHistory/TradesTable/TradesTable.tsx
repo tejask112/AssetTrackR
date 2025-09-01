@@ -85,8 +85,8 @@ export default function TradesTable({ data }: TradeProps) {
         <div className={styles.tradeTable}>
             <DataTable value={data} resizableColumns tableStyle={{ minWidth: '50rem'}}>
                 <Column field="trade_id" header="ID"></Column>
-                <Column field="date" body={dateBody(makeFormat(NY_timezone))} header="Order Date (New York Time) " sortable style={{ width: '25%' }}></Column>
-                <Column field="date" body={dateBody(makeFormat(local_timezone))} header={`Order Date (${new_local_timeZone} Local Time)`} sortable style={{ width: '25%' }}></Column>
+                <Column field="date" body={dateBody(makeFormat(NY_timezone))} header={<>Order Date <br/> <span>(New York, America Time)</span></>} headerClassName={styles.orderDateText} bodyClassName={styles.orderDateText} sortable style={{ width: '25%' }}></Column>
+                <Column field="date" body={dateBody(makeFormat(local_timezone))} header={<>Order Date <br/> <span>({new_local_timeZone} Local Time)</span></>} headerClassName={styles.orderDateText} bodyClassName={styles.orderDateText} sortable style={{ width: '25%' }}></Column>
                 <Column field="ticker" header="Stock"></Column>
                 <Column field="status" header="Status"></Column>
                 <Column field="action" header="Action"></Column>

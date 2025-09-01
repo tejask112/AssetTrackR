@@ -7,6 +7,8 @@ from ..services.detailed_stock_view_service import get_time_series
 
 from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio
+from ..db.db_utils.market_hours import checkWhenMarketOpens
+
 
 
 bp = Blueprint("detailed_stock_view", __name__)
@@ -145,8 +147,13 @@ def submit_order():
         
         status = "FILLED"
         status_tooltip = ""
-        log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, tradingType)
-        return jsonify({ "ok": True })
+        
+        res = log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, tradingType)
+        if res=="QUEUED":
+            marketOpens = checkWhenMarketOpens()
+            return jsonify({ "ok": True, "message": str(marketOpens) })
+        else:
+            return jsonify({ "ok": True })
 
     except Exception as exception:
         status = "REJECTED"

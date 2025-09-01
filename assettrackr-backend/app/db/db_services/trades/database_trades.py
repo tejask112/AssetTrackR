@@ -1,9 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime, time
 from sqlalchemy import select
 from zoneinfo import ZoneInfo 
 
 from ..database_manager import Trades
 from ....services.detailed_stock_view_service import retrieveLatestPrice
+from ...db_utils.market_hours import checkMarketOpen
 
 # ---------------- FETCH ALL TRADES (for specific user) ----------------
 def get_user_trades(db, uid):
@@ -24,12 +25,19 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, trading
     if status=="REJECTED":
         execution_price = 0
         execution_total_price = 0
+        tradingType = "-"
     else:
         execution_price = retrieveLatestPrice(ticker)
         execution_total_price = execution_price * quantity
         status_tooltip = "Success"
 
     utc_now = datetime.now(tz=ZoneInfo("UTC"))
+
+    # check if market is open NY 9:30am - 4pm
+    if (checkMarketOpen()):
+        status="FILLED"
+    else:
+        status="QUEUED"
 
     ticker = ticker.upper()
 
@@ -53,4 +61,5 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, trading
         print("database_trades: logged")
     except Exception as error:
         print("database_trades: ", error)
-    return trade
+
+    return status

@@ -70,8 +70,10 @@ export default function ( {symbol, price}:Props) {
     }
 
     const [submitted, setSubmitted] = useState<boolean>(false);
+    const [queued, setQueued] = useState<boolean>(false);
+    const [queuedMessage, setQueuedMessage] = useState<string>("");
     const [failed, setFailed] = useState<boolean>(false);
-    const [failedMessage, setFailedMessage] = useState<boolean>(false);
+    const [failedMessage, setFailedMessage] = useState<string>("");
 
     async function submitOrder() {
         const user = auth.currentUser;
@@ -99,6 +101,10 @@ export default function ( {symbol, price}:Props) {
             setFailed(true)
             setFailedMessage(data.error ?? 'Unknown Error')
         } else {
+            if (data && "message" in data){
+                setQueued(true);
+                setQueuedMessage(data.message ?? 'time unavailable')
+            }
             setSubmitted(true);
         }
            
@@ -170,7 +176,12 @@ export default function ( {symbol, price}:Props) {
                 {submitted && (
                     <div>
                         <h1 className={styles.submittedText}>Received</h1>
-                        <h1 className={styles.submittedExtraText}>Your order to {form.action.toLowerCase()} {form.symbol} has been received by our system and it will be executed shortly.</h1>
+                        <h1 className={styles.submittedExtraText}>
+                            {queued 
+                                ? `Your order to ${form.action.toLowerCase()} ${form.symbol} has been received and queued by our system. It will execute when markets open in ${queuedMessage}.`
+                                : "Your order to {form.action.toLowerCase()} {form.symbol} has been received by our system and it will be executed shortly."
+                            }
+                        </h1>
                         <h1 className={styles.submittedExtraText}>You may view this trade in the Trade History tab.</h1><br/>
                         <h1 className={styles.submittedExtraText}>You may click out of this window now.</h1>
                     </div>
