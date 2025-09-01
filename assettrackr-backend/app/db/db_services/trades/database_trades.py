@@ -33,12 +33,6 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, trading
 
     utc_now = datetime.now(tz=ZoneInfo("UTC"))
 
-    # check if market is open NY 9:30am - 4pm
-    if (checkMarketOpen()):
-        status="FILLED"
-    else:
-        status="QUEUED"
-
     ticker = ticker.upper()
 
     print("database_trades: logging order to database...")
