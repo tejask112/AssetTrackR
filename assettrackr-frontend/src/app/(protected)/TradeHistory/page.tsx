@@ -1,7 +1,7 @@
 'use client'
 import styles from './page.module.css'
 import TradesTable from './TradesTable/TradesTable'
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface History {
     action: string;
@@ -18,7 +18,9 @@ interface History {
 
 export default function TradeHistory() {
 
-    const [tradeHistory, setTradeHistory] = useState<History[] | null>(null);
+    const [allTradeHistory, setAllTradeHistory] = useState<History[] | null>(null);
+    const finalisedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null,[allTradeHistory]);    
+    const queuedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
     const [uid, setUid] = useState<string>("ROndgcEwVDh8G4tC6HV30Tjs6A63");
 
     // get the uid
@@ -27,19 +29,25 @@ export default function TradeHistory() {
         async function getTradeHistory() {
             const res = await fetch('/api/trade_history?query=' + encodeURIComponent(uid))
             const json: History[] = await res.json();
-            setTradeHistory(json)
+            setAllTradeHistory(json)
         }
         getTradeHistory()
     }, [])
 
-    if (!tradeHistory) return null;
+    if (!allTradeHistory) return null;
 
     return(
     
         <div className={styles.entireDiv}>
             {/* Need to add CSV, XLS and PDF Export */}
+
             <h1 className={styles.title}>View Trade History</h1>
-            <TradesTable data={tradeHistory}/>
+
+            <h1>Pending Trades</h1>
+            <TradesTable data={queuedTradeHistory ?? []}/>
+
+            <h1>Confirmed Trades</h1>
+            <TradesTable data={finalisedTradeHistory ?? []}/>
         </div>
     )
 
