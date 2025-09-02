@@ -22,7 +22,7 @@ def add_to_portfolio(db, uid, ticker, quantity, execution_price):
 
     try:
         total_price = execution_price * quantity
-        updateLiquidCash(db, uid, total_price)
+        updateLiquidCash(db, uid, total_price, "BUY")
 
         stmt = (
             insert(Portfolio)
@@ -58,7 +58,7 @@ def check_add_to_portfolio(db, uid, ticker, quantity, execution_price):
         raise ValueError(e)
 
 # ---------------- REMOVE OWNERSHIP OF STOCK TO PORTFOLIO  ----------------
-def remove_from_portfolio(db, uid, ticker, quantity):
+def remove_from_portfolio(db, uid, ticker, quantity, execution_price):
     if not all([uid, ticker, quantity]):
         raise ValueError("Internal Server Error")
 
@@ -84,6 +84,10 @@ def remove_from_portfolio(db, uid, ticker, quantity):
         db.execute(delete_stmt)
 
     db.commit()
+
+    total_price = quantity * execution_price
+    updateLiquidCash(db, uid, total_price, "SELL")
+
 
     return True
 

@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, g
+from decimal import Decimal, ROUND_HALF_UP
 import requests
 import os 
 
@@ -10,8 +11,6 @@ from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
 
-
-
 bp = Blueprint("detailed_stock_view", __name__)
 
 ALPACA_KEY = os.getenv("ALPACA_KEY", "")
@@ -20,6 +19,9 @@ FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
 FMP_KEY = os.getenv("FMP_KEY", "")
 TWELVE_API_KEY = os.getenv("TWELVE_API_KEY", "")
 LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
+
+Q8  = Decimal('1.00000000')              # 8 dp
+P16 = Decimal('1.0000000000000000')      # 16 dp
 
 # ---------------- RETRIEVE COMPANY PROFILE DATA  ----------------
 @bp.route('/profile_data', methods=["GET"])
@@ -128,21 +130,27 @@ def submit_order():
         jwt = data["jwt"]
         ticker = data["ticker"]
         action = data["action"]
-        quantity = int(data["quantity"])
+        quantity = Decimal(str(data["quantity"])).quantize(Decimal(Q8), rounding=ROUND_HALF_UP)
     except KeyError as e:
-        return jsonify(
-            { "error": f"Missing field: {e.args[0]}" }, 400
-        )
+        return jsonify({ "error": f"Missing field: {e.args[0]}" }, 400)
     
-    print(f"detailed_stock_view: action={action}")
+    try:
+        if quantity <= 0 or quantity > Decimal('99999999999999999999.99999999'):
+            raise ValueError("Quantity out of range")
+    except Exception as exception:
+        return jsonify({ "error": str(exception) }, 401)
+
+    
+    print(f"detailed_stock_view: action={action} ticker={ticker} quantity={quantity}")
 
     # verify the JWT
 
     tradingType = "Over The Counter (OTC)"
     
     try:
+        # execution_price = Decimal(retrieveLatestPrice(ticker)).quantize(P16, rounding=ROUND_HALF_UP)
         # check if market is open NY 9:30am - 4pm
-        execution_price = retrieveLatestPrice(ticker)
+        execution_price = Decimal(229.05).quantize(P16, rounding=ROUND_HALF_UP)
         if (checkMarketOpen()):
             status="FILLED"
             if action=="BUY":
@@ -169,5 +177,5 @@ def submit_order():
         status_tooltip = str(exception)
         log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, execution_price, tradingType)
         print(f"detailed_stock_view: Error = {exception}")
-        return jsonify({"error": str(exception)}), 400
+        return jsonify({"error": str(exception)}), 402
     

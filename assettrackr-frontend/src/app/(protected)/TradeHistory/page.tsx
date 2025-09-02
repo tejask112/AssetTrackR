@@ -21,7 +21,7 @@ export default function TradeHistory() {
     const [allTradeHistory, setAllTradeHistory] = useState<History[] | null>(null);
     const finalisedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null,[allTradeHistory]);    
     const queuedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
-    const [uid, setUid] = useState<string>("ROndgcEwVDh8G4tC6HV30Tjs6A63");
+    const [uid, setUid] = useState<string>("GIxkGXxmQHTxM2ZZ6B0sbYP0ykA3");
 
     // get the uid
 

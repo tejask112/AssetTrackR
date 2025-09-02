@@ -1,5 +1,5 @@
 from flask import Blueprint, request, g, jsonify
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
 
 from ....db.db_services.trades.database_trades import get_user_trades
@@ -18,7 +18,7 @@ def trade_history():
         d = dict(trade)
 
         if isinstance(d["quantity"], Decimal): 
-            d["quantity"] = float(d["quantity"])
+            d["quantity"] = Decimal(d["quantity"]).quantize(Decimal('0.00000001'), rounding=ROUND_HALF_UP)
 
         if isinstance(d["execution_price"], Decimal): 
             d["execution_price"] = float(d["execution_price"])

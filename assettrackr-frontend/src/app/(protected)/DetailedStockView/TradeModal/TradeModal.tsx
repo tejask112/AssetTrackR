@@ -91,6 +91,8 @@ export default function ( {symbol, price}:Props) {
             quantity: form.quantity
         };
 
+        console.log('client payload', payload);  
+
         const res = await fetch('/api/submit_order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -146,7 +148,7 @@ export default function ( {symbol, price}:Props) {
                                     {/* Input to choose quantity (how many stocks to buy) */}
                                     <div>
                                     <label className={styles.quantityLabel}>
-                                        Quantity: <input type='number' name='quantity' className={styles.quantityInput} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} max="99999999999999999999.99999999" min="0"></input>
+                                        Quantity: <input type='number' name='quantity' className={styles.quantityInput} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} max="99999999999999999999.99999999" min="0" step="0.00000001" inputMode="decimal"></input>
                                     </label>
                                     <button>Select Max</button>
                                     </div>
@@ -188,7 +190,7 @@ export default function ( {symbol, price}:Props) {
                         <h1 className={styles.submittedExtraText}>
                             {queued 
                                 ? `Your order to ${form.action.toLowerCase()} ${form.symbol} has been received and queued by our system. It will execute when markets open in ${queuedMessage}.`
-                                : "Your order to {form.action.toLowerCase()} {form.symbol} has been received by our system and it will be executed shortly."
+                                : `Your order to ${form.action.toLowerCase()} ${form.symbol} has been received by our system and it will be executed shortly.`
                             }
                         </h1>
                         <h1 className={styles.submittedExtraText}>You may view this trade in the Trade History tab.</h1><br/>

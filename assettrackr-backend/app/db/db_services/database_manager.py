@@ -32,7 +32,7 @@ class User(Base):
     __tablename__ = "users"
     uid = Column(String(128), primary_key=True)
     email = Column(String(255), unique=True, nullable=False)
-    cash = Column(Integer, nullable=False)
+    cash = Column(Numeric(64, 16), nullable=False)
 
     trades = relationship (
         "Trades",
@@ -62,8 +62,8 @@ class Trades(Base):
     status_tooltip = Column(String(128))
     quantity = Column(Numeric(28, 8), nullable=False)
     action = Column(String(128), nullable=False)
-    execution_price = Column(Numeric(18, 4), nullable=False)
-    execution_total_price = Column(Numeric(18, 4), nullable=False)
+    execution_price = Column(Numeric(64, 16), nullable=False)
+    execution_total_price = Column(Numeric(64, 16), nullable=False)
     trading_type = Column(String(128)) #eg Over the Counter (OTC)
     
     user = relationship("User", back_populates="trades")
@@ -73,7 +73,7 @@ class Portfolio(Base):
     __tablename__ = "portfolio"
     uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, nullable=False, index=True)
     ticker = Column(String(8), primary_key=True, nullable=False)
-    quantity = Column(Numeric(18, 4), nullable=False)
+    quantity = Column(Numeric(28, 8), nullable=False)
 
     __table_args__ = (
         CheckConstraint("quantity >= 0", name="portfolio_quantity_nonneg"),

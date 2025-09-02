@@ -30,6 +30,7 @@ def create_user(db, uid, email):
 
 # ---------------- CHECK IF USER HAS ENOUGH CASH FOR TRANSACTION  ----------------
 def checkLiquidCash(db, uid, total_price):
+    print(total_price)
     if not all([uid, total_price]):
         raise ValueError("Internal Server Error")
     
@@ -53,24 +54,35 @@ def checkLiquidCash(db, uid, total_price):
     return True
     
 # ---------------- UPDATE USER'S CASH BALANCE  ----------------
-def updateLiquidCash(db, uid, total_price):
+def updateLiquidCash(db, uid, total_price, action):
     if not all([uid, total_price]):
         raise ValueError("Internal Server Error")
     
     try:
-        checkLiquidCash(db, uid, total_price)
+        if (action == "BUY"):
+            checkLiquidCash(db, uid, total_price)
 
-        update_stmt = (
-            sa.update(User)
-            .where(User.uid == uid)
-            .values(cash = User.cash - total_price)
-            .returning(User.cash)
-        )
+            update_stmt = (
+                sa.update(User)
+                .where(User.uid == uid)
+                .values(cash = User.cash - total_price)
+                .returning(User.cash)
+            )
+        elif (action == "SELL"):
+            update_stmt = (
+                sa.update(User)
+                .where(User.uid == uid)
+                .values(cash = User.cash + total_price)
+                .returning(User.cash)
+            )
+        else:
+            raise ValueError("Internal Server Error")
+
         result = db.execute(update_stmt)
         new_cash_balance = result.scalar_one_or_none()
 
         if new_cash_balance is None:
-            raise ValueError(f"Internal Server Error")
+            raise ValueError("Internal Server Error")
 
     except Exception as e:
         raise ValueError(e)
