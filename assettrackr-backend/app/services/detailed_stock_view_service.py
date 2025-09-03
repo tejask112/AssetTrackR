@@ -38,5 +38,13 @@ def get_time_series(symbol):
 
     return output
 
-def retrieveLatestPrice(ticker):
+def retrieveLatestPriceIndividual(ticker):
     return 100
+
+def retrieveLatestPriceList(tickers):
+    prices: dict[str, int] = {}
+
+    for ticker in tickers:
+        prices[ticker] = 150.55
+
+    return prices

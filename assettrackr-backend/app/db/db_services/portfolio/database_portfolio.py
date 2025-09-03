@@ -21,6 +21,8 @@ def add_to_portfolio(db, uid, ticker, quantity, execution_price):
     ticker = ticker.upper()
 
     try:
+        check_add_to_portfolio(db, uid, ticker, quantity, execution_price)
+
         total_price = execution_price * quantity
         updateLiquidCash(db, uid, total_price, "BUY")
 

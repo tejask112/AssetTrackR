@@ -1,5 +1,5 @@
 from datetime import datetime, time
-from sqlalchemy import select
+from sqlalchemy import select, update, func
 from zoneinfo import ZoneInfo 
 
 from ..database_manager import Trades
@@ -55,3 +55,37 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, executi
         print("database_trades: ", error)
 
     return status
+
+# ---------------- UPDATE A TRADE (for queued orders) ----------------
+def update_trade(db, trade_id, uid, status, status_tooltip, execution_price, execution_total_price):
+    if any(param is None for param in [db, trade_id, uid, status, status_tooltip, execution_price, execution_total_price]):
+        raise ValueError("Internal Server Error")
+
+    if status=="REJECTED":
+        execution_price = 0
+        execution_total_price = 0
+        trading_type = "-"
+    else:
+        trading_type = "Over The Counter (OTC)"
+
+    stmt = (
+        update(Trades)
+        .where(Trades.trade_id==trade_id, Trades.uid==uid, Trades.status=="QUEUED")
+        .values(status=status, status_tooltip=status_tooltip, execution_price=execution_price, execution_total_price=execution_total_price, trading_type=trading_type, date=func.now())
+    )
+
+    res = db.execute(stmt)
+    db.commit()
+    return res.rowcount == 1
+    
+
+# ---------------- FETCH ALL QUEUED TRADES (all users) ----------------
+def get_queued_trades(db):
+    status = "QUEUED"
+    stmt = (
+        select(Trades.trade_id, Trades.uid, Trades.ticker, Trades.quantity, Trades.action)
+        .where(Trades.status == status)
+        .order_by(Trades.date.desc())
+    )
+    res = db.execute(stmt).mappings().all()
+    return res

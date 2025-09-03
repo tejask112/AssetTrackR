@@ -5,11 +5,12 @@ import os
 
 from ..utils.recommendations import getRecommendation
 from ..services.detailed_stock_view_service import get_time_series
-from ..services.detailed_stock_view_service import retrieveLatestPrice
+from ..services.detailed_stock_view_service import retrieveLatestPriceIndividual
 
 from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
+from ..services.run_queued_trades import run_queued_trades
 
 bp = Blueprint("detailed_stock_view", __name__)
 
@@ -120,6 +121,12 @@ def profile_data():
 
     return jsonify(modified_data)
 
+@bp.route('/run_queued_trades')
+def run():
+    result = run_queued_trades()
+    return jsonify(result)
+
+
 @bp.route('/submit_order', methods=["POST"])
 def submit_order():
     print("detailed_stock_view: received order..")
@@ -148,7 +155,7 @@ def submit_order():
     tradingType = "Over The Counter (OTC)"
     
     try:
-        # execution_price = Decimal(retrieveLatestPrice(ticker)).quantize(P16, rounding=ROUND_HALF_UP)
+        # execution_price = Decimal(retrieveLatestPriceIndividual).quantize(P16, rounding=ROUND_HALF_UP)
         # check if market is open NY 9:30am - 4pm
         execution_price = Decimal(229.05).quantize(P16, rounding=ROUND_HALF_UP)
         if (checkMarketOpen()):
