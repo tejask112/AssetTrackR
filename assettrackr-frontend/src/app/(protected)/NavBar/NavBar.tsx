@@ -6,6 +6,7 @@ import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../(auth)/firebaseClient';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useUser } from '@/context/UserContext'
 
 export default function NavBar() {
   const pathName = usePathname();
@@ -13,16 +14,14 @@ export default function NavBar() {
 
   const router = useRouter();
 
-  const [email, setEmail] = useState<string | null>(null);
-  useEffect(() => {
-    return onAuthStateChanged(auth, (u) => setEmail(u?.email ?? null));
-  }, [])
+  const { userEmail, clear } = useUser();
 
   async function handleLogout() {
     await Promise.all([
       fetch('/api/logout', { method: 'POST' }),
       signOut(auth),
     ]);
+    clear()
     router.replace('/Login')
   }
 
@@ -48,7 +47,7 @@ export default function NavBar() {
             </Link>
           </div>
           <div className={styles.userData}>
-            <h1 className={styles.user}>{email}</h1>
+            <h1 className={styles.user}>{userEmail}</h1>
             <button onClick={handleLogout} className={styles.logOut}>Log Out</button>
           </div>
         </div>

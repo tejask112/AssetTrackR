@@ -2,6 +2,7 @@
 import styles from './page.module.css'
 import TradesTable from './TradesTable/TradesTable'
 import { useEffect, useMemo, useState } from 'react';
+import { useUser } from '@/context/UserContext'
 
 interface History {
     action: string;
@@ -18,23 +19,25 @@ interface History {
 
 export default function TradeHistory() {
 
+    const { userID } = useUser();
+
     const [allTradeHistory, setAllTradeHistory] = useState<History[] | null>(null);
     const finalisedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null,[allTradeHistory]);    
     const queuedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
-    const [uid, setUid] = useState<string>("GIxkGXxmQHTxM2ZZ6B0sbYP0ykA3");
-
-    // get the uid
 
     useEffect(() => {
-        async function getTradeHistory() {
-            const res = await fetch('/api/trade_history?query=' + encodeURIComponent(uid))
-            const json: History[] = await res.json();
-            setAllTradeHistory(json)
-        }
-        getTradeHistory()
-    }, [])
+        // wait until there is a uid
+        if (!userID) return; 
 
-    if (!allTradeHistory) return null;
+        const uid = userID;
+        async function getTradeHistory() {
+            const res = await fetch(`/api/trade_history?query=${encodeURIComponent(uid)}`);
+            const json: History[] = await res.json();
+            setAllTradeHistory(json);
+        }
+
+        getTradeHistory();
+    }, [userID]);
 
     return(
     

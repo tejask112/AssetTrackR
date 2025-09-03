@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { auth } from "../firebaseClient";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useUser } from '@/context/UserContext'
 
 function safeRedirect(p: string | null): string {
     if (p && p.startsWith('/') && !p.startsWith('//')) { return p; }
@@ -19,6 +20,8 @@ export default function Login() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = safeRedirect(searchParams.get("redirect"));
+
+    const { setAuth } = useUser();
 
     async function loginEmail(e: React.FormEvent) {
         console.log("button pressed")
@@ -47,6 +50,7 @@ export default function Login() {
             console.error('Failed to create session');
         } else {
             console.log('Session created');
+            setAuth(user.uid, user.email);
             router.replace(redirectTo);
         }        
     }
