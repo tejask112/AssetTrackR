@@ -1,6 +1,10 @@
 import requests, os
+from decimal import Decimal, ROUND_HALF_UP
 
 from ..utils.dates import calculateStartDate, calculate5YagoDate
+
+Q8  = Decimal('1.00000000')              # 8 dp
+P16 = Decimal('1.0000000000000000')      # 16 dp
 
 ALPACA_KEY = os.getenv("ALPACA_KEY", "")
 ALPACA_SECRET = os.getenv("ALPACA_SECRET", "")
@@ -42,9 +46,9 @@ def retrieveLatestPriceIndividual(ticker):
     return 100
 
 def retrieveLatestPriceList(tickers):
-    prices: dict[str, int] = {}
+    prices: dict[str, Decimal] = {}
 
     for ticker in tickers:
-        prices[ticker] = 150.55
+        prices[ticker] = Decimal(229.05).quantize(P16, rounding=ROUND_HALF_UP)
 
     return prices

@@ -1,9 +1,13 @@
 from datetime import datetime, time
 from sqlalchemy import select, update, func
 from zoneinfo import ZoneInfo 
+from decimal import Decimal, ROUND_HALF_UP
 
 from ..database_manager import Trades
 from ...db_utils.market_hours import checkMarketOpen
+
+Q8  = Decimal('1.00000000')              # 8 dp
+P16 = Decimal('1.0000000000000000')      # 16 dp
 
 # ---------------- FETCH ALL TRADES (for specific user) ----------------
 def get_user_trades(db, uid):
@@ -22,12 +26,14 @@ def log_trade(db, uid, ticker, status, status_tooltip, action, quantity, executi
         raise ValueError("Internal Server Error")
 
     if status=="REJECTED":
-        execution_price = 0
-        execution_total_price = 0
+        execution_price = Decimal(0).quantize(P16, rounding=ROUND_HALF_UP)
+        execution_total_price = Decimal(0).quantize(P16, rounding=ROUND_HALF_UP)
         tradingType = "-"
     else:
         execution_total_price = execution_price * quantity
         status_tooltip = "Success"
+        execution_price = Decimal(execution_price).quantize(P16, rounding=ROUND_HALF_UP)
+        execution_total_price = Decimal(execution_total_price).quantize(P16, rounding=ROUND_HALF_UP)
 
     utc_now = datetime.now(tz=ZoneInfo("UTC"))
 
@@ -62,10 +68,12 @@ def update_trade(db, trade_id, uid, status, status_tooltip, execution_price, exe
         raise ValueError("Internal Server Error")
 
     if status=="REJECTED":
-        execution_price = 0
-        execution_total_price = 0
+        execution_price = Decimal(0).quantize(P16, rounding=ROUND_HALF_UP)
+        execution_total_price = Decimal(0).quantize(P16, rounding=ROUND_HALF_UP)
         trading_type = "-"
     else:
+        execution_price = Decimal(execution_price).quantize(P16, rounding=ROUND_HALF_UP)
+        execution_total_price = Decimal(execution_total_price).quantize(P16, rounding=ROUND_HALF_UP)
         trading_type = "Over The Counter (OTC)"
 
     stmt = (
@@ -78,14 +86,13 @@ def update_trade(db, trade_id, uid, status, status_tooltip, execution_price, exe
     db.commit()
     return res.rowcount == 1
     
-
 # ---------------- FETCH ALL QUEUED TRADES (all users) ----------------
 def get_queued_trades(db):
     status = "QUEUED"
     stmt = (
         select(Trades.trade_id, Trades.uid, Trades.ticker, Trades.quantity, Trades.action)
         .where(Trades.status == status)
-        .order_by(Trades.date.desc())
+        .order_by(Trades.date.asc())
     )
     res = db.execute(stmt).mappings().all()
     return res

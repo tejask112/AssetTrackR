@@ -126,7 +126,6 @@ def run():
     result = run_queued_trades()
     return jsonify(result)
 
-
 @bp.route('/submit_order', methods=["POST"])
 def submit_order():
     print("detailed_stock_view: received order..")
