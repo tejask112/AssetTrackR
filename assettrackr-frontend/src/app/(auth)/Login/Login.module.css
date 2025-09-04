@@ -1,0 +1,116 @@
+.entireDiv{
+    width: 100%;
+}
+
+.errorMsgDiv {
+  min-height: 24px;         
+  margin-bottom: 5px;
+  display: flex; 
+  align-items: center;
+}
+
+.errorMsg {
+  margin: 0;  
+  color: red;
+  font-size: 0.95rem;        
+  font-weight: 600;
+}
+
+
+.formEntry{
+    border: 1px solid black;
+    border-radius: 6px;
+    width: 100%;
+    padding: 7px 15px;
+}
+.formEntry::placeholder {
+    color: #9aa0a6; 
+    opacity: 1;
+    font-size: 0.9rem;
+}
+
+.formTitles{
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 15px 0px 5px 0px;
+}
+
+.googleLogInButton{
+    text-align: center;
+    width: 100%;
+    padding: 7px 5px 7px 5px;
+    border: 1px solid rgb(208, 208, 208);
+    border-radius: 5px;
+    cursor: pointer;
+}
+.googleLogInButton:hover{
+    border: 1px solid rgb(184, 184, 184);
+}
+
+.loginUtilitiesButton{
+    color: rgb(121, 121, 121);
+    font-weight: 450;
+    cursor: pointer;
+}
+.loginUtilitiesButton:hover{
+    text-decoration: underline;
+}
+
+.loginUtilitiesDiv{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.loginUtilitiesText{
+    font-weight: 300;
+    color: rgb(121, 121, 121);
+}
+
+.orDivider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0px 16px 0px;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.orDivider::before,
+.orDivider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #d7d7d7;
+}
+
+.orText {
+    line-height: 1;
+}
+
+.regularLogInButton{
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    width: 100%;
+    background-color: #323a56;
+    color: whitesmoke;
+    font-weight: 500;
+    cursor: pointer;
+}
+.regularLogInButton:hover{
+    background-color: #293047;
+}
+.regularLogInButton:active{
+    background-color: #1f2436;
+}
+
+.welcomeMessage{
+    font-size: 1.7rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 10px;
+}

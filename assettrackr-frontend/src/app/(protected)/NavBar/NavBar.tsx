@@ -22,7 +22,7 @@ export default function NavBar() {
       signOut(auth),
     ]);
     clear()
-    router.replace('/Login')
+    router.replace('/Welcome')
   }
 
   return (

@@ -1,0 +1,25 @@
+.entireDiv {
+  min-height: 100vh;  
+  display: flex;
+  justify-content: center;     
+  align-items: center;
+  gap: 16px;                    
+}
+
+.halfDiv {
+  box-sizing: border-box;
+  width: 420px;   
+  height: 420px;
+  background-color: white;
+  display: flex;
+  align-items: flex-start;     
+  justify-content: flex-start;
+  padding: 16px;            
+}
+
+/* stack on small screens */
+@media (max-width: 900px) {
+  .entireDiv {
+    flex-direction: column;
+  }
+}
