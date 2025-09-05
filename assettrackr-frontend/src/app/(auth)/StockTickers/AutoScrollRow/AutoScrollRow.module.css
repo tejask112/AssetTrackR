@@ -1,0 +1,20 @@
+.embla {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embelaViewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embelaContainer {
+  display: flex;
+  align-items: stretch;
+  touch-action: pan-y pinch-zoom;
+}
+
+.embelaSlide {
+  flex: 0 0 auto;       
+  min-width: max(200px, 25%);
+}

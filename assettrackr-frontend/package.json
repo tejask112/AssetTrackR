@@ -13,6 +13,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.1",
+    "embla-carousel-auto-scroll": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "firebase": "^12.1.0",
     "lightweight-charts": "^5.0.8",
     "lightweight-charts-react-wrapper": "^2.1.1",

@@ -1,14 +1,19 @@
 import Login from "../Login/Login";
-import WelcomeText from '../WelcomeText/WelcomeText'
 import styles from './Welcome.module.css'
+import StockTickers from "../StockTickers/StockTickers";
+
 
 export default function Welcome() {
     return(
         <div className={styles.entireDiv}>
-            <div className={styles.halfDiv}>
-                <h1>Welcome</h1>
+            <div className={styles.leftDiv}>
+                <StockTickers marketSector="Technology"/>
+                <StockTickers marketSector="Financials"/>
+                <StockTickers marketSector="Healthcare"/>
+                <StockTickers marketSector="Consumer Staples"/>
+                <StockTickers marketSector="Energy"/>
             </div>
-            <div className={styles.halfDiv}> 
+            <div className={styles.rightDiv}> 
                 <Login/>
             </div>
         </div>

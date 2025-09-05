@@ -6,16 +6,26 @@
   gap: 16px;                    
 }
 
-.halfDiv {
+.rightDiv {
   box-sizing: border-box;
   width: 420px;   
-  height: 420px;
+  height: 450px;
   background-color: white;
   display: flex;
   align-items: flex-start;     
   justify-content: flex-start;
   padding: 16px;            
 }
+
+.leftDiv {
+  box-sizing: border-box;
+  width: 750px;   
+  height: 450px;
+  background-color: white;
+  align-items: flex-start;     
+  justify-content: flex-start;     
+}
+
 
 /* stack on small screens */
 @media (max-width: 900px) {
