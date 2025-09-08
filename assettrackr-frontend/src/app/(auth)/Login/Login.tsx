@@ -86,7 +86,7 @@ export default function Login() {
                 break;
             case "auth/wrong-password":    
             case "auth/invalid-credential":  
-                setErrorMsg("Incorrect password. Please try again.");
+                setErrorMsg("Incorrect credentials. Please try again.");
                 break;
             case "auth/too-many-requests":
                 setErrorMsg("Too many attempts. Please try again later.");
@@ -100,20 +100,12 @@ export default function Login() {
         }
     }
 
-    async function loginGoogle() {
-        const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
-        const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
-        await fetch('/api/hello-flask', {
-            method: 'POST',
-            headers: { 'Authorisation': `Bearer ${idToken}` }
-        });
-        router.replace(redirectTo);
-    }
+    
 
     return (
         <div className={styles.entireDiv}>
             <h1 className={styles.welcomeMessage}>Welcome to AssetTrackR</h1>
-            <button className={styles.googleLogInButton}>
+            <button className={styles.googleLogInButton} onClick={loginGoogle}>
                 {/* <Image src="/images/google-logo.jpg" alt="" width={320} height={320} unoptimized className={styles.icon}/> */}
                 <span>Log in with Google</span>
             </button>
@@ -136,17 +128,8 @@ export default function Login() {
                     <LoadingBar/>
                 )}
             </div>
-            
 
-            <div className={styles.loginUtilitiesDiv}>
-                <h1 className={styles.loginUtilitiesText}>Don't have an account?</h1>
-                <button className={styles.loginUtilitiesButton}>Sign Up!</button>
-            </div>
 
-            <div className={styles.loginUtilitiesDiv}>
-                <h1 className={styles.loginUtilitiesText}>Forgot password?</h1>
-                <button className={styles.loginUtilitiesButton}>Click here</button>
-            </div>
 
             
         </div>

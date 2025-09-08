@@ -11,7 +11,6 @@
   width: 420px;   
   height: 450px;
   background-color: white;
-  display: flex;
   align-items: flex-start;     
   justify-content: flex-start;
   padding: 16px;            
@@ -26,6 +25,27 @@
   justify-content: flex-start;     
 }
 
+.loginUtilitiesButton{
+    color: rgb(121, 121, 121);
+    font-weight: 450;
+    cursor: pointer;
+}
+.loginUtilitiesButton:hover{
+    text-decoration: underline;
+}
+
+.loginUtilitiesDiv{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.loginUtilitiesText{
+    font-weight: 300;
+    color: rgb(121, 121, 121);
+}
 
 /* stack on small screens */
 @media (max-width: 900px) {
