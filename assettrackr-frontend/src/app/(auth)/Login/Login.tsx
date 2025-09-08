@@ -100,7 +100,61 @@ export default function Login() {
         }
     }
 
-    
+    async function loginGoogle() {
+        try{
+            const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
+            const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
+            
+            // verifies the JWT 
+            const res = await fetch('/api/authenticate', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${idToken}` },
+            });
+            if (!res.ok) {
+                console.error('Flask rejected:', res.status);
+            } else {
+                console.log('Login verified');
+            }
+
+            // sets up a session
+            const res2 = await fetch('/api/session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken })
+            })
+            if (!res2.ok) {
+                console.error('Failed to create session');
+            } else {
+                console.log('Session created');
+                setAuth(user.uid, user.email);
+                router.replace(redirectTo);
+            }  
+        } catch (err: any) {
+            switch (err.code) {
+            case "auth/invalid-email":
+                setErrorMsg("That email address is not valid.");
+                break;
+            case "auth/user-disabled":
+                setErrorMsg("This account has been disabled.");
+                break;
+            case "auth/user-not-found":
+                setErrorMsg("No account found with that email.");
+                break;
+            case "auth/wrong-password":    
+            case "auth/invalid-credential":  
+                setErrorMsg("Incorrect credentials. Please try again.");
+                break;
+            case "auth/too-many-requests":
+                setErrorMsg("Too many attempts. Please try again later.");
+                break;
+            case "auth/network-request-failed":
+                setErrorMsg("Network error. Check your connection and try again.");
+                break;
+            default:
+                setErrorMsg("Could not sign in. Please try again.");
+            }  
+        }
+    }
 
     return (
         <div className={styles.entireDiv}>
