@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint, PrimaryKeyConstraint, Index, select
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base, relationship
 
 DATABASE_URL = os.getenv(
@@ -81,7 +81,18 @@ class Portfolio(Base):
 
     user = relationship("User", back_populates="portfolio")
 
-    
+class Timeline(Base):
+    __tablename__ = "timeline"
+    uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, nullable=False)
+    date = Column(DateTime(timezone=True),  primary_key=True, nullable=False)
+    value = Column(Numeric(64, 16), nullable=False)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('uid', 'date', name='pk_timeline_uid_date'),
+        Index('ix_timeline_uid_date_desc', 'uid', date.desc()),
+    )
+
+
 def init_db():
     # create tables (only for dev - use Alembic when migrating)
     Base.metadata.create_all(bind=engine)

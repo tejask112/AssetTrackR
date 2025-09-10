@@ -1,8 +1,10 @@
 from flask import g
 from sqlalchemy.dialects.postgresql import insert
 import sqlalchemy as sa
+from datetime import datetime
+from zoneinfo import ZoneInfo 
 
-from ..database_manager import User
+from ..database_manager import User, Timeline
 
 # ---------------- RETRIEVE ALL USERS  ----------------
 def list_users():

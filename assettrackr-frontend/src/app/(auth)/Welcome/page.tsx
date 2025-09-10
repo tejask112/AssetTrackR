@@ -51,7 +51,7 @@ export default function Welcome() {
 
                 <div className={styles.loginUtilitiesDiv}>
                     <h1 className={styles.loginUtilitiesText}>Forgot password?</h1>
-                    <button className={styles.loginUtilitiesButton}>Click here</button>
+                    <button className={styles.loginUtilitiesButton}>Recover Account</button>
                 </div>
             </div>
         </div>

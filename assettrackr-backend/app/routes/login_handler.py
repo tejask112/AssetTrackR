@@ -6,6 +6,7 @@ from functools import wraps
 import datetime
 
 from ..db.db_services.userAccounts.database_userAccounts import create_user
+from ..db.db_services.timeline.database_timeline import initialise_ts
 
 bp = Blueprint("login_handler", __name__)
 
@@ -44,6 +45,7 @@ def initialise_user():
     email = request.user["email"]
     
     create_user(g.db, uid, email)
+    initialise_ts(g.db, uid)
 
     return jsonify({"ok": True, "uid": request.user["uid"]})
 

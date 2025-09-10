@@ -35,12 +35,14 @@ def create_app():
 
     from .routes.explore_stocks import bp as exploreStocks_bp
     from .routes.detailed_stock_view import bp as detailedStockView_bp
+    from .routes.portfolio_data import bp as portfolioData_bp
     from .routes.login_handler import bp as loginHandler_bp
     from .db.db_routes.database_routes import bp as databaseAccess_bp
     from .db.db_routes.trades.trades import bp as trades_bp
 
     app.register_blueprint(exploreStocks_bp, url_prefix="/api")
     app.register_blueprint(detailedStockView_bp, url_prefix="/api")
+    app.register_blueprint(portfolioData_bp, url_prefix="/api")
     app.register_blueprint(loginHandler_bp, url_prefix="/api")
     app.register_blueprint(databaseAccess_bp, url_prefix="/api")
     app.register_blueprint(trades_bp, url_prefix="/api")

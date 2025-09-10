@@ -7,6 +7,21 @@ from ..database_manager import Portfolio
 from ...db_utils.format_numbers import format_quantity
 from ..userAccounts.database_userAccounts import updateLiquidCash, checkLiquidCash
 
+# ---------------- RETRIEVE PORTFOLIO FOR SPECIFIC USER  ----------------
+def get_portfolio(db, uid):
+    if not all ([db, uid]):
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        select(Portfolio.ticker, Portfolio.quantity)
+        .where(Portfolio.uid == uid)
+    )
+
+    rows = db.execute(stmt).mappings().all()
+    return [{"ticker": r["ticker"], "quantity": str(r["quantity"])} for r in rows]
+
+
+
 # ---------------- ADD OWNERSHIP OF STOCK TO PORTFOLIO  ----------------
 def add_to_portfolio(db, uid, ticker, quantity, execution_price):
     if not all([uid, ticker, quantity, execution_price]):
