@@ -5,13 +5,17 @@ from decimal import Decimal, ROUND_HALF_UP
 from sqlalchemy.dialects.postgresql import insert
 
 from ..database_manager import Timeline
+from ..portfolio.database_portfolio import get_portfolio_holdings
 
 
 Q8  = Decimal('1.00000000')              # 8 dp
 P16 = Decimal('1.0000000000000000')      # 16 dp
 
-# ---------------- FETCH TIMELINE (for specific user) ----------------
-def get_user_timeline(db, uid):
+# ---------------- FETCH ENTIRE TIMELINE (for specific user) ----------------
+def get_user_entire_timeline(db, uid):
+    if not uid or not db:
+        raise ValueError("Internal Server Error")
+    
     stmt = (
         select(Timeline.date, Timeline.value).
         where(Timeline.uid == uid).
@@ -19,6 +23,20 @@ def get_user_timeline(db, uid):
     )
 
     return db.execute(stmt).mappings().all() # something like [{'date': ..., 'value': ...}, ...]
+
+# ---------------- FETCH ONLY LATEST TIMELINE (for specific user) ----------------
+def get_latest_user_timeline(db, uid):
+    if not uid or not db:
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        select(Timeline.date, Timeline.value)
+        .where(Timeline.uid == uid)
+        .order_by(Timeline.date.desc())
+        .limit(1)
+    )
+
+    return db.execute(stmt).first()
 
 # ---------------- CREATE INITIAL TIMELINE FOR NEW USER  ----------------
 def initialise_ts(db, uid):
@@ -36,3 +54,11 @@ def initialise_ts(db, uid):
     )
     db.execute(stmt)
     db.commit()
+
+# ---------------- UPDATE TIMELINE FOR USER SINCE LAST LOG IN  ----------------
+def update_ts(db, uid):
+    if not uid or not db:
+        raise ValueError("Internal Server Error")
+    
+    latest_timeline = get_latest_user_timeline(db, uid)
+    portfolio = get_portfolio_holdings(db, uid)

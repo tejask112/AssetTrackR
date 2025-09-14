@@ -20,7 +20,17 @@ def get_portfolio(db, uid):
     rows = db.execute(stmt).mappings().all()
     return [{"ticker": r["ticker"], "quantity": str(r["quantity"])} for r in rows]
 
+# ---------------- RETRIEVE PORTFOLIO HOLDINGS FOR SPECIFIC USER  ----------------
+def get_portfolio_holdings(db, uid):
+    if not db or not uid:
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        select(Portfolio.ticker)
+        .where(Portfolio.uid == uid)
+    )
 
+    return db.execute(stmt).mappings().all()
 
 # ---------------- ADD OWNERSHIP OF STOCK TO PORTFOLIO  ----------------
 def add_to_portfolio(db, uid, ticker, quantity, execution_price):

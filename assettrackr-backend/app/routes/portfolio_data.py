@@ -17,7 +17,8 @@ def getHomeData():
     uid = "GIxkGXxmQHTxM2ZZ6B0sbYP0ykA3"
     portfolio = get_portfolio(g.db, uid) # example: [ {"quantity": "200.00000000","ticker": "AMZN"},{"quantity": "5.00000000","ticker": "TSLA"} ]
 
-
-
     
+    
+
+
     return jsonify(portfolio)

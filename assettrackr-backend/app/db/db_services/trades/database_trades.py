@@ -96,3 +96,16 @@ def get_queued_trades(db):
     )
     res = db.execute(stmt).mappings().all()
     return res
+
+# ---------------- FETCH FILTERED TRADES (for timeline) ----------------
+def get_filtered_trades(db, uid, date_cutoff):
+    if any(param is None for param in [db, uid, date_cutoff]):
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        select(Trades.date, Trades.ticker, Trades.quantity, Trades.action, Trades.execution_total_price)
+        .where((Trades.uid == uid) & (Trades.status == "FILLED") & (Trades.date > date_cutoff))
+        .order_by(Trades.date.desc())
+    )
+
+    return db.execute(stmt).scalars().all()
