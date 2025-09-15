@@ -10,6 +10,7 @@ from ..services.detailed_stock_view_service import retrieveLatestPriceIndividual
 from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
+from ..db.db_services.timeline.database_timeline import update_ts
 from ..services.run_queued_trades import run_queued_trades
 
 bp = Blueprint("detailed_stock_view", __name__)
@@ -124,6 +125,7 @@ def profile_data():
 @bp.route('/run_queued_trades')
 def run():
     result = run_queued_trades()
+    update_ts(g.db, "eRyI86BQPKPg4aRX313ghwQcJqp2")
     return jsonify(result)
 
 @bp.route('/submit_order', methods=["POST"])

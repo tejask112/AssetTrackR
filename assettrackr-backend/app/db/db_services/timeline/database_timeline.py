@@ -6,6 +6,8 @@ from sqlalchemy.dialects.postgresql import insert
 
 from ..database_manager import Timeline
 from ..portfolio.database_portfolio import get_portfolio_holdings
+from ..trades.database_trades import get_filtered_trades
+from ...db_utils.dates import roundTo15Min
 
 
 Q8  = Decimal('1.00000000')              # 8 dp
@@ -30,13 +32,11 @@ def get_latest_user_timeline(db, uid):
         raise ValueError("Internal Server Error")
     
     stmt = (
-        select(Timeline.date, Timeline.value)
+        select(func.max(Timeline.date))
         .where(Timeline.uid == uid)
-        .order_by(Timeline.date.desc())
-        .limit(1)
     )
 
-    return db.execute(stmt).first()
+    return db.execute(stmt).scalar_one_or_none()
 
 # ---------------- CREATE INITIAL TIMELINE FOR NEW USER  ----------------
 def initialise_ts(db, uid):
@@ -49,7 +49,7 @@ def initialise_ts(db, uid):
     stmt = (
         insert(Timeline)
         .values(uid=uid, date=utc_now, value=startingValue)
-        .on_conflict_do_nothing(index_elements=[Timeline.uid])
+        .on_conflict_do_nothing(constraint="pk_timeline_uid_date")
         .returning(Timeline.uid)
     )
     db.execute(stmt)
@@ -60,5 +60,20 @@ def update_ts(db, uid):
     if not uid or not db:
         raise ValueError("Internal Server Error")
     
-    latest_timeline = get_latest_user_timeline(db, uid)
+    latest_timeline = get_latest_user_timeline(db, uid) #returns datetime object
     portfolio = get_portfolio_holdings(db, uid)
+    filtered_trades = get_filtered_trades(db, uid, latest_timeline)
+
+    print("--------------------------- PORTFOLIO:" + str(portfolio))
+    print("--------------------------- UPDATE TS:" + str(latest_timeline))
+    print("--------------------------- FILTERED TRADES:" + str(filtered_trades))
+    
+    date = latest_timeline.astimezone(ZoneInfo("America/New_York"))
+
+    if date.minute not in {0, 15, 30, 45}:
+        date = roundTo15Min(date)
+
+    
+    
+
+    

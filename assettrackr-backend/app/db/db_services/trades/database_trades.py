@@ -102,10 +102,13 @@ def get_filtered_trades(db, uid, date_cutoff):
     if any(param is None for param in [db, uid, date_cutoff]):
         raise ValueError("Internal Server Error")
     
+    if hasattr(date_cutoff, "_mapping" or isinstance(date_cutoff, (tuple, list))):
+        raise ValueError("date_cutoff must be a datetime, now a row/tuple")
+    
     stmt = (
         select(Trades.date, Trades.ticker, Trades.quantity, Trades.action, Trades.execution_total_price)
         .where((Trades.uid == uid) & (Trades.status == "FILLED") & (Trades.date > date_cutoff))
         .order_by(Trades.date.desc())
     )
 
-    return db.execute(stmt).scalars().all()
+    return db.execute(stmt).mappings().all()
