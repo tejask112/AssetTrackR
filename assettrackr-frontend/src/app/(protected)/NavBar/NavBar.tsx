@@ -7,6 +7,7 @@ import { auth } from '../../(auth)/firebaseClient';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext'
+import { isNyseOpen } from './isNyseOpen/isNyseOpen';
 
 export default function NavBar() {
   const pathName = usePathname();
@@ -25,9 +26,22 @@ export default function NavBar() {
     router.replace('/Welcome')
   }
 
+  const [marketOpen, setMarketOpen] = useState(() => isNyseOpen());
+  useEffect(() => {
+    const id = setInterval(() => setMarketOpen(isNyseOpen()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div className={styles.topBar}>
-        <h1 className={styles.logo}>AssetTrackR</h1>
+        <div className={styles.topRow}>
+          <h1 className={styles.logo}>AssetTrackR</h1>
+          <div className={styles.marketStatusDiv}>
+            <span aria-hidden="true" className={`inline-block w-3 h-3 rounded-sm ${marketOpen ? "bg-green-500" : "bg-red-500"}`}/>
+            <h1 className={styles.marketStatusText}>{marketOpen ? "Markets Open" : "Markets Closed"}</h1>
+          </div>
+        </div>
+        
         <div className={styles.bottomRow}>
           <div className={styles.buttonDiv}>
             <Link href="/Home"> 

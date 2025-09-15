@@ -64,11 +64,28 @@
     font-weight: 200;
 }
 
+.marketStatusDiv{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; 
+    margin-right: 20px;
+    margin-top: -25px;
+}
+
+.marketStatusText{
+    padding-left: 5px;
+}
+
 .topBar {
     padding-left: 75px;
     padding-right: 75px;
     background-color: #323a56;
     color: white;
+}
+
+.topRow{
+    display: flex;
+    justify-content: space-between;
 }
 
 .user{
