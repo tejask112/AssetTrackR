@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from collections import defaultdict
+from zoneinfo import ZoneInfo 
 
 from ..db_utils.dates import roundTo15Min
 
@@ -8,7 +8,7 @@ def formatTrades(trades):
     for row in trades:
         trade = getattr(row, "_mapping", row)
 
-        date = roundTo15Min(trade.get('date'))
+        date = roundTo15Min(trade.get('date')).astimezone(ZoneInfo("America/New_York"))
         if date is None:
             continue
 

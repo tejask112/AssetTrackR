@@ -66,16 +66,21 @@ def initialise_ts(db, uid):
 
 def get_time_series_15min(symbols, startDate):
     interval = "15min"
+
+    groupedTimeSeries: dict[str, list[dict]] = {}
+
     for symbol in symbols:
-        timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval={interval}&start_date={startDate}&outputsize=5000&apikey={TWELVE_API_KEY}"
+        ticker = symbol.get('ticker')
+        if ticker is None:
+            continue
+
+        timeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={ticker}&interval={interval}&start_date={startDate}&outputsize=5000&apikey={TWELVE_API_KEY}"
         timeSeriesResponse = (requests.get(url=timeSeriesUrl)).json()
 
         prices = timeSeriesResponse.get("values", [])
-        res = {
-            "ticker": symbol,
-            "prices" : prices
-        }
+        groupedTimeSeries[ticker] = prices
     
+    return groupedTimeSeries
 
 # ---------------- UPDATE TIMELINE FOR USER SINCE LAST LOG IN  ----------------
 def update_ts(db, uid):
@@ -88,14 +93,19 @@ def update_ts(db, uid):
 
     print("------------------------------------------------------ PORTFOLIO:" + str(portfolio))
     print("------------------------------------------------------ UPDATE TS:" + str(latest_timeline))
-    # print("------------------------------------------------------ FILTERED TRADES:" + str(format_trades(filtered_trades)))
     print("------------------------------------------------------ FILTERED TRADES:" + str(filtered_trades))
     
+    current_date = datetime.now(ZoneInfo("America/New_York"))
     date = latest_timeline.astimezone(ZoneInfo("America/New_York"))
+
+    timeseries = get_time_series_15min(portfolio, date)
+    print("------------------------------------------------------ TIME SERIES:" + str(timeseries))
 
     if date.minute not in {0, 15, 30, 45}:
         date = roundTo15Min(date)
     
     date = incrementNext15minMarket(date)
 
-    print(f"LAST LOGIN: {latest_timeline}, NEXT OPEN MARKET DATE: {date}")
+    
+
+    
