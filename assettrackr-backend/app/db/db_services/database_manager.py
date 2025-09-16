@@ -1,8 +1,9 @@
 import os
 import uuid
 
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint, PrimaryKeyConstraint, Index, select
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint, PrimaryKeyConstraint, Index, select, JSON
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base, relationship
+from sqlalchemy.ext.mutable import MutableDict
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -86,6 +87,7 @@ class Timeline(Base):
     uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, nullable=False)
     date = Column(DateTime(timezone=True),  primary_key=True, nullable=False)
     value = Column(Numeric(64, 16), nullable=False)
+    portfolio = Column(MutableDict.as_mutable(JSON), default=dict, nullable=False)
 
     __table_args__ = (
         PrimaryKeyConstraint('uid', 'date', name='pk_timeline_uid_date'),

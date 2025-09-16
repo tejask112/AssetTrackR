@@ -125,7 +125,7 @@ def profile_data():
 @bp.route('/run_queued_trades')
 def run():
     result = run_queued_trades()
-    update_ts(g.db, "eRyI86BQPKPg4aRX313ghwQcJqp2")
+    update_ts(g.db, "X5s2HImyTfNITElXIdhIRu0K70F3")
     return jsonify(result)
 
 @bp.route('/submit_order', methods=["POST"])

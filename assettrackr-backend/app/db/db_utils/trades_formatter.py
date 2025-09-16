@@ -1,19 +1,26 @@
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo 
+from typing import Any, Iterable, Mapping
 
 from ..db_utils.dates import roundTo15Min
 
 def formatTrades(trades):
-    groupedTrades: dict[datetime, list[dict]] = {}
+    grouped: dict[datetime, dict[str, dict[str, Any]]] = {}
     for row in trades:
-        trade = getattr(row, "_mapping", row)
+        m = getattr(row, "_mapping", row)
 
-        date = roundTo15Min(trade.get('date')).astimezone(ZoneInfo("America/New_York"))
-        if date is None:
+        dt = m.get("date")
+        if dt is None:
             continue
+        dt = roundTo15Min(dt).astimezone(ZoneInfo("America/New_York"))
 
-        newTrade = dict(trade)
-        newTrade.pop("date", None)
+        ticker = m.get("ticker")
+        if not ticker:
+            continue
+        ticker = str(ticker)
 
-        groupedTrades.setdefault(date, []).append(newTrade)
-    return groupedTrades
+        payload = {k: v for k, v in m.items() if k not in ("date", "ticker")}
+
+        bucket = grouped.setdefault(dt, {})
+        bucket[ticker] = payload
+    return grouped
