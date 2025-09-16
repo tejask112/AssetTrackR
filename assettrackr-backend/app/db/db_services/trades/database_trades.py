@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 from decimal import Decimal, ROUND_HALF_UP
 
 from ..database_manager import Trades
-from ...db_utils.market_hours import checkMarketOpen
+from ...db_utils.trades_formatter import formatTrades
 
 Q8  = Decimal('1.00000000')              # 8 dp
 P16 = Decimal('1.0000000000000000')      # 16 dp
@@ -111,4 +111,4 @@ def get_filtered_trades(db, uid, date_cutoff):
         .order_by(Trades.date.desc())
     )
 
-    return db.execute(stmt).mappings().all()
+    return formatTrades(db.execute(stmt).mappings().all())

@@ -6,4 +6,4 @@ def roundTo15Min(date):
     if minutesToAdd > 0:
         return date.replace(second=0, microsecond=0) + timedelta(minutes=minutesToAdd)
     else:
-        return date
+        return date.replace(second=0, microsecond=0)

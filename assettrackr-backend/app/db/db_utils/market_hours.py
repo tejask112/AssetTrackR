@@ -15,6 +15,7 @@ def checkMarketOpen():
     else:
         return False
     
+# check when market next opens
 def checkWhenMarketOpens():
     if (checkMarketOpen()):
         return None
@@ -46,3 +47,12 @@ def checkWhenMarketOpens():
 
     return f"{days}d {hours}h {minutes}m {seconds}s"
 
+# increments the parameter date by 15min, rolling over to next open market date
+def incrementNext15minMarket(date):
+    newDate = date + timedelta(minutes=15)
+    if newDate.hour >= 16:
+        newDate = date + timedelta(days=1)
+        while newDate.weekday() >= 5:
+            newDate += timedelta(days=1)
+        newDate = newDate.replace(hour=9, minute=30, second=0, microsecond=0)
+    return newDate
