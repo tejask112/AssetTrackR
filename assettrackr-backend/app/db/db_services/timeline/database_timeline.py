@@ -7,7 +7,6 @@ import requests, os
 from flask import jsonify
 
 from ..database_manager import Timeline
-from ..portfolio.database_portfolio import get_portfolio_holdings
 from ..trades.database_trades import get_filtered_trades
 from ...db_utils.dates import roundTo15Min
 from ...db_utils.market_hours import incrementNext15minMarket
@@ -48,6 +47,21 @@ def get_latest_user_timeline_date(db, uid):
     )
 
     return db.execute(stmt).scalar_one_or_none()
+
+# ---------------- FETCH ONLY LATEST TIMELINE VALUE (for specific user) ----------------
+def get_latest_user_timeline_value(db, uid):
+    if not uid or not db:
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        select(Timeline.value)
+        .where(Timeline.uid == uid)
+        .order_by(Timeline.date.desc())
+        .limit(1)
+    )
+
+    return db.execute(stmt).scalars().first()
+
 
 # ---------------- FETCH ONLY LATEST TIMELINE PORTFOLIO (for specific user) ----------------
 def get_latest_user_timeline_portfolio(db, uid):
@@ -117,6 +131,9 @@ def get_time_series_15min(symbols, startDate):
 def update_ts(db, uid):
     if not uid or not db:
         raise ValueError("Internal Server Error")
+    
+    from ..portfolio.database_portfolio import get_portfolio_holdings
+
     
     latest_timeline = get_latest_user_timeline_date(db, uid) #returns datetime object
     portfolio = get_portfolio_holdings(db, uid)
@@ -223,4 +240,4 @@ def update_ts(db, uid):
         date = incrementNext15minMarket(date)
 
         print("UPDATE_TS: ----------------------------------------------------")
-            
+              

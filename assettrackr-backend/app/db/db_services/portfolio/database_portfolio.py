@@ -1,11 +1,19 @@
+import os
 from sqlalchemy.dialects.postgresql import insert
 import sqlalchemy as sa
 from sqlalchemy import update, delete, select, func, literal
 from decimal import Decimal
+import finnhub
 
 from ..database_manager import Portfolio
 from ...db_utils.format_numbers import format_quantity
+from ...db_utils.market_hours import checkMarketOpen
 from ..userAccounts.database_userAccounts import updateLiquidCash, checkLiquidCash
+from ..timeline.database_timeline import get_latest_user_timeline_value
+
+FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
+finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
+
 
 # ---------------- RETRIEVE PORTFOLIO FOR SPECIFIC USER  ----------------
 def get_portfolio(db, uid):
@@ -18,7 +26,7 @@ def get_portfolio(db, uid):
     )
 
     rows = db.execute(stmt).mappings().all()
-    return [{"ticker": r["ticker"], "quantity": str(r["quantity"])} for r in rows]
+    return { row['ticker']: row['quantity'] for row in rows}
 
 # ---------------- RETRIEVE PORTFOLIO HOLDINGS FOR SPECIFIC USER  ----------------
 def get_portfolio_holdings(db, uid):
@@ -31,6 +39,24 @@ def get_portfolio_holdings(db, uid):
     )
 
     return db.execute(stmt).mappings().all()
+
+# ---------------- CALCULATE PORTFOLIO VALUE IN USD FOR SPECIFIC USER  ----------------
+def calculate_portfolio_value(db, uid):
+    if not db or not uid:
+        raise ValueError("Internal Server Error")
+    
+    portfolio_value = Decimal("0")
+    if not checkMarketOpen():
+        latest_timeline_value = get_latest_user_timeline_value(db, uid)
+        portfolio_value = Decimal(str(latest_timeline_value))
+    else:
+        user_portfolio = get_portfolio(db, uid)
+        for ticker, quantity in user_portfolio.items():
+            res = finnhub_client.quote(ticker)
+            closing_price = res.get("c", 0)
+            portfolio_value += Decimal(str(closing_price)) * Decimal(str(quantity))
+
+    return portfolio_value
 
 # ---------------- ADD OWNERSHIP OF STOCK TO PORTFOLIO  ----------------
 def add_to_portfolio(db, uid, ticker, quantity, execution_price):

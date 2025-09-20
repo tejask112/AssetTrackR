@@ -1,7 +1,12 @@
 from flask import Blueprint, jsonify, g
 import os
+from datetime import timezone
 
-from ..db.db_services.portfolio.database_portfolio import get_portfolio
+
+from ..db.db_services.portfolio.database_portfolio import get_portfolio, calculate_portfolio_value
+from ..db.db_services.timeline.database_timeline import update_ts, get_user_entire_timeline
+from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash
+
 
 bp = Blueprint("portfolio_data", __name__)
 
@@ -14,11 +19,33 @@ LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
 @bp.route('/home_data')
 def getHomeData():
-    uid = "eRyI86BQPKPg4aRX313ghwQcJqp2"
-    portfolio = get_portfolio(g.db, uid) # example: [ {"quantity": "200.00000000","ticker": "AMZN"},{"quantity": "5.00000000","ticker": "TSLA"} ]
-
+    uid = "X5s2HImyTfNITElXIdhIRu0K70F3"
     
+    # get the portfolio
+    user_portfolio = get_portfolio(g.db, uid) # example: {'ticker1': quantity, 'ticker2': quantity, ... }
+    portfolio = [user_portfolio]
+
+    # get latest portfolio value
+    assetValue = calculate_portfolio_value(g.db, uid)
+
+    # get user's cash
+    cash = str(getLiquidCash(g.db, uid))
     
+    # update + retrieve the user's timeline
+    # update_ts(g.db, uid)
+    user_timeline = get_user_entire_timeline(g.db, uid) # example: [{'date': datetime obj, 'value': Decimal obj}, ...]
+    timeline = []
+    for record in user_timeline:
+        timeline.append({ 
+            "datetime": record.get('date').astimezone(timezone.utc).isoformat(), 
+            "value": str(round(record.get('value'), 2))
+        })
 
+    output = {
+        'assetValue': assetValue,
+        'cash': cash,
+        'portfolio': portfolio,
+        'timeline': timeline
+    }
 
-    return jsonify(portfolio)
+    return jsonify(output)

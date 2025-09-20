@@ -8,10 +8,11 @@ from ..services.detailed_stock_view_service import get_time_series
 from ..services.detailed_stock_view_service import retrieveLatestPriceIndividual
 
 from ..db.db_services.trades.database_trades import log_trade
-from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio
+from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio, get_portfolio, calculate_portfolio_value
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
-from ..db.db_services.timeline.database_timeline import update_ts
 from ..services.run_queued_trades import run_queued_trades
+from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash
+from ..db.db_services.timeline.database_timeline import get_user_entire_timeline
 
 bp = Blueprint("detailed_stock_view", __name__)
 
@@ -124,9 +125,12 @@ def profile_data():
 
 @bp.route('/run_queued_trades')
 def run():
-    result = run_queued_trades()
-    update_ts(g.db, "X5s2HImyTfNITElXIdhIRu0K70F3")
-    return jsonify(result)
+    print(f"Portfolio: {get_portfolio(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
+    print(f"Portfolio Value: {calculate_portfolio_value(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
+    print(f"Cash: {getLiquidCash(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
+    
+    # result = run_queued_trades()
+    return jsonify(True)
 
 @bp.route('/submit_order', methods=["POST"])
 def submit_order():

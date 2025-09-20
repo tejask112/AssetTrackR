@@ -1,6 +1,7 @@
 from flask import g
 from sqlalchemy.dialects.postgresql import insert
 import sqlalchemy as sa
+from sqlalchemy import select
 from datetime import datetime
 from zoneinfo import ZoneInfo 
 
@@ -30,9 +31,20 @@ def create_user(db, uid, email):
 
     list_users()
 
+# ---------------- GET USER'S CASH BALANCE  ----------------
+def getLiquidCash(db, uid):
+    if not uid:
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        select(User.cash)
+        .where(User.uid == uid)
+    )
+
+    return db.execute(stmt).scalar_one()
+
 # ---------------- CHECK IF USER HAS ENOUGH CASH FOR TRANSACTION  ----------------
 def checkLiquidCash(db, uid, total_price):
-    print(total_price)
     if not all([uid, total_price]):
         raise ValueError("Internal Server Error")
     
@@ -53,8 +65,8 @@ def checkLiquidCash(db, uid, total_price):
     if (current_cash_balance <= total_price):
         raise ValueError("You do not have sufficient funds to complete this transaction")
     
-    return True
-    
+    return True  
+
 # ---------------- UPDATE USER'S CASH BALANCE  ----------------
 def updateLiquidCash(db, uid, total_price, action):
     if not all([uid, total_price]):
