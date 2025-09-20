@@ -3,6 +3,8 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import styles from './TradesTable.module.css'
 import { useEffect, useState } from 'react';
+import { Tooltip } from 'primereact/tooltip';
+import { useRef } from 'react';
 
 import { Row } from 'primereact/row';
 
@@ -79,18 +81,37 @@ export default function TradesTable({ data }: TradeProps) {
     };
 
     const dateBody = (format: Intl.DateTimeFormat) => (row: { date: string }) => formatDate(row.date, format);
+
+    // ---------------------- format quantity by removing extra zero's ----------------------
+    const trimZeros = (value: number | string): string => {
+        if (value === null || value === undefined) return "";
+        const num = Number(value);
+        if (isNaN(num)) return String(value);
+        return num.toString().replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
+    };
+
     
+    // ---------------------- tooltip for status ----------------------
+    const tooltipRef = useRef<Tooltip>(null);
+    const statusBodyTemplate = (rowData: Trade) => {
+        return (
+            <span className="status-cell" data-pr-tooltip={rowData.status_tooltip} data-pr-position="top">
+                {rowData.status}
+            </span>
+        );
+    };
 
     return (
         <div className={styles.tradeTable}>
-            <DataTable value={data} resizableColumns tableStyle={{ minWidth: '50rem'}}>
+            <Tooltip ref={tooltipRef} target=".status-cell" className={styles.statusTooltip}/>
+            <DataTable value={data} paginator rows={10} rowsPerPageOptions={[10, 25, 50, 100]} resizableColumns tableStyle={{ minWidth: '50rem'}} paginatorDropdownAppendTo="self" >
                 <Column field="trade_id" header="ID"></Column>
                 <Column field="date" body={dateBody(makeFormat(NY_timezone))} header={<>Order Date <br/> <span>(New York, America Time)</span></>} headerClassName={styles.orderDateText} bodyClassName={styles.orderDateText} sortable style={{ width: '25%' }}></Column>
                 <Column field="date" body={dateBody(makeFormat(local_timezone))} header={<>Order Date <br/> <span>({new_local_timeZone} Local Time)</span></>} headerClassName={styles.orderDateText} bodyClassName={styles.orderDateText} sortable style={{ width: '25%' }}></Column>
                 <Column field="ticker" header="Stock"></Column>
-                <Column field="status" header="Status"></Column>
+                <Column field="status" body={statusBodyTemplate} header="Status"></Column>
                 <Column field="action" header="Action"></Column>
-                <Column field="quantity" header="Quantity"></Column>
+                <Column field="quantity" body={(row) => trimZeros(row.quantity)} header="Quantity"></Column>
                 <Column field="execution_price" body={formatIndividualPriceToUSD()} header="Execution Price">USD</Column>
                 <Column field="execution_total_price" body={formatTotalPriceToUSD()} header="Execution Total Price">USD</Column>
                 <Column field="trading_type" header="Trade Type"></Column>

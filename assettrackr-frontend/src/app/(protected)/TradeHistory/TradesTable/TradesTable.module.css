@@ -26,3 +26,97 @@
   padding: 0rem 1rem 0.5rem 0 !important;
   border-bottom: 1px solid #dcdcdc !important;
 }
+
+.statusTooltip.p-tooltip {     
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
+}
+
+.statusTooltip :global(.p-tooltip-text) {
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: #333;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: .2px;
+}
+
+.statusTooltip :global(.p-tooltip-arrow) { 
+  border-top-color: #0b1220;
+}
+
+.tradeTable :global(.p-paginator) {
+  background: #ffffff !important;
+  padding: 0.5rem 1rem !important;
+  height: auto !important;
+}
+
+.tradeTable :global(.p-paginator .p-paginator-page),
+.tradeTable :global(.p-paginator .p-paginator-next),
+.tradeTable :global(.p-paginator .p-paginator-prev),
+.tradeTable :global(.p-paginator .p-paginator-first),
+.tradeTable :global(.p-paginator .p-paginator-last) {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #6b7280 !important;
+  margin: 0 2px !important;
+  min-width: 3rem !important;
+  height: 1.75rem !important;
+  padding: 0 0.75rem !important;
+  border-radius: 4px !important;
+  font-size: 0.875rem !important;
+}
+
+.tradeTable :global(.p-paginator .p-paginator-page:hover),
+.tradeTable :global(.p-paginator .p-paginator-next:hover),
+.tradeTable :global(.p-paginator .p-paginator-prev:hover),
+.tradeTable :global(.p-paginator .p-paginator-first:hover),
+.tradeTable :global(.p-paginator .p-paginator-last:hover) {
+  background: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+}
+
+.tradeTable :global(.p-paginator .p-paginator-page.p-highlight) {
+  background: #e5e7eb !important;
+  border-color: #d1d5db !important;
+  color: #374151 !important;
+}
+
+.tradeTable :global(.p-paginator .p-disabled) {
+  background: #f9fafb !important;
+  border-color: #e5e7eb !important;
+  color: #d1d5db !important;
+}
+
+.tradeTable :global(.p-paginator .p-paginator-current) {
+  color: #6b7280 !important;
+  font-size: 0.8rem !important;
+  margin: 0 0.5rem !important;
+  line-height: 1.75rem !important;
+}
+
+.tradeTable :global(.p-paginator .p-dropdown) {
+  background: #ffffff !important;
+  height: 1.75rem !important;
+  font-size: 0.875rem !important;
+}
+
+.tradeTable :global(.p-paginator .p-dropdown .p-dropdown-label) {
+  padding: 0 0.75rem !important;
+}
+
+.tradeTable :global(.p-dropdown-panel) {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tradeTable :global(.p-dropdown-item) {
+  background: #ffffff !important;
+  color: #374151 !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+.tradeTable :global(.p-dropdown-item:hover) {
+  background: #f3f4f6 !important;
+}

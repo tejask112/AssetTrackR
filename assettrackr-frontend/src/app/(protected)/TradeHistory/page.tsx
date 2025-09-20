@@ -25,9 +25,14 @@ export default function TradeHistory() {
     const finalisedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null,[allTradeHistory]);    
     const queuedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
 
+    const buyCount = allTradeHistory?.filter(t => t.action === "BUY").length ?? 0;
+    const sellCount = allTradeHistory?.filter(t => t.action === "SELL").length ?? 0;
+
     const totalTrades = allTradeHistory?.length ?? 0;
+    const buySellRatioCount = sellCount > 0 ? (buyCount / sellCount).toFixed(4) : null;
     const totalVolume = allTradeHistory?.reduce((sum, trade) => sum + trade.execution_total_price, 0) ?? 0;
     const pendingTrades = queuedTradeHistory?.length ?? 0;
+    
 
     useEffect(() => {
         // wait until there is a uid
@@ -49,10 +54,6 @@ export default function TradeHistory() {
 
             <h1 className={styles.title}>View Trade History</h1>
 
-            <div>
-                
-            </div>
-
             {allTradeHistory && allTradeHistory.length === 0 ? (
                 <h1>No trades yet! Start your investment journey by heading to the Explore Stocks page and placing your first trade.</h1> 
             ) : (
@@ -61,6 +62,10 @@ export default function TradeHistory() {
                         <div className={styles.statCard}>
                             <h3>Total Trades</h3>
                             <p className={styles.value}>{totalTrades}</p>
+                        </div>
+                        <div className={styles.statCard}>
+                            <h3>Buy/Sell Ratio</h3>
+                            <p className={styles.value}>{buySellRatioCount}</p>
                         </div>
                         <div className={styles.statCard}>
                             <h3>Total Volume</h3>
