@@ -25,6 +25,10 @@ export default function TradeHistory() {
     const finalisedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null,[allTradeHistory]);    
     const queuedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
 
+    const totalTrades = allTradeHistory?.length ?? 0;
+    const totalVolume = allTradeHistory?.reduce((sum, trade) => sum + trade.execution_total_price, 0) ?? 0;
+    const pendingTrades = queuedTradeHistory?.length ?? 0;
+
     useEffect(() => {
         // wait until there is a uid
         if (!userID) return; 
@@ -42,15 +46,54 @@ export default function TradeHistory() {
     return(
     
         <div className={styles.entireDiv}>
-            {/* Need to add CSV, XLS and PDF Export */}
 
             <h1 className={styles.title}>View Trade History</h1>
 
-            <h1>Pending Trades</h1>
-            <TradesTable data={queuedTradeHistory ?? []}/>
+            <div>
+                
+            </div>
 
-            <h1>Confirmed Trades</h1>
-            <TradesTable data={finalisedTradeHistory ?? []}/>
+            {allTradeHistory && allTradeHistory.length === 0 ? (
+                <h1>No trades yet! Start your investment journey by heading to the Explore Stocks page and placing your first trade.</h1> 
+            ) : (
+                <>
+                    <div className={styles.statsContainer}>
+                        <div className={styles.statCard}>
+                            <h3>Total Trades</h3>
+                            <p className={styles.value}>{totalTrades}</p>
+                        </div>
+                        <div className={styles.statCard}>
+                            <h3>Total Volume</h3>
+                            <p className={styles.value}>
+                                {new Intl.NumberFormat('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }).format(totalVolume)} USD
+                            </p>
+                        </div>
+                        <div className={styles.statCard}>
+                            <h3>Pending Orders</h3>
+                            <p className={styles.value}>{pendingTrades}</p>
+                        </div>
+                    </div>
+
+                    {queuedTradeHistory && queuedTradeHistory.length > 0 && (
+                        <div className={styles.pendingSection}>
+                            <h2 className={styles.sectionTitle}>Pending Trades</h2>
+                            <TradesTable data={queuedTradeHistory} />
+                        </div>
+                    )}
+
+                    {finalisedTradeHistory && finalisedTradeHistory.length > 0 && (
+                        <div>
+                            <h2 className={styles.sectionTitle}>Confirmed Trades</h2>
+                            <TradesTable data={finalisedTradeHistory} />
+                        </div>
+                    )}
+                </>
+            )}
+            
+            
         </div>
     )
 
