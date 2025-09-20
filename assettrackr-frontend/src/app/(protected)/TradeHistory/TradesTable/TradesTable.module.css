@@ -3,11 +3,26 @@
   padding-left: 0;    
 }
 
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
-  font-weight: 100 - 900;
-  font-stretch: 75% 125%;
-  font-style: normal;
+.tradeTable :global(.p-datatable) {
+  background: white !important;
 }
 
+.tradeTable :global(.p-datatable-thead > tr > th) {
+  background: #f5f5f5 !important;
+  color: black !important;
+    border-bottom: 1px solid #dcdcdc !important;
+}
+
+.tradeTable :global(.p-datatable) {
+  background: rgb(255, 255, 255) !important;
+}
+
+.tradeTable :global(.p-datatable-thead > tr > th) {
+  padding: 0rem 1rem 0.5rem 0 !important;
+  background: #ffffff !important;
+}
+
+.tradeTable :global(.p-datatable-tbody > tr > td) {
+  padding: 0rem 1rem 0.5rem 0 !important;
+  border-bottom: 1px solid #dcdcdc !important;
+}
