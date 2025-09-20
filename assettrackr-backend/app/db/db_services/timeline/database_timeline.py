@@ -14,7 +14,6 @@ from ...db_utils.market_hours import incrementNext15minMarket
 from ...db_utils.json_formatter import to_jsonable
 from ...db_utils.trades_formatter import createFormattedTimeseries
 
-
 Q8  = Decimal('1.00000000')              # 8 dp
 P16 = Decimal('1.0000000000000000')      # 16 dp
 
@@ -133,7 +132,6 @@ def update_ts(db, uid):
     print("------------------------------------------------------ PORTFOLIO:" + str(portfolio))
     print("------------------------------------------------------ UPDATE TS:" + str(latest_timeline))
     print("------------------------------------------------------ FILTERED TRADES:" + str(filtered_trades))
-    # print("------------------------------------------------------ TIME SERIES:" + str(timeseries))
 
     if date.minute not in {0, 15, 30, 45}:
         date = roundTo15Min(date)
@@ -168,25 +166,24 @@ def update_ts(db, uid):
                     elif action == 'SELL':
                         new_qty -= quantity
                     
-                    print(f"UPDATE_TS: {ticker} new quantity: {new_qty}")
-   
                 # 3. update new portfolio for current date 
                 prev_qty = newPortfolio.get(ticker)
                 if prev_qty is not None:
-                    new_qty = prev_qty + new_qty
+                    new_qty = Decimal(str(prev_qty)) + new_qty
                     if new_qty > 0: 
-                        newPortfolio.update({ ticker: new_qty })
+                        newPortfolio.update({ ticker: Decimal(str(new_qty)) })
                     else:
                         newPortfolio.pop(ticker, None)
                 else:
-                    newPortfolio.update({ ticker: new_qty })
+                    newPortfolio.update({ ticker: Decimal(str(new_qty)) })
+                print(f"UPDATE_TS: {ticker} new quantity: {new_qty}")
                 running_qty = 0
 
         # 4. calculate value of user's assets using the portfolio (where a trade occured, use the execution_price)
         assetValue = Decimal("0")
         for ticker, quantity in newPortfolio.items():
             if trades_at_date is not None:
-                incr_qty = 0
+                incr_qty = Decimal("0")
                 ticker_trade = trades_at_date.get(ticker)
                 if ticker_trade:
                     for trade in ticker_trade:
@@ -194,7 +191,7 @@ def update_ts(db, uid):
                             incr_qty = Decimal(str(trade.get('quantity')))
                             assetValue += trade.get('execution_total_price')
                 
-                remaining_qty = quantity - incr_qty
+                remaining_qty = Decimal(str(quantity)) - Decimal(str(incr_qty))
                 if remaining_qty > 0:
                     print(f"UPDATE_TS: ---FETCHING FOR {ticker}")
                     ticker_timeline = ts_by_ticker[ticker]
@@ -226,6 +223,4 @@ def update_ts(db, uid):
         date = incrementNext15minMarket(date)
 
         print("UPDATE_TS: ----------------------------------------------------")
-              
-
-    
+            
