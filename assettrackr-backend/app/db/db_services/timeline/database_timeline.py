@@ -12,6 +12,7 @@ from ..trades.database_trades import get_filtered_trades
 from ...db_utils.dates import roundTo15Min
 from ...db_utils.market_hours import incrementNext15minMarket
 from ...db_utils.json_formatter import to_jsonable
+from ...db_utils.trades_formatter import createFormattedTimeseries
 
 
 Q8  = Decimal('1.00000000')              # 8 dp
@@ -127,6 +128,8 @@ def update_ts(db, uid):
 
     timeseries = get_time_series_15min(portfolio, date)
 
+    ts_by_ticker = createFormattedTimeseries(timeseries)
+
     print("------------------------------------------------------ PORTFOLIO:" + str(portfolio))
     print("------------------------------------------------------ UPDATE TS:" + str(latest_timeline))
     print("------------------------------------------------------ FILTERED TRADES:" + str(filtered_trades))
@@ -140,7 +143,7 @@ def update_ts(db, uid):
 
     print("------------------------------------------------------ PREVIOUS PORTFOLIO:" + str(prevPortfolio))
 
-    index = 0
+    prev_known_price = {} 
 
     while date <= current_date:
         print("UPDATE_TS: ----------------------------------------------------")
@@ -151,66 +154,74 @@ def update_ts(db, uid):
         print(f"UPDATE_TS: TRADES AT DATE {date}: {trades_at_date}")
         if trades_at_date is not None:
             # 2. check trades for any changes to portfolio (eg buy or sell of a stock)
-            for ticker, trade in trades_at_date.items():
-                print(f"UPDATE_TS: CURRENT TRADE ITERATION: {ticker} {trade}")
-                quantity = Decimal(str(trade.get('quantity')))
-                action = trade.get('action')
-                prev_qty = Decimal(str(newPortfolio.get(ticker, 0)))
+            running_qty = 0
+            for ticker, listOfTrades in trades_at_date.items():
+                new_qty = running_qty if running_qty is not None else 0
+                for trade in listOfTrades:
+                    print(f"UPDATE_TS: CURRENT TRADE ITERATION: {ticker} {trade}")
+                    quantity = Decimal(str(trade.get('quantity')))
+                    action = trade.get('action')
+                    running_qty = Decimal(str(newPortfolio.get(ticker, 0)))
 
-                if action == 'BUY':
-                    new_qty = prev_qty + quantity
-                elif action == 'SELL':
-                    new_qty = prev_qty - quantity
-                
+                    if action == 'BUY':
+                        new_qty += quantity
+                    elif action == 'SELL':
+                        new_qty -= quantity
+                    
+                    print(f"UPDATE_TS: {ticker} new quantity: {new_qty}")
+   
                 # 3. update new portfolio for current date 
-                if new_qty > 0:
-                    newPortfolio.update({ ticker: new_qty })
+                prev_qty = newPortfolio.get(ticker)
+                if prev_qty is not None:
+                    new_qty = prev_qty + new_qty
+                    if new_qty > 0: 
+                        newPortfolio.update({ ticker: new_qty })
+                    else:
+                        newPortfolio.pop(ticker, None)
                 else:
-                    newPortfolio.pop(ticker, None)
-        
+                    newPortfolio.update({ ticker: new_qty })
+                running_qty = 0
+
         # 4. calculate value of user's assets using the portfolio (where a trade occured, use the execution_price)
         assetValue = Decimal("0")
         for ticker, quantity in newPortfolio.items():
             if trades_at_date is not None:
+                incr_qty = 0
                 ticker_trade = trades_at_date.get(ticker)
                 if ticker_trade:
-                    if ticker_trade.get('action') == 'BUY':
-                        assetValue += ticker_trade.get('execution_total_price')
-                    elif ticker_trade.get('action') == 'SELL':
-                        ticker_timeseries = timeseries.get(ticker)
-                        ohlc = ticker_timeseries[index]
-                        ohlc_date = datetime.strptime(ohlc.get('datetime'), "%Y-%m-%d %H:%M:%S").date()
-                        if ohlc_date == date.date():
-                            prev_quantity = Decimal(str(prevPortfolio.get(ticker, 0)))
-                            close_price = Decimal(str(ohlc.get('close')))
-                            assetValue -= (close_price*prev_quantity) - ticker_trade.get('execution_total_price')
-                        else:
-                            continue
-                            #use same value as the previous known price of the stock. do not leave it as empty
-                else:
+                    for trade in ticker_trade:
+                        if trade.get('action') == 'BUY':
+                            incr_qty = Decimal(str(trade.get('quantity')))
+                            assetValue += trade.get('execution_total_price')
+                
+                remaining_qty = quantity - incr_qty
+                if remaining_qty > 0:
                     print(f"UPDATE_TS: ---FETCHING FOR {ticker}")
-                    ohlc = timeseries.get(ticker)[index]
-                    ohlc_date = datetime.strptime(ohlc.get('datetime'), "%Y-%m-%d %H:%M:%S").date()
-                    if ohlc_date == date.date():
-                        price = Decimal(str(ohlc.get('close')))
-                        quantity = Decimal(str(quantity))
-                        assetValue += price*quantity
-                        print(f"UPDATE_TS: ---PRICE: {price} (new Asset Value: {assetValue})")
+                    ticker_timeline = ts_by_ticker[ticker]
+                    # if ticker_timeline is None:
+
+
+                    ohlc = ticker_timeline.get(date)
+                    if ohlc:
+                        price = Decimal(str(ohlc["close"]))
+                        print(f"UPDATE_TS: ---PRICE: {price}")
+                        prev_known_price[ticker] = price
                     else:
-                        print(f"UPDATE_TS: ---NO PRICE FOUND")
-                        continue
-                        #use same value as the previous known price of the stock. do not leave it as empty
+                        price = prev_known_price.get(ticker)
+                        print(f"UPDATE_TS: ---N/A PRICE, USING PREV RECORDED PRICE {price}")
+                    
+                    remaining_qty = Decimal(str(remaining_qty))
+                    assetValue += price*remaining_qty
 
         print(f"UPDATE_TS: DATE: {date}")
         print(f"UPDATE_TS: NEW PORTFOLIO: {newPortfolio}")
         print(f"UPDATE_TS: NEW ASSET VALUE: {assetValue}")
 
-        safe_portfolio = to_jsonable(newPortfolio)
         # 5. save uid, date, assetValue, newPortfolio to database
+        safe_portfolio = to_jsonable(newPortfolio)
         add_ts(db, uid, date, assetValue, safe_portfolio)
 
-        # 6. increment index and date, reset prevPortfolio
-        index+=1
+        # 6. increment date + reset prevPortfolio
         prevPortfolio = newPortfolio
         date = incrementNext15minMarket(date)
 
