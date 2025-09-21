@@ -62,7 +62,6 @@ def get_latest_user_timeline_value(db, uid):
 
     return db.execute(stmt).scalars().first()
 
-
 # ---------------- FETCH ONLY LATEST TIMELINE PORTFOLIO (for specific user) ----------------
 def get_latest_user_timeline_portfolio(db, uid):
     if not uid or not db:

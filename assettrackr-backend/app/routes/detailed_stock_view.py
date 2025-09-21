@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request, g
 from decimal import Decimal, ROUND_HALF_UP
 import requests
-import os 
+import os
+import finnhub
 
 from ..utils.recommendations import getRecommendation
 from ..services.detailed_stock_view_service import get_time_series
@@ -25,6 +26,8 @@ LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
 Q8  = Decimal('1.00000000')              # 8 dp
 P16 = Decimal('1.0000000000000000')      # 16 dp
+
+finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
 
 # ---------------- RETRIEVE COMPANY PROFILE DATA  ----------------
 @bp.route('/profile_data', methods=["GET"])
@@ -160,9 +163,12 @@ def submit_order():
     tradingType = "Over The Counter (OTC)"
     
     try:
+        res = finnhub_client.quote(ticker)
+        execution_price = Decimal(res.get("c", 0)).quantize(P16, rounding=ROUND_HALF_UP)
+        print(f"EXECUTION PRICE: {execution_price}")
         # execution_price = Decimal(retrieveLatestPriceIndividual).quantize(P16, rounding=ROUND_HALF_UP)
         # check if market is open NY 9:30am - 4pm
-        execution_price = Decimal(229.05).quantize(P16, rounding=ROUND_HALF_UP)
+        # execution_price = Decimal(229.05).quantize(P16, rounding=ROUND_HALF_UP)
         if (checkMarketOpen()):
             status="FILLED"
             if action=="BUY":

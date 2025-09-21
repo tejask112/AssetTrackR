@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, g
+from flask import Blueprint, jsonify, g, request
 import os
 from datetime import timezone
 
@@ -19,7 +19,9 @@ LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
 @bp.route('/home_data')
 def getHomeData():
-    uid = "X5s2HImyTfNITElXIdhIRu0K70F3"
+    uid = request.args.get("query", type=str)
+    if not uid:
+        raise ValueError("UID not found")
     
     # get the portfolio
     user_portfolio = get_portfolio(g.db, uid) # example: {'ticker1': quantity, 'ticker2': quantity, ... }
