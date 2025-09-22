@@ -148,6 +148,7 @@ def update_ts(db, uid):
     print("------------------------------------------------------ PORTFOLIO:" + str(portfolio))
     print("------------------------------------------------------ UPDATE TS:" + str(latest_timeline))
     print("------------------------------------------------------ FILTERED TRADES:" + str(filtered_trades))
+    print("------------------------------------------------------ PRICES:" + str(timeseries))
 
     if date.minute not in {0, 15, 30, 45}:
         date = roundTo15Min(date)

@@ -1,5 +1,28 @@
-.chartBox{
-    
+
+.accountValueAmount{
+    font-size: 2.75rem;
+    font-weight: 625;
+    margin-top: -10px;
+}
+
+.accountValueSection{
+    margin-bottom: 15px;
+}
+
+.cashAmount{
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: -10px;
+}
+
+.changeValue{
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: -10px;
+}
+
+.dataDiv{
+    min-width: 600px;
 }
 
 .externalDiv{
@@ -7,6 +30,38 @@
     display: flex;
 }
 
-.statsBox{
-    
+.overviewChange{
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+}
+
+.overviewDiv{
+    width: 100%;
+    border: 2px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 15px 15px;
+    margin-bottom: 15px;
+}
+
+.portfolioDiv{
+    min-height: 450px;
+    width: 100%;
+    display: flex;
+}
+
+.titleText{
+    font-size: 1rem;
+    font-weight: 600;
+    color: #656c79;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.treemapDiv{
+    width: 100%;
+    border: 2px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 15px 15px;
 }

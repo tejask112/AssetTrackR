@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react';
 import styles from './Home.module.css'
+import TreeMap from './TreeMap/TreeMap'
 
 interface Portfolio {
     [ticker: string]: string;
@@ -76,19 +77,74 @@ export default function Home() {
         setTodaysChangePercentage(open !== 0 ? (delta / open) * 100 : null);
     }, [homeData, fmtYMD, todayYMD]);
 
+    // --------- calculate start change ---------
+    const [startChange, setStartChange] = useState<number | null>(null);
+    const [startChangePercentage, setStartChangePercentage] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (!homeData) return;
+
+        setStartChange(Number(homeData.assetValue) + Number(homeData.cash) - 100000);
+        setStartChangePercentage(((Number(homeData.assetValue) + Number(homeData.cash) - 100000) / 100000) * 100);
+
+    }, [homeData])
+
+    const formatForCommas = (amount: number): string =>
+        new Intl.NumberFormat('en-US', {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(amount);
+
+
     if (!homeData) {return (<h1>Loading...</h1>)}
 
     return (
         <div className={styles.externalDiv}>
             
-            {/* Asset Stats div */}
-            <div className={styles.statsBox}>
-                <h1>Assets Value</h1>
-                <h1>{Number(homeData.assetValue).toFixed(2)} USD</h1>
-                <h1>{todaysChange ?? '—'} USD</h1>
-                <h1>{todaysChangePercentage == null ? '—' : todaysChangePercentage.toFixed(2) + '%'}</h1>
-                <h1>Cash: {Number(homeData.cash).toFixed(2)}</h1>
+            <div className={styles.portfolioDiv}>
+                <div className={styles.dataDiv}>
+                    <div className={styles.overviewDiv}>
+                        <div className={styles.accountValueSection}>
+                            <div className={styles.titleText}>Account's value</div>
+                            <div className={styles.accountValueAmount}>{formatForCommas(Number(homeData.assetValue))} USD</div>
+                        </div>
+                        <div className={styles.overviewChange}>
+                            <div className={styles.changeItem}>
+                                <div className={styles.titleText}>Today's change</div>
+                                <div className={styles.changeValue} style={{color:typeof todaysChange === 'number'? todaysChange > 0 ? '#059669' : todaysChange < 0 ? '#dc2626' : undefined: undefined }}>
+                                    {todaysChange != null && todaysChange > 0 ? "+" : ""}{todaysChange ? formatForCommas(todaysChange) : '—'} {todaysChangePercentage != null ? `(${todaysChangePercentage.toFixed(2)}%)` : ''}
+                                </div>
+                            </div>
+                            <div className={styles.changeItem} style={{color:typeof todaysChange === 'number'? todaysChange > 0 ? '#059669' : todaysChange < 0 ? '#dc2626' : undefined: undefined }}>
+                                <div className={styles.titleText}>Since Start</div>
+                                <div className={styles.changeValue}>
+                                    {startChange != null && startChange > 0 ? "+" : ""}{startChange ? formatForCommas(startChange) : '—'} {startChangePercentage != null ? `(${formatForCommas(startChangePercentage)}%)` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.cashSection}>
+                            <div className={styles.titleText}>Cash Balance</div>
+                            <div className={styles.cashAmount}>{homeData.cash != null ? formatForCommas(Number(homeData.cash)) : '-'} USD</div>
+                        </div>
+                    </div>
+
+                    <div className={styles.treemapDiv}>
+                        <div className={styles.titleText}>Portfolio Holdings</div>
+                        <TreeMap portfolio={homeData.portfolio} showDistributedColors colors={['#4f6d7a','#8DCAE3','#84a59d', '#428C77']}/>
+
+                    </div>
+
+
+                </div>
+
+                <div className={styles.chartDiv}>
+                    <h1>chart</h1>
+                </div>
             </div>
+
+
+            
             
             
            

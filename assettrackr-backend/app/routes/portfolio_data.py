@@ -34,7 +34,7 @@ def getHomeData():
     cash = str(getLiquidCash(g.db, uid))
     
     # update + retrieve the user's timeline
-    # update_ts(g.db, uid)
+    update_ts(g.db, uid)
     user_timeline = get_user_entire_timeline(g.db, uid) # example: [{'date': datetime obj, 'value': Decimal obj}, ...]
     timeline = []
     for record in user_timeline:
