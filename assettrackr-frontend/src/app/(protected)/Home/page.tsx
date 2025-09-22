@@ -129,13 +129,10 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className={styles.treemapDiv}>
-                        <div className={styles.titleText}>Portfolio Holdings</div>
+                    <div >
+                        <div className={styles.portfolioTitle}>Portfolio Distribution</div>
                         <TreeMap portfolio={homeData.portfolio} showDistributedColors colors={['#4f6d7a','#8DCAE3','#84a59d', '#428C77']}/>
-
                     </div>
-
-
                 </div>
 
                 <div className={styles.chartDiv}>

@@ -6,6 +6,7 @@ from datetime import timezone
 from ..db.db_services.portfolio.database_portfolio import get_portfolio, calculate_portfolio_value
 from ..db.db_services.timeline.database_timeline import update_ts, get_user_entire_timeline
 from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash
+from ..services.news_service import retrieve_news
 
 
 bp = Blueprint("portfolio_data", __name__)
@@ -43,11 +44,15 @@ def getHomeData():
             "value": str(round(record.get('value'), 2))
         })
 
+    # news
+    news = retrieve_news()
+
     output = {
         'assetValue': assetValue,
         'cash': cash,
         'portfolio': portfolio,
-        'timeline': timeline
+        'timeline': timeline,
+        'news': news,
     }
 
     return jsonify(output)
