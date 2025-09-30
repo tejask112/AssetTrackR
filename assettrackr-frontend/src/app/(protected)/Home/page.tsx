@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import styles from './Home.module.css'
 import TreeMap from './TreeMap/TreeMap'
+import NewsCard from './News/News'
 
 interface Portfolio {
     [ticker: string]: string;
@@ -12,11 +13,24 @@ interface TimelineItem {
     value: string; 
 }
 
+interface NewsItem {
+    category: string;
+    datetime: number;
+    headline: string;
+    id: number;
+    image: string;
+    related: string;
+    source: string;
+    summary: string;
+    url: string;
+}
+
 interface HomePageData {
     assetValue: string;
     cash: string;
     portfolio: Portfolio[];
     timeline: TimelineItem[];
+    news: NewsItem[];
 }
 
 
@@ -96,6 +110,7 @@ export default function Home() {
             maximumFractionDigits: 2,
         }).format(amount);
 
+    // const items = homeData.news.filter(n => n.category?.toLowerCase() === "top news").sort((a, b) => b.datetime - a.datetime);             
 
     if (!homeData) {return (<h1>Loading...</h1>)}
 
@@ -138,6 +153,27 @@ export default function Home() {
                 <div className={styles.chartDiv}>
                     <h1>chart</h1>
                 </div>
+            </div>
+
+            <div className={styles.additionalInfoDiv}>
+                
+                <div className={styles.watchlistDiv}>
+                    <h1>watchlist</h1>
+                </div>
+
+                <div className={styles.newsDiv}>
+                    <h1 className={styles.newsTitle}>Recent Market News</h1>
+
+                    <div className={styles.newsItemContainer}> 
+                        <div className={styles.newsGrid}>
+                        {homeData.news.map((item) => (
+                            <NewsCard key={item.id} item={item} />
+                        ))}
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
 
 

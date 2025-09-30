@@ -11,4 +11,4 @@ LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
 
 def retrieve_news():
-    return finnhub_client.general_news('general', min_id=0)
+    return finnhub_client.general_news('general', min_id=0)[:10]
