@@ -1,8 +1,9 @@
 import os
 import uuid
 
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint, PrimaryKeyConstraint, Index, select, JSON
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, create_engine, CheckConstraint, PrimaryKeyConstraint, Index, select, JSON, text
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base, relationship
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
 
 DATABASE_URL = os.getenv(
@@ -34,6 +35,7 @@ class User(Base):
     uid = Column(String(128), primary_key=True)
     email = Column(String(255), unique=True, nullable=False)
     cash = Column(Numeric(64, 16), nullable=False)
+    watchlist = Column(MutableDict.as_mutable(JSONB),nullable=False,server_default=text("'{}'::jsonb"))
 
     trades = relationship (
         "Trades",

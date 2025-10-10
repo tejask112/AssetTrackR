@@ -9,6 +9,8 @@ import Modal from '@mui/material/Modal';
 import ChartsHandler from "./Charts/ChartsHandler";
 import LoadingBar from "./LoadingBar/LoadingBar";
 import TradeModal from "./TradeModal/TradeModal"
+import { auth } from '../../(auth)/firebaseClient'
+
 
 interface Props {
     symbol: string;
@@ -220,6 +222,27 @@ export default function DetailedStockView({ symbol }: Props) {
         }
     }, [timeFrame, results])
 
+    // ---------------------- watchlist stuff ---------------------------
+    const addToWatchlist = async () => {
+        try {
+            const user = auth.currentUser;
+
+            const uid = user?.uid;
+            const companyName = results?.companyName;
+            const ticker = symbol;
+    
+            const res = await fetch("/api/watchlist", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uid, ticker, companyName })
+            })
+
+            if (!res.ok) {
+                // popup to show not ok
+            }
+        }
+    }
+
     // ---------------------- wait for the api to return a response ----------------------
     if (!results) { return (<LoadingBar></LoadingBar>) }
 
@@ -246,18 +269,22 @@ export default function DetailedStockView({ symbol }: Props) {
                     </h1>
                 </div>
 
-                <div className={styles.buttonsDiv}>
-                    {/* trade button modal*/}
-                    <button className={styles.tradeButton} onClick={handleOpenTradeModal}>Trade {symbol}</button>
-                    <Modal open={openTradeModal} onClose={handleCloseTradeModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                        <TradeModal symbol={symbol} price={results.price}/>
-                    </Modal>
+                <div className={styles.allButtonsDiv}>
+                    <div className={styles.buttonsDiv}>
+                        {/* trade button modal*/}
+                        <button className={styles.tradeButton} onClick={handleOpenTradeModal}>Trade {symbol}</button>
+                        <Modal open={openTradeModal} onClose={handleCloseTradeModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                            <TradeModal symbol={symbol} price={results.price}/>
+                        </Modal>
 
-                    {/* fundamental data button modal*/}
-                    <button className={styles.fundamentalDataButton} onClick={handleOpenFundamentalData}>View Fundamental Data</button>
-                    <Modal open={openFundamentalData} onClose={handleCloseFundamentalData} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                        <FundamentalDataModal results={results}/>
-                    </Modal>
+                        {/* fundamental data button modal*/}
+                        <button className={styles.fundamentalDataButton} onClick={handleOpenFundamentalData}>View Fundamental Data</button>
+                        <Modal open={openFundamentalData} onClose={handleCloseFundamentalData} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                            <FundamentalDataModal results={results}/>
+                        </Modal>
+                    </div>
+
+                    <button className={styles.addToWatchlistButton} onClick={addToWatchlist}>+</button>
                 </div>
 
                 <div className={styles.briefCompanyInfoCard}>

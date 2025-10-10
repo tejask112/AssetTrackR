@@ -1,7 +1,9 @@
 from flask import g
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import literal
+from sqlalchemy.dialects.postgresql import JSONB
 import sqlalchemy as sa
-from sqlalchemy import select
+from sqlalchemy import select, func
 from datetime import datetime
 from zoneinfo import ZoneInfo 
 
@@ -22,7 +24,7 @@ def create_user(db, uid, email):
     
     stmt = (
         insert(User)
-        .values(uid=uid, email=email, cash=100000)
+        .values(uid=uid, email=email, cash=100000, watchlist=literal({}).cast(JSONB))
         .on_conflict_do_nothing(index_elements=[User.uid])
         .returning(User.uid)
     )
@@ -101,3 +103,16 @@ def updateLiquidCash(db, uid, total_price, action):
     except Exception as e:
         raise ValueError(e)
     
+# ---------------- ADD COMPANY TO WATCHLIST  ----------------
+def addToWatchList(db, uid, ticker, companyName):
+    if not all ([db, uid, ticker, companyName]):
+        raise ValueError("Internal Server Error")
+    
+    stmt = (
+        sa.update(User)
+        .where(User.uid == uid)
+        .values(watchlist=func.coalesce(User.watchlist, literal({}).cast(JSONB)).op("||")(func.jsonb_build_object(ticker, companyName)))
+    )
+
+    db.execute(stmt).commit()
+    return True

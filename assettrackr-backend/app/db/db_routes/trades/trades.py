@@ -6,7 +6,6 @@ from ....db.db_services.trades.database_trades import get_user_trades
 
 bp = Blueprint("trades", __name__)
 
-
 # ---------------- RETRIEVE ALL TRADE HISTORY FOR USER  ----------------
 @bp.route('/trade_history', methods=["GET"])
 def trade_history():
