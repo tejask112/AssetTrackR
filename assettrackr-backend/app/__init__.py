@@ -39,7 +39,7 @@ def create_app():
     from .routes.login_handler import bp as loginHandler_bp
     from .db.db_routes.database_routes import bp as databaseAccess_bp
     from .db.db_routes.trades.trades import bp as trades_bp
-    from .db.db_routes.watchlist import bp as watchlist_bp
+    from .db.db_routes.watchlist.watchlist import bp as watchlist_bp
 
     app.register_blueprint(exploreStocks_bp, url_prefix="/api")
     app.register_blueprint(detailedStockView_bp, url_prefix="/api")

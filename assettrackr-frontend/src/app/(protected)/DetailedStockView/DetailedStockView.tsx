@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import * as React from 'react';
 import Image from "next/image";
 import styles from './DetailedStockView.module.css';
@@ -230,16 +232,20 @@ export default function DetailedStockView({ symbol }: Props) {
             const uid = user?.uid;
             const companyName = results?.companyName;
             const ticker = symbol;
-    
-            const res = await fetch("/api/watchlist", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ uid, ticker, companyName })
-            })
+
+            if (!companyName) throw new Error("No Company Name");
+            
+
+            const res = await fetch(
+                `/api/watchlist?uid=${uid}&ticker=${ticker}&companyName=` + encodeURIComponent(companyName),
+                { method: "POST" }
+            );
 
             if (!res.ok) {
-                // popup to show not ok
+                console.log(`Error: ${res}`)
             }
+        } catch {
+            console.log(`Error`)
         }
     }
 
