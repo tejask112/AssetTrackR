@@ -1,13 +1,14 @@
 from flask import Blueprint, jsonify, g, request
 import os
 from datetime import timezone
-
+import finnhub
 
 from ..db.db_services.portfolio.database_portfolio import get_portfolio, calculate_portfolio_value
 from ..db.db_services.timeline.database_timeline import update_ts, get_user_entire_timeline
-from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash
+from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash, getWatchList
 from ..services.news_service import retrieve_news
-
+from ..services.explore_stocks_service import calculateAllHistoricalBarsFromAPI
+from ..utils.dates import calculateEndDate, calculateTwoWeekAgoDate
 
 bp = Blueprint("portfolio_data", __name__)
 
@@ -18,11 +19,15 @@ FMP_KEY = os.getenv("FMP_KEY", "")
 TWELVE_API_KEY = os.getenv("TWELVE_API_KEY", "")
 LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
+finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
+
 @bp.route('/home_data')
 def getHomeData():
     uid = request.args.get("query", type=str)
     if not uid:
         raise ValueError("UID not found")
+    
+    print(f"Received Home Page request for: {uid}")
     
     # get the portfolio
     user_portfolio = get_portfolio(g.db, uid) # example: {'ticker1': quantity, 'ticker2': quantity, ... }
@@ -47,12 +52,35 @@ def getHomeData():
     # news
     news = retrieve_news()
 
+    # watchlist
+    user_watchlist = getWatchList(g.db, uid)
+    start_date = calculateTwoWeekAgoDate()
+    end_date = calculateEndDate()
+    all_bars = calculateAllHistoricalBarsFromAPI(list(user_watchlist.keys()), start_date, end_date, False)
+
+    watchlist = []
+    for ticker, companyName in user_watchlist.items():
+        element = {}
+        element["ticker"] = ticker
+        element["companyName"] = companyName
+        element["currentPrice"] = finnhub_client.quote(ticker)
+        element["companyLogo"] = f'https://img.logo.dev/ticker/{ticker}?token={LOGO_DEV_KEY}&retina=true'
+        
+        if ticker in all_bars:
+            bars = all_bars[ticker]
+            element["timeseries"] = [bar['c'] for bar in bars]
+        else:
+            element["timeseries"] = []
+
+        watchlist.append(element)
+
     output = {
         'assetValue': assetValue,
         'cash': cash,
         'portfolio': portfolio,
         'timeline': timeline,
         'news': news,
+        'watchlist': watchlist
     }
 
     return jsonify(output)

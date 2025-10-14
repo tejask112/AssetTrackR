@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './Home.module.css'
 import TreeMap from './TreeMap/TreeMap'
 import NewsCard from './News/News'
+import { useUser } from '@/context/UserContext';
 
 interface Portfolio {
     [ticker: string]: string;
@@ -33,20 +34,20 @@ interface HomePageData {
     news: NewsItem[];
 }
 
-
 export default function Home() {
 
-    const [uid, setUid] = useState<string>("X5s2HImyTfNITElXIdhIRu0K70F3")
+    const { userID, userEmail, setAuth, clear } = useUser();
 
     const [homeData, setHomeData] = useState<HomePageData | null>(null);
     useEffect(() => {
+        if (!userID) return; 
         async function fetchHomePageData() {
-            const res = await fetch("api/home_data?query=" + encodeURIComponent(uid));
+            const res = await fetch(`api/home_data?query=${userID}`);
             const json: HomePageData = await res.json();
             setHomeData(json);
         }
         fetchHomePageData();
-    }, [])
+    }, [userID])
 
     // --------- calculate today's change (timezone aware) ---------
     const [todaysChange, setTodaysChange] = useState<number | null>(null);

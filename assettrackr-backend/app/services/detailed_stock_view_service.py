@@ -1,7 +1,7 @@
 import requests, os
 from decimal import Decimal, ROUND_HALF_UP
 
-from ..utils.dates import calculateStartDate, calculate5YagoDate
+from ..utils.dates import calculateOneWeekAgoDate, calculate5YagoDate
 
 Q8  = Decimal('1.00000000')              # 8 dp
 P16 = Decimal('1.0000000000000000')      # 16 dp
@@ -15,7 +15,7 @@ LOGO_DEV_KEY = os.getenv("LOGO_DEV_KEY", "")
 
 def get_time_series(symbol):
     # retrieve minutely data from past 7 days
-    minutelyStartDate = calculateStartDate() # date 7 days ago
+    minutelyStartDate = calculateOneWeekAgoDate() # date 7 days ago
 
     minutelyInterval = "1min"
     minutelyTimeSeriesUrl = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval={minutelyInterval}&start_date={minutelyStartDate}&outputsize=5000&apikey={TWELVE_API_KEY}"

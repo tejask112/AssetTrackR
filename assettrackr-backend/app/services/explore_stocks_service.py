@@ -9,8 +9,11 @@ headers = {
     "APCA-API-SECRET-KEY": ALPACA_SECRET,
 }
 
-def calculateAllHistoricalBarsFromAPI(listOfStocks, start_date, end_date):
-    allSymbolsList = [s['symbol'] for s in listOfStocks]
+def calculateAllHistoricalBarsFromAPI(listOfStocks, start_date, end_date, premade):
+    if premade:
+        allSymbolsList = [s['symbol'] for s in listOfStocks]
+    else:
+        allSymbolsList = listOfStocks
     allSymbolsString = ",".join(allSymbolsList)
     print("All keys AssetTrackR requested:" + allSymbolsString + " | count = " + str(len(allSymbolsList)))
 

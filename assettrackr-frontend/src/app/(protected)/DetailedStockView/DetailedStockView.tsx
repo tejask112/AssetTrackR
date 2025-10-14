@@ -123,13 +123,14 @@ export default function DetailedStockView({ symbol }: Props) {
 
     // get back end api response
     useEffect(() => {
+        if (!userID) return; 
         async function fetchDetailedStockData() {
             const res = await fetch(`/api/profile_data?uid=${userID}&symbol=` + encodeURIComponent(symbol));
             const json: ProfileDataResponse = await res.json();
             setResults(json);
         }
         fetchDetailedStockData();
-    }, [])
+    }, [userID])
 
     // ---------------------- Handling the Time-Frame for the Charts ----------------------
 

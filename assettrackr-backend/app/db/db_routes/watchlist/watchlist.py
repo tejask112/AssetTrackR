@@ -41,5 +41,3 @@ def removeFromWatchlist():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-    
-

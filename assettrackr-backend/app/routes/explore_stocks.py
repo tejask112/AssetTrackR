@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request, current_app as app
 import os, requests
 import finnhub
 
-from ..utils.dates import calculateStartDate, calculateEndDate, calculate5YagoDate
+from ..utils.dates import calculateOneWeekAgoDate, calculateEndDate, calculate5YagoDate
 from ..services.explore_stocks_service import calculateAllHistoricalBarsFromAPI, calculate24HclosingPriceDiff
 
 bp = Blueprint("explore_stocks", __name__)
@@ -34,12 +34,12 @@ def biggest_stock_gainers():
         return jsonify({"error": "Upstream service unavailable"}), 502
     
     # calculate the dates: 1 week ago, today 2 hours ago -> for historical bars api call
-    start_date = calculateStartDate()
+    start_date = calculateOneWeekAgoDate()
     end_date = calculateEndDate()
 
     listOfTodaysTopGainers = sorted(response.json(), key=lambda s: s["changesPercentage"], reverse=True)[:10]
 
-    allBars = calculateAllHistoricalBarsFromAPI(listOfTodaysTopGainers, start_date, end_date)
+    allBars = calculateAllHistoricalBarsFromAPI(listOfTodaysTopGainers, start_date, end_date, True)
 
     output = []
     for s in listOfTodaysTopGainers:
@@ -77,11 +77,11 @@ def biggest_stock_losers():
         return jsonify({"error": "Upstream service unavailable"}), 502
 
     # calculate the dates: 1 week ago, today 2 hours ago -> for historical bars api call
-    start_date = calculateStartDate()
+    start_date = calculateOneWeekAgoDate()
     end_date = calculateEndDate()
 
     listOfTodaysTopLosers = sorted(response.json(), key=lambda s: s["changesPercentage"])[:10]
-    allBars = calculateAllHistoricalBarsFromAPI(listOfTodaysTopLosers, start_date, end_date)
+    allBars = calculateAllHistoricalBarsFromAPI(listOfTodaysTopLosers, start_date, end_date, True)
 
     output = []
     for s in listOfTodaysTopLosers:
@@ -124,10 +124,10 @@ def most_actively_traded():
     ]
     
     # calculate the dates: 1 week ago, today 2 hours ago -> for historical bars api call
-    start_date = calculateStartDate()
+    start_date = calculateOneWeekAgoDate()
     end_date = calculateEndDate()
 
-    allBars = calculateAllHistoricalBarsFromAPI(stockMap, start_date, end_date)
+    allBars = calculateAllHistoricalBarsFromAPI(stockMap, start_date, end_date, True)
 
     output = []
     for s in stockMap:

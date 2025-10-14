@@ -1,8 +1,14 @@
 from datetime import datetime, timedelta, timezone
 
-def calculateStartDate():
+def calculateOneWeekAgoDate():
     current_date = datetime.now(timezone.utc)
     start_date_obj = current_date - timedelta(days=7)
+    start_date = start_date_obj.strftime("%Y-%m-%d")
+    return start_date
+
+def calculateTwoWeekAgoDate():
+    current_date = datetime.now(timezone.utc)
+    start_date_obj = current_date - timedelta(days=14)
     start_date = start_date_obj.strftime("%Y-%m-%d")
     return start_date
 

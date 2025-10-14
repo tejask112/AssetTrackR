@@ -104,7 +104,18 @@ def updateLiquidCash(db, uid, total_price, action):
 
     except Exception as e:
         raise ValueError(e)
-    
+
+# ---------------- GET USER'S WATCHLIST ----------------
+def getWatchList(db, uid):
+    if not db or not uid:
+        raise ValueError("Internal Server Error")
+
+    user = db.get(User, uid)
+    if user is None:
+        raise ValueError("User not found")
+    watchlist = user.watchlist or {}
+    return watchlist
+
 # ---------------- CHECK COMPANY IN WATCHLIST ----------------
 def checkInWatchList(db, uid, ticker):
     if not all ([db, uid, ticker]):
