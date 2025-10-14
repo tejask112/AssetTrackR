@@ -12,8 +12,7 @@ from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio, get_portfolio, calculate_portfolio_value
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
 from ..services.run_queued_trades import run_queued_trades
-from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash
-from ..db.db_services.timeline.database_timeline import get_user_entire_timeline
+from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash, checkInWatchList
 
 bp = Blueprint("detailed_stock_view", __name__)
 
@@ -32,7 +31,11 @@ finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
 # ---------------- RETRIEVE COMPANY PROFILE DATA  ----------------
 @bp.route('/profile_data', methods=["GET"])
 def profile_data():
-    symbol = request.args.get("query", "")
+    symbol = request.args.get("symbol", "")
+    uid = request.args.get("uid", "")
+
+    if (uid==""):
+        return jsonify({ "error": "Missing UID argument" })
 
     companyProfileUrl = f"https://financialmodelingprep.com/stable/profile?symbol={symbol}&apikey={FMP_KEY}"
     companyProfileResponse = requests.get(url=companyProfileUrl)
@@ -50,6 +53,8 @@ def profile_data():
 
     timeSeriesResult = get_time_series(symbol)
 
+    inWatchlist = checkInWatchList(g.db, uid, symbol)
+    
     modified_data = {
         # COMPANY METADATA
         "companyName": companyProfileResult.get("companyName", "Error"),
@@ -65,6 +70,7 @@ def profile_data():
         "priceTimeLong": timeSeriesResult.get("values", -1)[0].get("datetime", -1),
         "rangeLow": companyProfileResult.get("range", "Error").split("-")[0],
         "rangeHigh": companyProfileResult.get("range", "Error").split("-")[1],
+        "inWatchlist": inWatchlist,
 
         # COMPANY FINANCIALS - Volume
         "volume": companyProfileResult.get("volume", -1),

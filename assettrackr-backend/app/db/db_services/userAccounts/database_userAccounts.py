@@ -6,6 +6,8 @@ import sqlalchemy as sa
 from sqlalchemy import select, func
 from datetime import datetime
 from zoneinfo import ZoneInfo 
+from sqlalchemy import update, func, cast, literal
+from sqlalchemy.dialects.postgresql import JSONB
 
 from ..database_manager import User, Timeline
 
@@ -103,16 +105,39 @@ def updateLiquidCash(db, uid, total_price, action):
     except Exception as e:
         raise ValueError(e)
     
+# ---------------- CHECK COMPANY IN WATCHLIST ----------------
+def checkInWatchList(db, uid, ticker):
+    if not all ([db, uid, ticker]):
+        raise ValueError("Internal Server Error")
+    
+    user = db.get(User, uid)
+    if user is None:
+        raise ValueError("User not found")
+    watchlist = user.watchlist or {}
+    return ticker in watchlist
+
 # ---------------- ADD COMPANY TO WATCHLIST  ----------------
 def addToWatchList(db, uid, ticker, companyName):
     if not all ([db, uid, ticker, companyName]):
         raise ValueError("Internal Server Error")
     
-    stmt = (
-        sa.update(User)
-        .where(User.uid == uid)
-        .values(watchlist=func.coalesce(User.watchlist, literal({}).cast(JSONB)).op("||")(func.jsonb_build_object(ticker, companyName)))
-    )
+    user = db.get(User, uid)
+    if user is None:
+        raise ValueError("User not found")
+    if user.watchlist is None:
+        user.watchlist = {}
+    user.watchlist.setdefault(ticker, companyName) 
+    db.commit()
 
-    db.execute(stmt).commit()
-    return True
+# ---------------- ADD COMPANY TO WATCHLIST  ----------------
+def removeFromWatchList(db, uid, ticker):
+    if not all ([db, uid, ticker]):
+        raise ValueError("Internal Server Error")
+    
+    user = db.get(User, uid)
+    if user is None:
+        raise ValueError("User not found")
+    if user.watchlist is None:
+        user.watchlist = {}
+    user.watchlist.pop(ticker, None)
+    db.commit()

@@ -12,6 +12,7 @@ import ChartsHandler from "./Charts/ChartsHandler";
 import LoadingBar from "./LoadingBar/LoadingBar";
 import TradeModal from "./TradeModal/TradeModal"
 import { auth } from '../../(auth)/firebaseClient'
+import { useUser } from '@/context/UserContext';
 
 
 interface Props {
@@ -52,6 +53,7 @@ export interface ProfileDataResponse {
     priceTimeLong: string;
     rangeLow: number;
     rangeHigh: number;
+    inWatchlist: boolean;
 
     // Volume / liquidity
     volume: number;
@@ -107,6 +109,7 @@ type TimeFrame = '1Hour' | '4Hour' | '1Day' | '5Day' | '1Month' | '6Month' | '1Y
 export default function DetailedStockView({ symbol }: Props) {
 
     const [results, setResults] = useState<ProfileDataResponse | null>(null);
+    const { userID, userEmail, setAuth, clear } = useUser();
 
     // modal handlers
     const [openFundamentalData, setOpenFundamentalData] = React.useState(false);
@@ -121,7 +124,7 @@ export default function DetailedStockView({ symbol }: Props) {
     // get back end api response
     useEffect(() => {
         async function fetchDetailedStockData() {
-            const res = await fetch("/api/profile_data?query=" + encodeURIComponent(symbol));
+            const res = await fetch(`/api/profile_data?uid=${userID}&symbol=` + encodeURIComponent(symbol));
             const json: ProfileDataResponse = await res.json();
             setResults(json);
         }
@@ -225,6 +228,11 @@ export default function DetailedStockView({ symbol }: Props) {
     }, [timeFrame, results])
 
     // ---------------------- watchlist stuff ---------------------------
+    const [localInWatchlist, setLocalInWatchlist] = useState<Boolean>(false);
+    useEffect(() => {
+        setLocalInWatchlist(!!results?.inWatchlist);
+    }, [results])
+
     const addToWatchlist = async () => {
         try {
             const user = auth.currentUser;
@@ -235,14 +243,40 @@ export default function DetailedStockView({ symbol }: Props) {
 
             if (!companyName) throw new Error("No Company Name");
             
-
             const res = await fetch(
-                `/api/watchlist?uid=${uid}&ticker=${ticker}&companyName=` + encodeURIComponent(companyName),
+                `/api/watchlist_add?uid=${uid}&ticker=${ticker}&companyName=` + encodeURIComponent(companyName),
                 { method: "POST" }
             );
 
             if (!res.ok) {
                 console.log(`Error: ${res}`)
+            } else {
+                setLocalInWatchlist(true);
+            }
+        } catch {
+            console.log(`Error`)
+        }
+    }
+
+    const removeFromWatchlist = async () => {
+        try {
+            const user = auth.currentUser;
+
+            const uid = user?.uid;
+            const companyName = results?.companyName;
+            const ticker = symbol;
+
+            if (!companyName) throw new Error("No Company Name");
+            
+            const res = await fetch(
+                `/api/watchlist_remove?uid=${uid}&ticker=${ticker}`,
+                { method: "POST" }
+            );
+
+            if (!res.ok) {
+                console.log(`Error: ${res}`)
+            } else {
+                setLocalInWatchlist(false);
             }
         } catch {
             console.log(`Error`)
@@ -290,7 +324,11 @@ export default function DetailedStockView({ symbol }: Props) {
                         </Modal>
                     </div>
 
-                    <button className={styles.addToWatchlistButton} onClick={addToWatchlist}>+</button>
+                    {localInWatchlist ? (
+                        <button className={styles.removeFromWatchlistButton} onClick={removeFromWatchlist}>-</button> 
+                    ) : (
+                        <button className={styles.addToWatchlistButton} onClick={addToWatchlist}>+</button> 
+                    )}
                 </div>
 
                 <div className={styles.briefCompanyInfoCard}>
