@@ -38,8 +38,9 @@ def biggest_stock_gainers():
     end_date = calculateEndDate()
 
     listOfTodaysTopGainers = sorted(response.json(), key=lambda s: s["changesPercentage"], reverse=True)[:10]
+    allSymbolsList = [s['symbol'] for s in listOfTodaysTopGainers]
 
-    allBars = calculateAllHistoricalBarsFromAPI(listOfTodaysTopGainers, start_date, end_date, True)
+    allBars = calculateAllHistoricalBarsFromAPI(allSymbolsList, start_date, end_date)
 
     output = []
     for s in listOfTodaysTopGainers:
@@ -81,7 +82,9 @@ def biggest_stock_losers():
     end_date = calculateEndDate()
 
     listOfTodaysTopLosers = sorted(response.json(), key=lambda s: s["changesPercentage"])[:10]
-    allBars = calculateAllHistoricalBarsFromAPI(listOfTodaysTopLosers, start_date, end_date, True)
+    allSymbolsList = [s['symbol'] for s in listOfTodaysTopLosers]
+
+    allBars = calculateAllHistoricalBarsFromAPI(allSymbolsList, start_date, end_date)
 
     output = []
     for s in listOfTodaysTopLosers:
@@ -127,7 +130,8 @@ def most_actively_traded():
     start_date = calculateOneWeekAgoDate()
     end_date = calculateEndDate()
 
-    allBars = calculateAllHistoricalBarsFromAPI(stockMap, start_date, end_date, True)
+    allSymbolsList = [s["symbol"] for s in stockMap]
+    allBars = calculateAllHistoricalBarsFromAPI(allSymbolsList, start_date, end_date)
 
     output = []
     for s in stockMap:

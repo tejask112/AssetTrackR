@@ -13,6 +13,11 @@
     display: flex;
 }
 
+.bottomTitle{
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
 .cashAmount{
     font-size: 1.75rem;
     font-weight: 500;
@@ -41,10 +46,6 @@
     flex: 1 1 0;  
     min-width: 0; 
     box-sizing: border-box;
-}
-
-.newsTitle{
-    font-size: 1.25rem;
 }
 
 .overviewChange{
@@ -97,4 +98,5 @@
     flex: 1 1 0;  
     min-width: 0; 
     box-sizing: border-box;
+    padding-right: 20px;
 }

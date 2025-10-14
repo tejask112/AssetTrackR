@@ -4,6 +4,7 @@ import styles from './Home.module.css'
 import TreeMap from './TreeMap/TreeMap'
 import NewsCard from './News/News'
 import { useUser } from '@/context/UserContext';
+import WatchlistCard from './Watchlist/WatchlistCard';
 
 interface Portfolio {
     [ticker: string]: string;
@@ -26,12 +27,23 @@ interface NewsItem {
     url: string;
 }
 
+interface WatchlistItem {
+    oneD: string;
+    fiveD: string;
+    ticker: string;
+    companyName: string;
+    companyLogo: string;
+    currentPrice: string;
+    timeseries: number[];
+}
+
 interface HomePageData {
     assetValue: string;
     cash: string;
     portfolio: Portfolio[];
     timeline: TimelineItem[];
     news: NewsItem[];
+    watchlist: WatchlistItem[]
 }
 
 export default function Home() {
@@ -157,19 +169,30 @@ export default function Home() {
             </div>
 
             <div className={styles.additionalInfoDiv}>
-                
                 <div className={styles.watchlistDiv}>
-                    <h1>watchlist</h1>
+                    <h1 className={styles.bottomTitle}>My Watchlist</h1>
+                    <div>
+                        {homeData?.watchlist?.length > 0 ? (
+                            homeData.watchlist.map((item) => (
+                                <WatchlistCard key={item.ticker} item={item}/>
+                            ))
+                        ) : (
+                            <h1>Watchlist is empty</h1>
+                        )}
+                    </div>
+
+
                 </div>
+                
 
                 <div className={styles.newsDiv}>
-                    <h1 className={styles.newsTitle}>Recent Market News</h1>
+                    <h1 className={styles.bottomTitle}>Recent Market News</h1>
 
                     <div className={styles.newsItemContainer}> 
                         <div className={styles.newsGrid}>
-                        {homeData.news.map((item) => (
-                            <NewsCard key={item.id} item={item} />
-                        ))}
+                            {homeData.news.map((item) => (
+                                <NewsCard key={item.id} item={item} />
+                            ))}
                         </div>
                     </div>
 
