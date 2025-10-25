@@ -66,13 +66,16 @@ def getHomeData():
             element["ticker"] = ticker
             element["companyName"] = companyName
             element["currentPrice"] = finnhub_client.quote(ticker).get('c')
-            element["companyLogo"] = f'https://img.logo.dev/ticker/{ticker}?token={LOGO_DEV_KEY}&retina=true'
+            element["companyLogo"] = f'https://img.logo.dev/ticker/{ticker}?token={LOGO_DEV_KEY}&size=300&retina=true'
 
-            url = f"https://financialmodelingprep.com/stable/stock-price-change?symbol={ticker}&apikey={FMP_KEY}"
-            priceChanges = requests.get(url).json()
+            try:
+                url = f"https://financialmodelingprep.com/stable/stock-price-change?symbol={ticker}&apikey={FMP_KEY}"
+                priceChanges = requests.get(url).json()
 
-            element["oneD"] = priceChanges[0].get("1D")
-            element["fiveD"] = priceChanges[0].get("5D")
+                element["oneD"] = priceChanges[0].get("1D")
+                element["fiveD"] = priceChanges[0].get("5D")
+            except:
+                print(f"1D/5D didnt load for {companyName}")
 
             if ticker in all_bars:
                 bars = all_bars[ticker]

@@ -45,6 +45,30 @@
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.45);
     display: flex;
 }
+.entireDiv:hover {
+    cursor: pointer;
+}
+
+button.entireDiv {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  border: 0;
+  background: transparent;
+  padding: 0;
+
+  display: flex;   
+  width: 100%;
+  text-align: left;     
+  cursor: pointer;
+}
+
+button.entireDiv:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
 
 .price{
     margin-top: 5px;

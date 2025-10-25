@@ -64,7 +64,7 @@ def profile_data():
         "website": companyProfileResult.get("website", "Error"),
         "industry": companyProfileResult.get("industry", "Error"),
         "location": companyProfileResult.get("city","Error") + ", " + companyProfileResult.get("country", "Error"),
-        "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token={LOGO_DEV_KEY}&retina=true',
+        "companyLogo": f'https://img.logo.dev/ticker/{symbol}?token={LOGO_DEV_KEY}&size=300&retina=true',
         "price": timeSeriesResult.get("values", -1)[0].get("close", -1),
         "priceTimeShort": timeSeriesResult.get("values", -1)[0].get("datetime", -1)[10:19],
         "priceTimeLong": timeSeriesResult.get("values", -1)[0].get("datetime", -1),
