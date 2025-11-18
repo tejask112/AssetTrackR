@@ -169,7 +169,7 @@ export default function Home() {
                             <div className={styles.cashAddFundsDiv}>
                                 <button className={styles.cashAddFundsButton} onClick={handleOpenDepositModal}>Deposit</button>
                                 <Modal open={openDepositModal} onClose={handleCloseDepositModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                                    <DepositModal/>
+                                    <DepositModal existingCash={Number(homeData.cash)}/>
                                 </Modal>
                             </div>
                         </div>
