@@ -5,6 +5,7 @@ import TreeMap from './TreeMap/TreeMap'
 import NewsCard from './News/News'
 import { useUser } from '@/context/UserContext';
 import WatchlistCard from './Watchlist/WatchlistCard';
+import ChartsHandler from './Chart/ChartHandler';
 
 interface Portfolio {
     [ticker: string]: string;
@@ -144,7 +145,7 @@ export default function Home() {
                                     {todaysChange != null && todaysChange > 0 ? "+" : ""}{todaysChange ? formatForCommas(todaysChange) : '—'} {todaysChangePercentage != null ? `(${todaysChangePercentage.toFixed(2)}%)` : ''}
                                 </div>
                             </div>
-                            <div className={styles.changeItem} style={{color:typeof todaysChange === 'number'? todaysChange > 0 ? '#059669' : todaysChange < 0 ? '#dc2626' : undefined: undefined }}>
+                            <div className={styles.changeItem} style={{color:typeof startChange === 'number'? startChange > 0 ? '#059669' : startChange < 0 ? '#dc2626' : undefined: undefined }}>
                                 <div className={styles.titleText}>Since Start</div>
                                 <div className={styles.changeValue}>
                                     {startChange != null && startChange > 0 ? "+" : ""}{startChange ? formatForCommas(startChange) : '—'} {startChangePercentage != null ? `(${formatForCommas(startChangePercentage)}%)` : ''}
@@ -164,7 +165,7 @@ export default function Home() {
                 </div>
 
                 <div className={styles.chartDiv}>
-                    <h1>chart</h1>
+                    <ChartsHandler data={homeData.timeline}/>
                 </div>
             </div>
 
