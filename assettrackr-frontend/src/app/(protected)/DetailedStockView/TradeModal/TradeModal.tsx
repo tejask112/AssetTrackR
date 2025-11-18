@@ -150,7 +150,6 @@ export default function ( {symbol, price}:Props) {
                                     <label className={styles.quantityLabel}>
                                         Quantity: <input type='number' name='quantity' className={styles.quantityInput} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} max="99999999999999999999.99999999" min="0" step="0.00000001" inputMode="decimal"></input>
                                     </label>
-                                    <button>Select Max</button>
                                     </div>
                                     
                                     <div className={styles.formButtons}>

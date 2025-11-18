@@ -6,6 +6,9 @@ import NewsCard from './News/News'
 import { useUser } from '@/context/UserContext';
 import WatchlistCard from './Watchlist/WatchlistCard';
 import ChartsHandler from './Chart/ChartHandler';
+import * as React from 'react';
+import Modal from '@mui/material/Modal';
+import DepositModal from './DepositModal/DepositModal';
 
 interface Portfolio {
     [ticker: string]: string;
@@ -126,6 +129,12 @@ export default function Home() {
 
     // const items = homeData.news.filter(n => n.category?.toLowerCase() === "top news").sort((a, b) => b.datetime - a.datetime);             
 
+    // ----------- deposit funds into account -----------
+    const [openDepositModal, setOpenDepositModal] = React.useState(false);
+    const handleOpenDepositModal = () => setOpenDepositModal(true);
+    const handleCloseDepositModal = () => setOpenDepositModal(false);
+
+        
     if (!homeData) {return (<h1>Loading...</h1>)}
 
     return (
@@ -153,15 +162,23 @@ export default function Home() {
                             </div>
                         </div>
                         <div className={styles.cashSection}>
-                            <div className={styles.titleText}>Cash Balance</div>
-                            <div className={styles.cashAmount}>{homeData.cash != null ? formatForCommas(Number(homeData.cash)) : '-'} USD</div>
+                            <div className={styles.cashDiv}>
+                                <div className={styles.titleText}>Cash Balance</div>
+                                <div className={styles.cashAmount}>{homeData.cash != null ? formatForCommas(Number(homeData.cash)) : '-'} USD</div>
+                            </div>
+                            <div className={styles.cashAddFundsDiv}>
+                                <button className={styles.cashAddFundsButton} onClick={handleOpenDepositModal}>Deposit</button>
+                                <Modal open={openDepositModal} onClose={handleCloseDepositModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                                    <DepositModal/>
+                                </Modal>
+                            </div>
                         </div>
                     </div>
 
-                    <div >
+                    {/* <div >
                         <div className={styles.portfolioTitle}>Portfolio Distribution</div>
                         <TreeMap portfolio={homeData.portfolio} showDistributedColors colors={['#4f6d7a','#8DCAE3','#84a59d', '#428C77']}/>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className={styles.chartDiv}>
