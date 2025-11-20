@@ -40,6 +40,7 @@ def create_app():
     from .db.db_routes.database_routes import bp as databaseAccess_bp
     from .db.db_routes.trades.trades import bp as trades_bp
     from .db.db_routes.watchlist.watchlist import bp as watchlist_bp
+    from .db.db_routes.balance.balance import bp as balance_bp
 
     app.register_blueprint(exploreStocks_bp, url_prefix="/api")
     app.register_blueprint(detailedStockView_bp, url_prefix="/api")
@@ -48,6 +49,7 @@ def create_app():
     app.register_blueprint(databaseAccess_bp, url_prefix="/api")
     app.register_blueprint(trades_bp, url_prefix="/api")
     app.register_blueprint(watchlist_bp, url_prefix="/api")
+    app.register_blueprint(balance_bp, url_prefix="/api")
 
     # firebase admin
     cred = credentials.Certificate("firebase-adminsdk.json")

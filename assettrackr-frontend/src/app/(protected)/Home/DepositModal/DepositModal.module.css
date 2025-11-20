@@ -21,6 +21,22 @@
     width: 375px;
 }
 
+.divider {
+    border: none;
+    border-top: 1px solid #c2c2c2;
+    margin: 16px 35px;       
+}
+
+
+.errorMessage{
+    font-weight: 600;
+    color: darkred;
+}
+
+.loadingBarDiv{
+    margin: 5px;
+}
+
 .modal {
   position: absolute;
   top: 50%;
@@ -48,6 +64,11 @@
 
 .quantityLabel{
     font-size: 1.25rem;
+}
+
+.successMessage{
+    font-weight: 600;
+    color: darkgreen;
 }
 
 .title{

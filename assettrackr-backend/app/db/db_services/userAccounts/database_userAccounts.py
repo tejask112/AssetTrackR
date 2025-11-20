@@ -73,11 +73,13 @@ def checkLiquidCash(db, uid, total_price):
 
 # ---------------- UPDATE USER'S CASH BALANCE  ----------------
 def updateLiquidCash(db, uid, total_price, action):
+    print("entered update liquid cash")
+    print(f"params: {uid}, {total_price}, {action}")
     if not all([uid, total_price]):
         raise ValueError("Internal Server Error")
     
     try:
-        if (action == "BUY"):
+        if action == "BUY":
             checkLiquidCash(db, uid, total_price)
 
             update_stmt = (
@@ -86,7 +88,8 @@ def updateLiquidCash(db, uid, total_price, action):
                 .values(cash = User.cash - total_price)
                 .returning(User.cash)
             )
-        elif (action == "SELL"):
+        elif action == "SELL" or action == "DEPOSIT":
+            print("...entering sell")
             update_stmt = (
                 sa.update(User)
                 .where(User.uid == uid)
@@ -97,11 +100,15 @@ def updateLiquidCash(db, uid, total_price, action):
             raise ValueError("Internal Server Error")
 
         result = db.execute(update_stmt)
+        db.commit()
         new_cash_balance = result.scalar_one_or_none()
 
         if new_cash_balance is None:
             raise ValueError("Internal Server Error")
 
+        print("updated liquid cash - done")
+        print(f"remaining cash: {new_cash_balance}")
+        return new_cash_balance
     except Exception as e:
         raise ValueError(e)
 

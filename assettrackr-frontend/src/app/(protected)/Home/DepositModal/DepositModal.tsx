@@ -1,6 +1,9 @@
 import { Box } from '@mui/material';
 import styles from './DepositModal.module.css'
 import { useState } from 'react';
+import { auth } from '../../../(auth)/firebaseClient'
+import LoadingBar from '@/app/(auth)/LoadingBar/LoadingBar';
+
 
 interface Props {
     existingCash: number;
@@ -9,6 +12,12 @@ interface Props {
 export default function DepositModal({ existingCash }:Props) {
 
     const [deposit, setDeposit] = useState<number>(10000);
+    const [newBalance, setNewBalance] = useState<number>(existingCash);
+    const [error, setError] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const sleep = (ms: number): Promise<void> =>
+        new Promise((resolve) => setTimeout(resolve, ms));
 
     const formatUSD = (v: unknown) => {
         if (v === '' || v == null) return '-'
@@ -21,6 +30,42 @@ export default function DepositModal({ existingCash }:Props) {
         })
     }
 
+    async function depositFunds() {
+        setLoading(true);
+        setError(false);
+        setSuccess(false);
+        await sleep(1000);
+        const user = auth.currentUser;
+        if (!user) {
+            window.alert("Error - User has not been authenticated");
+            return;
+        } 
+        const jwt = await user.getIdToken();
+
+        const payload = {
+            uid: user.uid,
+            value: deposit,
+            token: jwt,
+        };
+        
+        const res = await fetch('/api/deposit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        
+        if (data.success != 'ok') {
+            setError(true);
+            setSuccess(false);
+            setLoading(false);
+            return;
+        }
+        setNewBalance(Number(data.remaining_balance));
+        setSuccess(true);
+        setLoading(false);
+    }
+
     return(
         <Box className={styles.modal}>
             <div className={styles.depositDiv}>
@@ -31,8 +76,25 @@ export default function DepositModal({ existingCash }:Props) {
                     max="9999999.99" min="0" step="0.01" inputMode="decimal"></input> USD
                 </label>
                 <h1 className={styles.balanceAfterTransactionText}>Balance after transaction:</h1>
-                <h1>{deposit > 9999999.99 ? 'Deposit cannot exceed 9,999,999.99 USD' : formatUSD((existingCash+deposit).toFixed(2)) + ' USD'} </h1>
-                <button className={styles.confirmButton}>Confirm</button>
+                <h1>{deposit > 9999999.99 ? 'Deposit cannot exceed 9,999,999.99 USD' : formatUSD((newBalance+deposit).toFixed(2)) + ' USD'} </h1>
+                <button className={styles.confirmButton} onClick={depositFunds}>Confirm</button>
+                <div className={styles.loadingBarDiv}>
+                    {loading && ( <LoadingBar/> )}
+                </div>
+                {error && (
+                    <div>
+                        <hr className={styles.divider} />
+                        <h1 className={styles.errorMessage}>Unfortunately, something went wrong.</h1>
+                        <h1 className={styles.errorMessage}>Please try again later.</h1>
+                    </div>
+                )}
+                {success && newBalance !== null && (
+                    <div>
+                        <hr className={styles.divider} />
+                        <h1 className={styles.successMessage}>Deposit completed. Thank you!</h1>
+                        <h1>New balance: {formatUSD(newBalance.toFixed(2))} USD</h1>
+                    </div>
+                )}
             </div>
             <div className={styles.historyDiv}>
 
