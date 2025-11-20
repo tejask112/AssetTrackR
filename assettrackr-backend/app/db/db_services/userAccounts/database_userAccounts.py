@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import update, func, cast, literal
 from sqlalchemy.dialects.postgresql import JSONB
 
-from ..database_manager import User, Timeline
+from ..database_manager import User
 
 # ---------------- RETRIEVE ALL USERS  ----------------
 def list_users():
@@ -20,7 +20,6 @@ def list_users():
 
 # ---------------- CREATE NEW USER  ----------------
 def create_user(db, uid, email):
-    print(f"database_userAccounts: Creating new user... uid: {uid}, email: {email}")
     if not uid or not email:
         return ValueError("UID and Email are required")
     

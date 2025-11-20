@@ -5,6 +5,7 @@ from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Numeric, c
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base, relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy.sql import func
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -99,7 +100,7 @@ class Timeline(Base):
 class CashHistory(Base):
     __tablename__ = "cashHistory"
     uid = Column(String(128), ForeignKey("users.uid", ondelete="CASCADE"), primary_key=True, nullable=False)
-    date = Column(DateTime(timezone=True),  primary_key=True, nullable=False)
+    date = Column(DateTime(timezone=True),  primary_key=True, nullable=False, server_default=func.now())
     deposit = Column(Numeric(7, 2), nullable=False)
 
     __table_args__ = (

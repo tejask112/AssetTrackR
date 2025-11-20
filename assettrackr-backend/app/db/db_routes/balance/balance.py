@@ -3,6 +3,7 @@ import firebase_admin
 from firebase_admin import auth as firebase_auth
 
 from ...db_services.userAccounts.database_userAccounts import updateLiquidCash
+from ...db_services.cashHistory.database_cashHistory import addEntryInCashHistory
 
 bp = Blueprint("balance", __name__)
 
@@ -20,20 +21,17 @@ def deposit():
         decoded = firebase_auth.verify_id_token(jwt)
         uid_from_token = decoded["uid"]
         if uid_from_token != uid:
-            raise ValueError
-    except:
-        return jsonify({ "error": "Invalid JWT" })
-    
-    try:
+            raise ValueError("Invalid JWT")
+        
         deposit = float(deposit)
-    except:
-        return jsonify({ "error": "Bad Request/Missing Fields" })
-
-    if deposit>9999999.99 or deposit<0.01:
-        return jsonify({ "error": "Bad Request/Missing Fields" })
+        if deposit>9999999.99 or deposit<0.01:
+            raise ValueError("Bad Request/Missing Fields")
+    except Exception as e:
+        return jsonify({ "error": str(e) })
     
     try:
         remaining = updateLiquidCash(g.db, uid, deposit, "DEPOSIT")
+        addEntryInCashHistory(g.db, uid, deposit)
     except Exception as e:
         return jsonify({ "error": str(e) })
     
