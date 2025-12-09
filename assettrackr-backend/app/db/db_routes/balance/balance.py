@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import auth as firebase_auth
 
 from ...db_services.userAccounts.database_userAccounts import updateLiquidCash
-from ...db_services.cashHistory.database_cashHistory import addEntryInCashHistory
+from ...db_services.cashHistory.database_cashHistory import addEntryInCashHistory, getDepositHistory
 
 bp = Blueprint("balance", __name__)
 
@@ -28,7 +28,6 @@ def deposit():
             raise ValueError("Bad Request/Missing Fields")
     except Exception as e:
         return jsonify({ "error": str(e) })
-    
     try:
         remaining = updateLiquidCash(g.db, uid, deposit, "DEPOSIT")
         addEntryInCashHistory(g.db, uid, deposit)
@@ -39,5 +38,24 @@ def deposit():
         "success": "ok",
         "remaining_balance": str(remaining) 
     })
+    
+@bp.route('/deposit_history', methods=["GET"])
+def deposit_history():
+    print("entering endpoint")
+    payload = request.get_json()
+    uid = payload.get("uid")
+
+    print("checking for uid")
+    if not uid:
+        print("no uid found")
+        return jsonify({ "error": "Bad Request/Missing Fields" })
+    
+    print("entering try catch")
+    try:
+        history = getDepositHistory(g.db, uid)
+        print(f"history: {history}")
+        return jsonify(history)
+    except Exception as e:
+        return jsonify({ "error": str(e) })
     
 
