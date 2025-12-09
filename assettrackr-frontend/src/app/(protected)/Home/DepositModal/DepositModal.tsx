@@ -1,24 +1,35 @@
 import { Box } from '@mui/material';
 import styles from './DepositModal.module.css'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth } from '../../../(auth)/firebaseClient'
 import LoadingBar from '@/app/(auth)/LoadingBar/LoadingBar';
-
+import DepositHistoryInstance from './DepositHistoryInstance/DepositHistoryInstance';
 
 interface Props {
     existingCash: number;
+    uid: string;
 }
 
-export default function DepositModal({ existingCash }:Props) {
+interface DepositInstance {
+    date: String;
+    value: number;
+}
+
+type History = DepositInstance[];
+
+export default function DepositModal({ existingCash, uid }:Props) {
 
     const [deposit, setDeposit] = useState<number>(10000);
     const [newBalance, setNewBalance] = useState<number>(existingCash);
     const [error, setError] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
     const [success, setSuccess] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const sleep = (ms: number): Promise<void> =>
         new Promise((resolve) => setTimeout(resolve, ms));
 
+    const [history, setHistory] = useState<History|null>();
+ 
     const formatUSD = (v: unknown) => {
         if (v === '' || v == null) return '-'
         const removeCommas = String(v).replace(/,/g, '').trim();
@@ -29,6 +40,15 @@ export default function DepositModal({ existingCash }:Props) {
             maximumFractionDigits: 2
         })
     }
+
+    useEffect(() => {
+        async function getHistory() {
+            const res = await fetch(`/api/deposit_history?uid=${encodeURIComponent(uid)}`);
+            const json = await res.json();
+            setHistory(json[uid]);
+        }
+        getHistory();
+    }, [])
 
     async function depositFunds() {
         setLoading(true);
@@ -59,12 +79,15 @@ export default function DepositModal({ existingCash }:Props) {
             setError(true);
             setSuccess(false);
             setLoading(false);
+            setErrorMsg(data.error)
             return;
         }
         setNewBalance(Number(data.remaining_balance));
         setSuccess(true);
         setLoading(false);
     }
+
+    if (!history) return(<h1>"Loading"</h1>)
 
     return(
         <Box className={styles.modal}>
@@ -77,7 +100,7 @@ export default function DepositModal({ existingCash }:Props) {
                 </label>
                 <h1 className={styles.balanceAfterTransactionText}>Balance after transaction:</h1>
                 <h1>{deposit > 9999999.99 ? 'Deposit cannot exceed 9,999,999.99 USD' : formatUSD((newBalance+deposit).toFixed(2)) + ' USD'} </h1>
-                <button className={styles.confirmButton} onClick={depositFunds}>Confirm</button>
+                <button className={styles.confirmButton} onClick={depositFunds} disabled={deposit===0 || deposit>9999999.99}>Confirm</button>
                 <div className={styles.loadingBarDiv}>
                     {loading && ( <LoadingBar/> )}
                 </div>
@@ -97,9 +120,19 @@ export default function DepositModal({ existingCash }:Props) {
                 )}
             </div>
             <div className={styles.historyDiv}>
-
+                <h1 className={styles.historyTitle}>History</h1>
+                <div className={styles.historyTableHeadings}> 
+                    <h1 className={styles.dateTitle}>Date</h1>
+                    <h1 className={styles.amountTitle}>Amount</h1>
+                </div>
+                <div className={styles.historyContainer}>
+                    {history.map((deposit, index) => (
+                        <div key={index}>
+                            <DepositHistoryInstance date={deposit.date} value={deposit.value}/>
+                        </div>
+                    ))}
+                </div>
             </div>
-            
         </Box> 
     )
 

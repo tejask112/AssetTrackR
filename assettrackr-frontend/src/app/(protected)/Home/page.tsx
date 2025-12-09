@@ -135,7 +135,7 @@ export default function Home() {
     const handleCloseDepositModal = () => setOpenDepositModal(false);
 
         
-    if (!homeData) {return (<h1>Loading...</h1>)}
+    if (!homeData || !userID) {return (<h1>Loading...</h1>)}
 
     return (
         <div className={styles.externalDiv}>
@@ -169,8 +169,8 @@ export default function Home() {
                             <div className={styles.cashAddFundsDiv}>
                                 <button className={styles.cashAddFundsButton} onClick={handleOpenDepositModal}>Deposit</button>
                                 <Modal open={openDepositModal} onClose={handleCloseDepositModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-                                    <DepositModal existingCash={Number(homeData.cash)}/>
-                                </Modal>
+                                    <DepositModal existingCash={Number(homeData.cash)} uid={userID}/>
+                                </Modal> 
                             </div>
                         </div>
                     </div>

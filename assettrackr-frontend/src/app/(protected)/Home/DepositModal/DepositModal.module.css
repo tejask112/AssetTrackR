@@ -1,3 +1,10 @@
+
+.amountTitle{
+    font-size: 1.1rem;
+    font-weight: 400px;
+    margin-left: auto;
+}
+
 .balanceAfterTransactionText{
     margin-top: 15px;
 }
@@ -16,6 +23,15 @@
 .confirmButton:active{
     background-color: rgb(109, 236, 109);
 }
+.confirmButton:disabled{
+    background-color: rgb(229, 229, 229);
+    color: grey
+}
+
+.dateTitle{
+    font-size: 1.1rem;
+    font-weight: 400px;
+}
 
 .depositDiv{
     width: 375px;
@@ -33,6 +49,27 @@
     color: darkred;
 }
 
+.historyContainer{
+    max-height: 125px;  
+    overflow-y: auto;  
+    padding-right: 4px;
+}
+
+.historyDiv{
+    margin-left: 30px;
+    width: 100%;
+}
+
+.historyTableHeadings{
+    display: flex;
+    align-items: center;
+}
+
+.historyTitle{
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
 .loadingBarDiv{
     margin: 5px;
 }
@@ -42,7 +79,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(800px, 96vw);
+  width: min(950px, 96vw);
   max-height: min(92vh, 1200px);
   background: #fff;
   border: 1px solid var(--border, #e5e7eb);
@@ -50,7 +87,6 @@
   box-shadow: 0 10px 40px rgba(0,0,0,0.12);
   padding: 22px 26px;
   display: flex;
-  flex-direction: column;
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   overflow-y: auto;
   overflow-x: hidden;

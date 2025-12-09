@@ -42,8 +42,7 @@ def deposit():
 @bp.route('/deposit_history', methods=["GET"])
 def deposit_history():
     print("entering endpoint")
-    payload = request.get_json()
-    uid = payload.get("uid")
+    uid = request.args.get("uid")
 
     print("checking for uid")
     if not uid:
