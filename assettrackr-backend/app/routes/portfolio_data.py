@@ -1,14 +1,13 @@
 from flask import Blueprint, jsonify, g, request
 import requests
 import os
-from datetime import timezone
 import finnhub
 
 from ..db.db_services.portfolio.database_portfolio import get_portfolio, calculate_portfolio_value
-from ..db.db_services.timeline.database_timeline import update_ts, get_user_entire_timeline
 from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash, getWatchList
 from ..services.news_service import retrieve_news
 from ..services.explore_stocks_service import calculateAllHistoricalBarsFromAPI
+from ..services.portfolio_data_service import get_timeline
 from ..utils.dates import calculateEndDate, calculateTwoWeekAgoDate, calculateOneWeekAgoDate
 
 bp = Blueprint("portfolio_data", __name__)
@@ -41,14 +40,7 @@ def getHomeData():
     cash = str(getLiquidCash(g.db, uid))
     
     # update + retrieve the user's timeline
-    update_ts(g.db, uid)
-    user_timeline = get_user_entire_timeline(g.db, uid) # example: [{'date': datetime obj, 'value': Decimal obj}, ...]
-    timeline = []
-    for record in user_timeline:
-        timeline.append({ 
-            "datetime": record.get('date').astimezone(timezone.utc).isoformat(), 
-            "value": str(round(record.get('value'), 2))
-        })
+    timeline = get_timeline(g.db, uid)
 
     # news
     news = retrieve_news()
@@ -92,6 +84,20 @@ def getHomeData():
         'timeline': timeline,
         'news': news,
         'watchlist': watchlist
+    }
+
+    return jsonify(output)
+
+@bp.route('/analytics/data')
+def analyticsData():
+    uid = request.args.get("uid")
+    if not uid:
+        raise ValueError("No UID found")
+    
+    timeline = get_timeline(g.db, uid)
+
+    output = {
+        'timeline': timeline
     }
 
     return jsonify(output)

@@ -20,6 +20,4 @@ export default function StockLineChart({prices, chartColor}: StockLineChartProps
             </ResponsiveContainer>
         </div>
     )
-
-
 }

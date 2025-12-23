@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react';
 import styles from './Home.module.css'
-import TreeMap from './TreeMap/TreeMap'
+import TreeMap from '../PortfolioAnalytics/TreeMap/TreeMap'
 import NewsCard from './News/News'
 import { useUser } from '@/context/UserContext';
 import WatchlistCard from './Watchlist/WatchlistCard';
