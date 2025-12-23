@@ -30,12 +30,11 @@ export default function NewsCard({ item }: { item: NewsItem }) {
           <img src={item.image} alt={item.headline} className={styles.image} />
         </div>
         <div className={styles.content}>
-          <div className={styles.header}>
-            <h2 className={styles.headline}>{item.headline}</h2>
-            <span className={styles.category}>{item.category}</span>
-          </div>
+          <h2 className={styles.headline}>{item.headline}</h2>
+          
           <p className={styles.summary}>{item.summary}</p>
           <div className={styles.footer}>
+            <span className={styles.category}>{item.category}</span>
             <span className={styles.source}>{item.source}</span>
             <span className={styles.date}>{formatDate(item.datetime)}</span>
           </div>
