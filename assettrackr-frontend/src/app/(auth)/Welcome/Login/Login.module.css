@@ -35,16 +35,34 @@
     margin: 15px 0px 5px 0px;
 }
 
-.googleLogInButton{
-    text-align: center;
+.googleLogInButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
     width: 100%;
-    padding: 7px 5px 7px 5px;
+    padding: 8px 12px;
     border: 1px solid rgb(208, 208, 208);
     border-radius: 5px;
+    background-color: white;
     cursor: pointer;
+    font-weight: 500;
+    color: #3c4043;
 }
-.googleLogInButton:hover{
-    border: 1px solid rgb(184, 184, 184);
+.googleLogInButton:hover {
+    border-color: #4285F4;
+    box-shadow: 0 2px 2px rgba(66, 133, 244, 0.3);
+    background-color: #f8faff;
+}
+
+.googleLogInButton:active {
+    background-color: #eff6ff;
+    box-shadow: none;
+}
+
+.icon {
+    height: 1.25rem;
+    object-fit: contain;
 }
 
 .orDivider {

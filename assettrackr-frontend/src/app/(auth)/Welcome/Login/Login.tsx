@@ -7,8 +7,8 @@ import { useUser } from '@/context/UserContext'
 import styles from './Login.module.css'
 import LoadingBar from '../../LoadingBar/LoadingBar'
 
-function safeRedirect(p: string | null): string {
-    if (p && p.startsWith('/') && !p.startsWith('//')) { return p; }
+function safeRedirect(path: string | null): string {
+    if (path && path.startsWith('/') && !path.startsWith('//')) { return path; }
     return '/Home';
 }
 
@@ -27,7 +27,6 @@ export default function Login() {
     const { setAuth } = useUser();
 
     async function loginEmail(e: React.FormEvent) {
-        console.log("button pressed")
         e.preventDefault();
         
         if (email == '' && password == '') {
@@ -160,8 +159,8 @@ export default function Login() {
         <div className={styles.entireDiv}>
             <h1 className={styles.welcomeMessage}>Welcome to AssetTrackR</h1>
             <button className={styles.googleLogInButton} onClick={loginGoogle}>
-                {/* <Image src="/images/google-logo.jpg" alt="" width={320} height={320} unoptimized className={styles.icon}/> */}
-                <span>Log in with Google</span>
+                <span>Log in with</span>
+                <img src="/images/google-logo.jpg" alt="" className={styles.icon}/>
             </button>
 
             <div className={styles.orDivider} role="separator" aria-label="or">
@@ -183,11 +182,7 @@ export default function Login() {
                 )}
             </div>
 
-
-
-            
         </div>
-
         
     );
     
