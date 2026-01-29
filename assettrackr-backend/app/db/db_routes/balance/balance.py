@@ -14,15 +14,10 @@ def deposit():
     deposit = payload.get("value")
     jwt = payload.get("token")
 
-    if not uid or not deposit or not jwt or not isinstance(uid, str):
+    if not uid or not deposit or not isinstance(uid, str):
         return jsonify({ "error": "Bad Request/Missing Fields" })
     
     try:
-        decoded = firebase_auth.verify_id_token(jwt)
-        uid_from_token = decoded["uid"]
-        if uid_from_token != uid:
-            raise ValueError("Invalid JWT")
-        
         deposit = float(deposit)
         if deposit>9999999.99 or deposit<0.01:
             raise ValueError("Bad Request/Missing Fields")
