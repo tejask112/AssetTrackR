@@ -2,7 +2,7 @@
 import { useUser } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import styles from './PortfolioAnalytics.module.css'
-import ChartsHandler from "../ReusableComponents/Chart/ChartHandler";
+import TimelineStats from "./TimelineStats/TimelineStats";
 
 interface TimelineItem{
     datetime: string; 
@@ -16,8 +16,6 @@ interface Timeline{
 interface Data{
     timeline: Timeline;
 }
-
-type Timeframe = '1D' | '5D' | '1M' | '3M' | '6M' | '1Y' | 'Since Start';
 
 export default function PortfolioAnalytics() {
 
@@ -35,24 +33,11 @@ export default function PortfolioAnalytics() {
         fetchAnalyticsData();
     }, [userID])
 
-    const [timeframe, setTimeframe] = useState<Timeframe>('1M');
-
     if (!data || !userID) {return (<h1>Loading...</h1>)}
 
     return(
         <div className={styles.externalDiv}>
-            <div className={styles.chartDiv}>
-                <div>
-                    <button>1D</button>
-                    <button>5D</button>
-                    <button>1M</button>
-                    <button>3M</button>
-                    <button>6M</button>
-                    <button>1Y</button>
-                    <button>Since Start</button>
-                </div>
-                <ChartsHandler data={data.timeline} timeframe={timeframe}/>
-            </div>
+            <TimelineStats timeline={data.timeline}/>
         </div>
     );
 

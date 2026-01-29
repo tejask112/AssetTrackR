@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { auth } from "../firebaseClient";
+import { auth } from "../../firebaseClient";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from '@/context/UserContext'
 import styles from './Login.module.css'
-import LoadingBar from '../LoadingBar/LoadingBar'
+import LoadingBar from '../../LoadingBar/LoadingBar'
 
 function safeRedirect(p: string | null): string {
     if (p && p.startsWith('/') && !p.startsWith('//')) { return p; }

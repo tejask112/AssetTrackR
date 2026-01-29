@@ -25,7 +25,7 @@ def create_user(db, uid, email):
     
     stmt = (
         insert(User)
-        .values(uid=uid, email=email, cash=100000, watchlist=literal({}).cast(JSONB))
+        .values(uid=uid, email=email, cash=100000, watchlist={})
         .on_conflict_do_nothing(index_elements=[User.uid])
         .returning(User.uid)
     )

@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { auth } from "../firebaseClient";
+import { auth } from "../../firebaseClient";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from './Register.module.css'
-import LoadingBar from '../LoadingBar/LoadingBar'
+import LoadingBar from '../../LoadingBar/LoadingBar'
 import { useUser } from '@/context/UserContext'
 
 function safeRedirect(p: string | null): string {
@@ -107,7 +107,7 @@ export default function Register() {
 
             <div className={styles.errorMsgDiv}>
                 <h1 className={styles.errorMsg}>{errorMsg}</h1>
-                {loading && (
+                {(loading && errorMsg==null) &&  (
                     <LoadingBar/>
                 )}
             </div>

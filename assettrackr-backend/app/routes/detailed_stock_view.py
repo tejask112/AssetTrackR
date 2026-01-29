@@ -134,12 +134,12 @@ def profile_data():
 
 @bp.route('/run_queued_trades')
 def run():
-    print(f"Portfolio: {get_portfolio(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
-    print(f"Portfolio Value: {calculate_portfolio_value(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
-    print(f"Cash: {getLiquidCash(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
+    # print(f"Portfolio: {get_portfolio(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
+    # print(f"Portfolio Value: {calculate_portfolio_value(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
+    # print(f"Cash: {getLiquidCash(g.db, 'X5s2HImyTfNITElXIdhIRu0K70F3')}")
     
-    # result = run_queued_trades()
-    return jsonify(True)
+    result = run_queued_trades()
+    return jsonify(result)
 
 @bp.route('/submit_order', methods=["POST"])
 def submit_order():

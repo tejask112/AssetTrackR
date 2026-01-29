@@ -1,9 +1,9 @@
 'use client'
-import Login from "../Login/Login";
+import Login from "./Login/Login";
 import styles from './Welcome.module.css'
 import StockTickers from "../StockTickers/StockTickers";
 import { useState } from "react";
-import Register from "../Register/Register";
+import Register from "./Register/Register";
 
 
 export default function Welcome() {
@@ -30,6 +30,7 @@ export default function Welcome() {
                 <StockTickers marketSector="Consumer Staples"/>
                 <StockTickers marketSector="Energy"/>
             </div>
+            
             <div className={styles.rightDiv}> 
                 {login && <Login/>}
                 {register && <Register/>}
@@ -47,12 +48,6 @@ export default function Welcome() {
                         <button onClick={toggleLogin} className={styles.loginUtilitiesButton}>Log in!</button>
                     </div>  
                 )}
-                
-
-                <div className={styles.loginUtilitiesDiv}>
-                    <h1 className={styles.loginUtilitiesText}>Forgot password?</h1>
-                    <button className={styles.loginUtilitiesButton}>Recover Account</button>
-                </div>
             </div>
         </div>
     )
