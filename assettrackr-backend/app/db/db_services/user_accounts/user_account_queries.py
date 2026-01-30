@@ -137,17 +137,32 @@ def add_to_watchlist(uid, ticker):
     if not all([uid, ticker]):
         raise ValueError("Missing Params: UID, Ticker")
 
-    response = supabase.rpc("add_to_watchlist", {
-       "uid_input": uid,
-       "ticker_input": ticker, 
-    }).execute()
+    try:
+        response = supabase.rpc("add_to_watchlist", {
+        "uid_input": uid,
+        "ticker_input": ticker, 
+        }).execute()
+
+        if response.data:
+            print(f"{ticker} successfully ADDED TO watchlist. Proof: {response.data}")
+    except Exception as e:
+        raise ValueError(e)
+
+
     
 # ---------------- REMOVE COMPANY FROM WATCHLIST  ----------------
 def remove_from_watchlist(uid, ticker):
     if not all([uid, ticker]):
         raise ValueError("Missing Params: UID, Ticker")
     
-    response = supabase.rpc("remove_from_watchlist", {
-        "uid_input": uid,
-        "ticker_input": ticker,
-    }).execute()
+    try:
+        response = supabase.rpc("remove_from_watchlist", {
+            "uid_input": uid,
+            "ticker_input": ticker,
+        }).execute()
+
+        if response.data:
+            print(f"{ticker} successfully REMOVED FROM watchlist. Proof: {response.data}")
+    except Exception as e:
+        raise ValueError(e)
+    

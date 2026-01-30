@@ -8,7 +8,7 @@ import finnhub
 from ..database_manager import Portfolio
 from ...db_utils.format_numbers import format_quantity
 from ...db_utils.market_hours import checkMarketOpen
-from ..userAccounts.database_userAccounts import updateLiquidCash, checkLiquidCash
+from ..user_accounts.database_userAccounts import updateLiquidCash, checkLiquidCash
 from ..timeline.database_timeline import get_latest_user_timeline_value
 
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")

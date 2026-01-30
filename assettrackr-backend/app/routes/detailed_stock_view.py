@@ -12,7 +12,7 @@ from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio, get_portfolio, calculate_portfolio_value
 from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
 from ..services.run_queued_trades import run_queued_trades
-from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash, checkInWatchList
+from ..db.db_services.user_accounts.database_userAccounts import getLiquidCash, checkInWatchList
 
 bp = Blueprint("detailed_stock_view", __name__)
 

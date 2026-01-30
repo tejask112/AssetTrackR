@@ -4,7 +4,7 @@ import os
 import finnhub
 
 from ..db.db_services.portfolio.database_portfolio import get_portfolio, calculate_portfolio_value
-from ..db.db_services.userAccounts.database_userAccounts import getLiquidCash, getWatchList
+from ..db.db_services.user_accounts.database_userAccounts import getLiquidCash, getWatchList
 from ..services.news_service import retrieve_news
 from ..services.explore_stocks_service import calculateAllHistoricalBarsFromAPI
 from ..services.portfolio_data_service import get_timeline
