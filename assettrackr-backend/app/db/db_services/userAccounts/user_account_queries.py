@@ -1,4 +1,5 @@
-from supabase_client import supabase
+from ..supabase_client import supabase
+from postgrest.exceptions import APIError
 from decimal import Decimal
 
 # ---------------- RETRIEVE ALL USERS  ----------------
@@ -28,10 +29,15 @@ def create_user(uid, email):
     if not uid or not email:
         return ValueError("Missing Params: UID and Email are required")
     
-    supabase.table("users").insert({
-        "uid": uid,
-        "email": email,
-    }).execute()
+    try:
+        supabase.table("users").insert({
+            "uid": uid,
+            "email": email,
+        }).execute()
+    except APIError as e:
+        if e.code == '23505':
+            raise ValueError("User with thie email already exists.")
+        raise ValueError("Could not register. Please try again.")
 
 # ---------------- GET USER'S CASH BALANCE  ----------------
 def get_liquid_cash(uid):
@@ -90,10 +96,6 @@ def update_liquid_cash(uid, amount, action):
 
         else:
             raise ValueError("Unrecognised operation")
-  
-        if response.error:
-            err = getattr(response.error, "message", "") or str(response.error)
-            raise ValueError(err)
         
         new_cash_balance = Decimal(str(response.data))
         return new_cash_balance
@@ -119,9 +121,9 @@ def get_watchlist(uid):
     
     return response.data
 
-# ---------------- CHECK COMPANY IN WATCHLIST ----------------
+# ---------------- CHECK COMPANY IN WATCHLIST ---------------- not a query! remove from here
 def check_in_watchlist(uid, ticker):
-    if not all [uid, ticker]:
+    if not all([uid, ticker]):
         raise ValueError("Missing Params: UID, Ticker")
     
     try:
@@ -132,7 +134,7 @@ def check_in_watchlist(uid, ticker):
 
 # ---------------- ADD COMPANY TO WATCHLIST  ----------------
 def add_to_watchlist(uid, ticker):
-    if not all [uid, ticker]:
+    if not all([uid, ticker]):
         raise ValueError("Missing Params: UID, Ticker")
 
     response = supabase.rpc("add_to_watchlist", {
@@ -142,7 +144,7 @@ def add_to_watchlist(uid, ticker):
     
 # ---------------- REMOVE COMPANY FROM WATCHLIST  ----------------
 def remove_from_watchlist(uid, ticker):
-    if not all ([uid, ticker]):
+    if not all([uid, ticker]):
         raise ValueError("Missing Params: UID, Ticker")
     
     response = supabase.rpc("remove_from_watchlist", {

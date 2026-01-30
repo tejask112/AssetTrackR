@@ -19,7 +19,7 @@ def list_users():
     return json_data
 
 # ---------------- CREATE NEW USER  ----------------
-def create_user(db, uid, email):
+def create_user_oldf(db, uid, email):
     if not uid or not email:
         return ValueError("UID and Email are required")
     

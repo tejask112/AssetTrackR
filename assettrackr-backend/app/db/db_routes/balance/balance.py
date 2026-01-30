@@ -2,8 +2,9 @@ from flask import Blueprint, request, jsonify, g
 import firebase_admin
 from firebase_admin import auth as firebase_auth
 
-from ...db_services.userAccounts.database_userAccounts import updateLiquidCash
-from ...db_services.cashHistory.database_cashHistory import addEntryInCashHistory, getDepositHistory
+from ...db_services.userAccounts.user_account_queries import update_liquid_cash
+from ...db_services.depositLogs.deposit_logs_queries import add_deposit_log_entry, get_deposit_logs
+
 
 bp = Blueprint("balance", __name__)
 
@@ -15,17 +16,17 @@ def deposit():
     jwt = payload.get("token")
 
     if not uid or not deposit or not isinstance(uid, str):
-        return jsonify({ "error": "Bad Request/Missing Fields" })
+        return jsonify({ "error": "Missing Fields" })
     
     try:
         deposit = float(deposit)
         if deposit>9999999.99 or deposit<0.01:
-            raise ValueError("Bad Request/Missing Fields")
+            raise ValueError("Bad Request")
     except Exception as e:
         return jsonify({ "error": str(e) })
     try:
-        remaining = updateLiquidCash(g.db, uid, deposit, "DEPOSIT")
-        addEntryInCashHistory(g.db, uid, deposit)
+        remaining = update_liquid_cash(uid, deposit, "DEPOSIT")
+        add_deposit_log_entry(uid, deposit)
     except Exception as e:
         return jsonify({ "error": str(e) })
     
@@ -46,7 +47,7 @@ def deposit_history():
     
     print("entering try catch")
     try:
-        history = getDepositHistory(g.db, uid)
+        history = get_deposit_logs(uid)
         print(f"history: {history}")
         return jsonify(history)
     except Exception as e:
