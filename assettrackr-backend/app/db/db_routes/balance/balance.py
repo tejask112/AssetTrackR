@@ -2,8 +2,8 @@ from flask import Blueprint, request, jsonify, g
 import firebase_admin
 from firebase_admin import auth as firebase_auth
 
-from ...db_services.userAccounts.user_account_queries import update_liquid_cash
-from ...db_services.depositLogs.deposit_logs_queries import add_deposit_log_entry, get_deposit_logs
+from ...db_services.user_accounts.user_account_queries import update_liquid_cash
+from ...db_services.deposit_logs.deposit_logs_queries import add_deposit_log_entry, get_deposit_logs
 
 
 bp = Blueprint("balance", __name__)

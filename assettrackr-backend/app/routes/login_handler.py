@@ -5,8 +5,8 @@ from firebase_admin import auth
 from functools import wraps
 import datetime
 
-from ..db.db_services.userAccounts.user_account_queries import create_user
-from ..db.db_services.userAccounts.database_userAccounts import create_user_oldf
+from ..db.db_services.user_accounts.user_account_queries import create_user
+from ..db.db_services.user_accounts.database_userAccounts import create_user_oldf
 from ..db.db_services.timeline.database_timeline import initialise_ts
 
 bp = Blueprint("login_handler", __name__)
@@ -46,7 +46,7 @@ def initialise_user():
     email = request.user["email"]
     
     create_user(uid, email)
-    create_user_oldf(g.db, uid, email)
+    create_user_oldf(g.db, uid, email) #REMOVE
     initialise_ts(g.db, uid)
 
     return jsonify({"ok": True, "uid": request.user["uid"]})
