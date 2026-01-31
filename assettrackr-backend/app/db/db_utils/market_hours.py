@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 
 
 # check if market is open NY 9:30am - 4pm
-def checkMarketOpen():
+def check_market_open():
     ny_now = datetime.now(tz=ZoneInfo("America/New_York"))
     ny_today = ny_now.date()
 
@@ -16,8 +16,8 @@ def checkMarketOpen():
         return False
     
 # check when market next opens
-def checkWhenMarketOpens():
-    if (checkMarketOpen()):
+def check_when_market_opens():
+    if (check_market_open()):
         return None
     
     ny_now = datetime.now(tz=ZoneInfo("America/New_York"))

@@ -10,7 +10,7 @@ from ..services.detailed_stock_view_service import retrieveLatestPriceIndividual
 
 from ..db.db_services.trades.database_trades import log_trade
 from ..db.db_services.portfolio.database_portfolio import add_to_portfolio, remove_from_portfolio, check_remove_from_portfolio, check_add_to_portfolio, get_portfolio, calculate_portfolio_value
-from ..db.db_utils.market_hours import checkMarketOpen, checkWhenMarketOpens
+from ..db.db_utils.market_hours import check_market_open, check_when_market_opens
 from ..services.run_queued_trades import run_queued_trades
 from ..db.db_services.user_accounts.database_userAccounts import getLiquidCash, checkInWatchList
 
@@ -141,7 +141,7 @@ def run():
     result = run_queued_trades()
     return jsonify(result)
 
-@bp.route('/submit_order', methods=["POST"])
+@bp.route('/submit_order_oldf', methods=["POST"])
 def submit_order():
     print("detailed_stock_view: received order..")
     data = request.get_json(silent=True) or {}
@@ -175,7 +175,7 @@ def submit_order():
         # execution_price = Decimal(retrieveLatestPriceIndividual).quantize(P16, rounding=ROUND_HALF_UP)
         # check if market is open NY 9:30am - 4pm
         # execution_price = Decimal(229.05).quantize(P16, rounding=ROUND_HALF_UP)
-        if (checkMarketOpen()):
+        if (check_market_open()):
             status="FILLED"
             if action=="BUY":
                 add_to_portfolio(g.db, uid, ticker, quantity, execution_price)
@@ -191,7 +191,7 @@ def submit_order():
         status_tooltip = ""
         res = log_trade(g.db, uid, ticker, status, status_tooltip, action, quantity, execution_price, tradingType)
         if res=="QUEUED":
-            marketOpens = checkWhenMarketOpens()
+            marketOpens = check_when_market_opens()
             return jsonify({ "ok": True, "message": str(marketOpens) })
         else:
             return jsonify({ "ok": True })

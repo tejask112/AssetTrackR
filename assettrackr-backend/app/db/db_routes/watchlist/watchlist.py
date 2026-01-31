@@ -2,7 +2,6 @@ from flask import Blueprint, request, g, jsonify
 
 bp = Blueprint("watchlist", __name__)
 
-from ...db_services.user_accounts.database_userAccounts import addToWatchList, removeFromWatchList
 from ...db_services.user_accounts.user_account_queries import add_to_watchlist, remove_from_watchlist
 
 # ---------------- ADD TICKER/COMPANYNAME TO WATCHLIST  ----------------

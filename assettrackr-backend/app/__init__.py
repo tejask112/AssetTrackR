@@ -51,6 +51,10 @@ def create_app():
     app.register_blueprint(watchlist_bp, url_prefix="/api")
     app.register_blueprint(balance_bp, url_prefix="/api")
 
+
+    from .routes.operations.order_management import bp as order_management_bp
+    app.register_blueprint(order_management_bp, url_prefix="/api")
+
     # firebase admin
     cred = credentials.Certificate("firebase-adminsdk.json")
     firebase_admin.initialize_app(cred)
