@@ -53,7 +53,9 @@ def create_app():
 
 
     from .routes.operations.order_management import bp as order_management_bp
+    from .routes.pages.detailed_stock_view_page import bp as detailed_stock_view_page_bp
     app.register_blueprint(order_management_bp, url_prefix="/api")
+    app.register_blueprint(detailed_stock_view_page_bp, url_prefix="/api")
 
     # firebase admin
     cred = credentials.Certificate("firebase-adminsdk.json")

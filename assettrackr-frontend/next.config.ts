@@ -1,13 +1,12 @@
-import { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'img.logo.dev',  
-        pathname: '/**',       
+        protocol: "https",
+        hostname: "deweuqoukaoxqgezhzfj.supabase.co",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },
@@ -15,12 +14,12 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*', 
-        destination: 'http://localhost:5000/api/:path*',
+        source: "/api/:path*",
+        destination: "http://localhost:5000/api/:path*",
       },
       {
-        source: '/logo/:path*',
-        destination: 'https://logo.dev/:path*',
+        source: "/logo/:path*",
+        destination: "https://logo.dev/:path*",
       },
     ];
   },

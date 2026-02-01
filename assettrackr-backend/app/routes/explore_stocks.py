@@ -57,7 +57,7 @@ def biggest_stock_gainers():
             "closing_price_7D": closingPrices,
             "change": s["change"],
             "exchange": s["exchange"],
-            "logo": f'https://img.logo.dev/ticker/{symbolName}?token={LOGO_DEV_KEY}&size=300&retina=true',
+            "logo": f'https://deweuqoukaoxqgezhzfj.supabase.co/storage/v1/object/public/company_images/{symbolName.lower()}.png',
             "name": s["name"],
             "percentage_change": s["changesPercentage"],
         }
@@ -101,7 +101,7 @@ def biggest_stock_losers():
             "closing_price_7D": closingPrices,
             "change": s["change"],
             "exchange": s["exchange"],
-            "logo": f'https://img.logo.dev/ticker/{symbolName}?token={LOGO_DEV_KEY}&size=300&retina=true',
+            "logo": f'https://deweuqoukaoxqgezhzfj.supabase.co/storage/v1/object/public/company_images/{symbolName.lower()}.png',
             "name": s["name"],
             "percentage_change": s["changesPercentage"],
         }
@@ -150,7 +150,7 @@ def most_actively_traded():
             "closing_price_7D": closingPrices,
             "change": diff,
             "exchange": "unsure", #NEED TO FIX
-            "logo": f'https://img.logo.dev/ticker/{symbolName}?token={LOGO_DEV_KEY}&size=300&retina=true',
+            "logo": f'https://deweuqoukaoxqgezhzfj.supabase.co/storage/v1/object/public/company_images/{symbolName.lower()}.png',
             "name": s['name'],
             "percentage_change": pct,
         }

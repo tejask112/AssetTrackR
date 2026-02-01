@@ -10,7 +10,7 @@ def get_user_trades(uid):
             .select("*")
             .eq("uid", uid)
             .order("date", desc=True)
-        )
+        ).execute()
 
         return response.data
     except Exception as e:
