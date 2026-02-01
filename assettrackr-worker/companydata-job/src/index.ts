@@ -1,46 +1,6 @@
 import { getCompanyProfile, getBasicFinancials, getStockRecommendations, getMarketNews } from './apiCallers'
 import { createClient } from "@supabase/supabase-js";
 
-
-export interface StockProfile {
-  symbol: string;
-  price: number;
-  marketCap: number;
-  beta: number;
-  lastDividend: number;
-  range: string;
-  change: number;
-  changePercentage: number;
-  volume: number;
-  averageVolume: number;
-  companyName: string;
-  currency: string;
-  cik: string;
-  isin: string;
-  cusip: string;
-  exchangeFullName: string;
-  exchange: string;
-  industry: string;
-  website: string;
-  description: string;
-  ceo: string;
-  sector: string;
-  country: string;
-  fullTimeEmployees: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  image: string;
-  ipoDate: string;
-  defaultImage: boolean;
-  isEtf: boolean;
-  isActivelyTrading: boolean;
-  isAdr: boolean;
-  isFund: boolean;
-}
-
 interface Env {
 	FINNHUB_API_KEY: string;
 	FMP_API_KEY: string;
@@ -60,7 +20,7 @@ export default {
 
 	
 	async scheduled(event, env: Env, ctx): Promise<void> {
-		if (!isNineAmNY()) return;
+		// if (!isNineAmNY()) return;
 
 		const tickers = ["NVDA", "GOOG", "AAPL", "TSLA", "AMZN", "MSFT", "META", "ORCL", "UBER", "NFLX", "SHOP", "TSM", "AMD", "AVGO", "MU"];
 		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
@@ -85,16 +45,32 @@ export default {
 
 		// bulk upsert data into supabase database
 		console.log("Bulk Upserting into Supabase");
-		const { error } = await supabase .from("company_profile").upsert(aggregatedData);
-		if (error) {
+		const { error: data_error } = await supabase .from("company_profile").upsert(aggregatedData);
+		if (data_error) {
 			console.error("Supabase Error")
-			console.error("Message:", error.message);
-			console.error("Details:", error.details);
+			console.error("Message:", data_error.message);
+			console.error("Details:", data_error.details);
 		}
 
 		// collect market news
-		// const marketNews = getMarketNews(env.FINNHUB_API_KEY)
+		const marketNewsUrl = new URL(`https://finnhub.io/api/v1/news?category=general`);
+		const marketNews = await getMarketNews(marketNewsUrl, env.FINNHUB_API_KEY)
+		const { error: news_error_del } = await supabase .from("market_news").delete().neq("id", "00000000-0000-0000-0000-000000000000"); // delete all current rows from table
+		const { error: news_error_ins } = await supabase .from("market_news").insert(marketNews); // insert all new news items into table
 
+		if (news_error_del) {
+			console.error("Supabase Error")
+			console.error("Message:", news_error_del.message);
+			console.error("Details:", news_error_del.details);
+		}
+
+		if (news_error_ins) {
+			console.error("Supabase Error")
+			console.error("Message:", news_error_ins.message);
+			console.error("Details:", news_error_ins.details);
+		}
+
+		return;
 	},
 } satisfies ExportedHandler<Env>;
 
@@ -104,12 +80,24 @@ async function getCompanyData(ticker: string, FMP_API_KEY: string, FINNHUB_API_K
 	const basicFinancialsUrl = new URL(`https://finnhub.io/api/v1/stock/metric?symbol=${ticker}&metric=all`)
 	const stockRecommendationUrl = new URL(`https://finnhub.io/api/v1/stock/recommendation?symbol=${ticker}`)
 
-	const companyProfileData = await getCompanyProfile(companyProfileUrl, FMP_API_KEY, ticker);
-	const basicFinancialData = await getBasicFinancials(basicFinancialsUrl, FINNHUB_API_KEY, ticker);
-	const stockRecommendationData = await getStockRecommendations(stockRecommendationUrl, FINNHUB_API_KEY, ticker);
+	const companyProfilePromise = getCompanyProfile(companyProfileUrl, FMP_API_KEY, ticker);
+	const basicFinancialPromise = getBasicFinancials(basicFinancialsUrl, FINNHUB_API_KEY, ticker);
+	const stockRecommendationPromise = getStockRecommendations(stockRecommendationUrl, FINNHUB_API_KEY, ticker);
+
+	const [companyProfileData, basicFinancialData, stockRecommendationData] = await Promise.all([  //wait for all 3 to finish
+        companyProfilePromise,
+        basicFinancialPromise,
+        stockRecommendationPromise
+    ]);
 
 	const name = { "ticker": ticker };
-	const output = { ...name, ...companyProfileData, ...basicFinancialData, ...stockRecommendationData};
+	const output = { 
+        ...name, 
+        ...(companyProfileData || {}), 
+        ...(basicFinancialData || {}), 
+        ...(stockRecommendationData || {}) 
+    };
+
 	return output;
 }
 

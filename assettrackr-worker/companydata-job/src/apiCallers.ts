@@ -72,15 +72,15 @@ export interface StockRecommendation {
 
 // market news
 export interface NewsItem {
-  category: string;
-  datetime: number; 
-  headline: string;
-  id: number;
-  image: string;  
-  related: string;
-  source: string;
-  summary: string;
-  url: string;
+  category: string | null;
+  datetime: number | null; 
+  headline: string | null;
+  id: number | null;
+  image: string | null;  
+  related: string | null;
+  source: string | null;
+  summary: string | null; 
+  url: string | null;
 }
 
 // functions:
@@ -247,26 +247,39 @@ export async function getStockRecommendations(stockRecommendationUrl: URL, FINNH
     
 }
 
-export async function getMarketNews(FINNHUB_API_KEY: string) {
-	const marketNewsUrl = new URL(`https://finnhub.io/api/v1/news?category=general`);
-
+export async function getMarketNews(marketNewsUrl:URL, FINNHUB_API_KEY: string) {
     try{
+        marketNewsUrl.searchParams.set("token", FINNHUB_API_KEY);
         const response = await fetch(marketNewsUrl.toString(), {
             method: 'GET',
             headers: {
-                "X-Api-Key": FINNHUB_API_KEY,
                 "Content-Type": "application/json"
             }
         })
 
-        if (!response.ok) console.log(`getMarketNews() - error: ${response.status}`);
+        if (!response.ok) {
+            const body = await response.text().catch(() => "");
+            console.log(`getMarketNews() - error: ${response.status}, body=${body}`);
+            return null;
+        }
 
         const data: NewsItem[] = await response.json();
-        const cleanedData = data.map(( {related, id, ...rest}) => rest);  //remove related and id field.
-        
+        const safeData = Array.isArray(data) ? data : [];
+        const cleanedData = (safeData || [])
+            .map(( {related, id, ...rest}) => rest)  //remove related and id field.
+            .filter(item =>
+                item.headline &&
+                item.datetime &&
+                item.source &&
+                item.summary &&
+                item.url &&
+                item.image &&
+                item.category
+            );
+
+        // console.log(`stock recommendation: ${JSON.stringify(cleanedData, null, 2)}`);        
         return cleanedData;
     } catch (error) {
 		console.log(`getMarketNews() - error: ${error}`);
 	}
-	
 }
