@@ -7,7 +7,7 @@ import finnhub
 
 from ..database_manager import Portfolio
 from ...db_utils.format_numbers import format_quantity
-from ...db_utils.market_hours import checkMarketOpen
+from ...db_utils.market_hours import check_market_open
 from ..user_accounts.database_userAccounts import updateLiquidCash, checkLiquidCash
 from ..timeline.database_timeline import get_latest_user_timeline_value
 
@@ -46,7 +46,7 @@ def calculate_portfolio_value(db, uid):
         raise ValueError("Internal Server Error")
     
     portfolio_value = Decimal("0")
-    if not checkMarketOpen():
+    if not check_market_open():
         latest_timeline_value = get_latest_user_timeline_value(db, uid)
         portfolio_value = Decimal(str(latest_timeline_value))
     else:

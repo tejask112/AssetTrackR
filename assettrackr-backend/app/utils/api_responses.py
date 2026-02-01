@@ -7,6 +7,9 @@ def compute_submit_order_response(res):
         case "success":
             return True, "success", 200
         
+        case "queued":
+            return True, "queued", 200
+        
         case "error: user not found":
             return False, "Bad Request. UID not a valid user.", 400
 
@@ -19,5 +22,21 @@ def compute_submit_order_response(res):
         case "error: insufficient quantity":
             return False, "Invalid quantity. Sell quantity exceeds your current holdings.", 400
 
+        case _:
+            return False, f"Internal Server Error {response_text}", 500
+        
+def compute_cancel_order_response(res):
+    response_text = str(res).lower()
+
+    match response_text:
+        case "cancelled":
+            return True, "success", 200
+        
+        case "error: trade_id does not exist":
+            return False, "trade_id not found.", 400
+        
+        case "error: trade cannot be cancelled":
+            return False, "trade cannot be cancelled, please try again later.", 400
+        
         case _:
             return False, f"Internal Server Error {response_text}", 500

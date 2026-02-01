@@ -1,4 +1,5 @@
 from decimal import Decimal
+import uuid
 
 def validate_submit_order_payload(payload):
 
@@ -24,3 +25,15 @@ def validate_submit_order_payload(payload):
         return False, f"Bad Request, {ticker} currently not recognised/supported. Support for this asset is coming soon. Please stay tuned for updates."
         
     return True, None
+
+def validate_cancel_order_payload(payload):
+
+    if "trade_id" not in payload:
+        return False, "Bad Request, 'trade_id' parameter cannot be empty."
+    
+    trade_id = payload.get("trade_id")
+    try:
+        uuid.UUID(str(trade_id)) # trade_id is always a 36-character (incl dashes) 8-4-4-4-12 char pattern (uuid).
+        return True, None
+    except:
+        return False, "Bad Request, 'trade_id' is not a valid UUID code."
