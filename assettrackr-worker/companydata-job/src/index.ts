@@ -20,7 +20,7 @@ export default {
 
 	
 	async scheduled(event, env: Env, ctx): Promise<void> {
-		// if (!isNineAmNY()) return;
+		if (!isNineAmNY()) return;
 
 		const tickers = ["NVDA", "GOOG", "AAPL", "TSLA", "AMZN", "MSFT", "META", "ORCL", "UBER", "NFLX", "SHOP", "TSM", "AMD", "AVGO", "MU"];
 		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
@@ -117,8 +117,7 @@ function isNineAmNY() {
 	const parts = formatterToNyTimeObj.formatToParts(currentDate);
 
 	const hour = Number(parts.find(p => p.type === "hour")?.value);
-	const minute = Number(parts.find(p => p.type === "minute")?.value);
 
-	return hour === 9 && minute === 0;
+	return hour === 9;
 
 }
