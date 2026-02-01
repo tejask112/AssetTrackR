@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "marketdata-job",
+	"name": "companydata-job",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-01-28",
 	"observability": {
@@ -12,9 +12,7 @@
 	},
 	"triggers": {
 		// ***** -> minute, hour, day of month, month, day of week
-		"crons": [
-			"* * * * *"
-		]
+		"crons": [" 0 13 * * * ", "0 14 * * * "]
 	}
 	/**
 	 * Smart Placement

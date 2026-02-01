@@ -35,25 +35,7 @@ export default {
 	async scheduled(controller: ScheduledController, env: Env): Promise<void> {
 		if (!checkMarketOpen()) return;
 		
-		const tickers = [
-			"NVDA", // Nvidia
-			"GOOG", // Google
-			"AAPL", // Apple
-			"TSLA", // Tesla
-			"AMZN", // Amazon
-			"MSFT", // Microsoft
-			"META", // Meta Platforms
-
-			"ORCL", // Oracle
-			"UBER", // Uber
-			"NFLX", // Netflix
-			"SHOP", // Shopify
-
-			"TSM", // TSMC
-			"AMD", // AMD
-			"AVGO", // Broadcom
-			"MU", // Micron			
-		];
+		const tickers = ["NVDA", "GOOG", "AAPL", "TSLA", "AMZN", "MSFT", "META", "ORCL", "UBER", "NFLX", "SHOP", "TSM", "AMD", "AVGO", "MU"];
 		
 		// collect the latest prices
 		const FINNHUB_API_KEY = env.FINNHUB_API_KEY;
