@@ -48,6 +48,9 @@ def validate_company_data_payload(payload):
     
     ticker = payload.get("ticker", "")
     jwt = payload.get("jwt", "")
+
+    if len(ticker.strip()) == 0:
+        return False, f"Bad Request, 'ticker' cannot be an empty string."
     
     recognised_tickers = ["NVDA", "GOOG", "AAPL", "TSLA", "AMZN", "MSFT", "META", "ORCL", "UBER", "NFLX", "SHOP", "TSM", "AMD", "AVGO", "MU"]
     if ticker not in recognised_tickers:
@@ -56,3 +59,12 @@ def validate_company_data_payload(payload):
     # ADD - VERIFY JWT TOKEN
     return True, None
 
+def validate_explore_stocks_payload(payload):
+    jwt = payload.get("jwt", "")
+
+    if len(jwt.strip()) == 0:
+        return False, f"Bad Request, Missing fields: JWT Token"
+    
+    # ADD - VERIFY JWT TOKEN
+
+    return True, None
