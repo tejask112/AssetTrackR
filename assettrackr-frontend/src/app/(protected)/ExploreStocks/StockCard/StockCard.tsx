@@ -1,3 +1,5 @@
+'use client'
+
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../../../supabase/supabaseClient';
 import Image from 'next/image';
@@ -32,18 +34,11 @@ export default function StockCard({ data }: StockDataProp) {
             transform: { width: 300, height: 300, quality: 100 }
         });
 
-    useEffect(() => {
-        setCurrentPrice(Number(data.latest_price));
-    }, [])
-
-    let [currentPrice, setCurrentPrice] = useState<number>(Number(data.latest_price));
-    let [rangeHigh, setRangeHigh] = useState<number>(Number(data.range_high));
-    let [rangeLow, setRangeLow] = useState<number>(Number(data.range_low));
-
-    useEffect(() => {
-        if (currentPrice > rangeHigh) setRangeHigh(currentPrice);
-        if (currentPrice < rangeLow) setRangeLow(currentPrice);
-    }, [currentPrice])
+    
+    
+    const currentPrice = Number(data.latest_price)
+    const rangeHigh = Math.max(Number(data.range_high), ...data.prices)
+    const rangeLow  = Math.min(Number(data.range_low),  ...data.prices)
 
     const recommendationMap = new Map<string, string>();
     recommendationMap.set("strongBuy", "STRONG BUY");
@@ -65,8 +60,7 @@ export default function StockCard({ data }: StockDataProp) {
                 <h1 className={styles.price}>{currentPrice} USD</h1>
                 {data.x7d_change ?
                     <h1 className={data.x7d_change > 0 ? styles.pvechange : styles.nvechange}>
-                        {(Number(data.latest_price) - (Number(data.latest_price) / (1 + Number(data.x7d_change) / 100))).toFixed(2)} 
-                        ({Number(data.x7d_change).toFixed(2)}%) 7D
+                        {(Number(data.latest_price) - (Number(data.latest_price) / (1 + Number(data.x7d_change) / 100))).toFixed(2)} ({Number(data.x7d_change).toFixed(2)}%) 7D
                     </h1> 
                     : 
                     <h1 className={styles.change}> - 7D</h1>
