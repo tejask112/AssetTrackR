@@ -16,3 +16,15 @@
     min-width: 0;
     position: relative;
 }
+
+.entireDiv{
+    margin: 20px 80px 40px 80px;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+}

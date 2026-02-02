@@ -28,7 +28,6 @@ def get_brief_company_profiles():
                 "exchange", 
                 "range_low", 
                 "range_high", 
-                "x5_day_price_return_daily", 
                 "month_to_date_price_return_daily", 
                 "current_recommendation"
             ) 

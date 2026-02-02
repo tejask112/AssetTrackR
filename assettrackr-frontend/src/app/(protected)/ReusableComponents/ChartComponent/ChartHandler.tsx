@@ -1,5 +1,5 @@
 import * as React from 'react';
-import LineDispChart, { type LinePoint } from './DisplayChart/DisplayChart';
+import LineDispChart, { type LinePoint } from '../ChartComponent/DisplayChart/DisplayChart';
 import styles from './ChartsHandler.module.css';
 
 interface TimelinePoint {

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import StockLineChart from './StockLineChart/StockLineChart';
+import StockLineChart from '../../ReusableComponents/StockLineChart/StockLineChart';
 import styles from './WatchlistCard.module.css'
 import { useRouter } from 'next/navigation';
 

@@ -11,7 +11,7 @@ export default function StockLineChart({prices, chartColor}: StockLineChartProps
 
     return (
         <div className="w-full h-40" >
-            <ResponsiveContainer width="90%" height="80%">
+            <ResponsiveContainer width="100%" height="80%">
                 <LineChart data={data}>
                     <XAxis dataKey="index" hide />
                     <YAxis hide domain={['dataMin', 'dataMax']} />

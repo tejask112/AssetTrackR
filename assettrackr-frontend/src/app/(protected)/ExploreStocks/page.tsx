@@ -1,82 +1,48 @@
 'use client';
 import styles from './page.module.css';
 import { useState, useEffect } from "react";
-import LoadingBar from './LoadingBar/LoadingBar';
-import StockRow from './StockRow/StockRow';
-import SearchBar from './SearchBar/SearchBar';
+import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
+import StockCard from './StockCard/StockCard';
 
-interface Stock {
-    current_price: number;
-    closing_price_7D: number[];
-    change: number;
-    exchange: string;
-    logo: string;
-    name: string;
-    percentage_change: number;
-    symbol: string;
+interface StockData {
+    "company_name": string,
+    "current_recommendation": string,
+    "exchange": string,
+    "latest_price": string,
+    "month_to_date_price_return_daily": number,
+    "prices": number[],
+    "range_high": number,
+    "range_low": number,
+    "ticker": string,
+    "x7d_change": number,
 }
 
 export default function SearchStocks() {
 
-    const [todaysTopGainers, setTodaysTopGainers] = useState<Stock[] | null>(null);
-    const [todaysTopLosers, setTodaysTopLosers] = useState<Stock[] | null>(null);
-    const [mostActive, setMostActive] = useState<Stock[] | null>(null);
+    const [apiResponse, setApiResponse] = useState<StockData[] | null>(null);
     
     useEffect(() => {
-        async function fetchTopMovers() {
-            const res = await fetch('/api/biggest_stock_gainers');
-            const json: Stock[] = await res.json();
-            setTodaysTopGainers(json);
+        async function fetchExploreStocks() {
+            const res = await fetch('/api/explore-stocks?jwt=abc');
+            const json: StockData[] = await res.json();
+            setApiResponse(json);
         }
-        fetchTopMovers();
-
-        async function fetchLowestMovers() {
-            const res = await fetch('api/biggest_stock_losers');
-            const json: Stock[] = await res.json();
-            setTodaysTopLosers(json);
-        }
-        fetchLowestMovers();
-
-        async function fetchMostActive() {
-            const res = await fetch('api/most_actively_traded');
-            const json: Stock[] = await res.json();
-            setMostActive(json);
-        }
-        fetchMostActive();
+        fetchExploreStocks();
     }, []);
 
-    if (!todaysTopGainers) { return (
-        <div className={styles.entireDiv}>
+    if (!apiResponse) { 
+        return (
             <LoadingBar />
-            <SearchBar/>
-        </div>) }
-    if (!todaysTopLosers) { return (
-        <div className={styles.entireDiv}>
-            <LoadingBar />
-            <SearchBar/>
-        </div>) }
-    if (!mostActive) { return (
-        <div className={styles.entireDiv}>
-            <LoadingBar />
-            <SearchBar/>
-        </div>) }
+        ) 
+    }
 
     return(
         <div className={styles.entireDiv}>
+            <h1 className={styles.title}>Explore Stocks</h1>
 
-            <SearchBar/>
-
-            <div className={styles.marketCards}>
-                <StockRow title="Most Actively Traded" stocks={mostActive}/>
-            </div>
-            
-            <div className={styles.marketCards}>
-                <StockRow title="Today's Top Gainers" stocks={todaysTopGainers}/>
-            </div>
-
-            <div className={styles.marketCards}>
-                <StockRow title="Today's Top Losers" stocks={todaysTopLosers}/>
-            </div>
+            {apiResponse.map((stockData) => (
+                <StockCard key={stockData.ticker} data={stockData}/>
+            ))}
         </div>
     )
 

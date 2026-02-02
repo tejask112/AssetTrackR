@@ -1,0 +1,144 @@
+.change {
+    font-weight: 200;
+}
+
+.companyDataDiv {
+    display: flex;
+}
+
+.companyLogo {
+    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    background-color: white;
+}
+
+.companyName {
+    font-size: 1.1rem;
+    max-height: 50px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.companyNamesDiv {
+    margin: 3px 10px 0px 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.dataDiv {
+    min-width: 325px;
+    max-width: 325px;
+    background-color: rgb(241, 241, 241);
+    padding: 15px 15px;
+    border-radius: 12px;
+}
+
+.entireDiv {
+    font-family: 'Inter', Arial;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    width: 100%;
+    overflow-x: hidden;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: stretch;
+}
+
+.entireDiv:hover {
+    cursor: pointer;
+}
+
+button.entireDiv {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+button.entireDiv:focus {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
+}
+
+.exchangeDiv {
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+}
+
+.exchangeText {
+    font-weight: 700;
+}
+
+.metadataDiv {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 280px;
+}
+
+.metadataDiv h1 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.metadataTitle {
+    font-weight: 300;
+}
+
+.nvechange {
+    font-weight: 200;
+    color: red;
+}
+
+.price {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Inter';
+}
+
+.pvechange {
+    font-weight: 200;
+    color: green;
+}
+
+.recommendationDiv {
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+}
+
+.statLine {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.statsRow {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ticker {
+    font-weight: 900;
+    font-size: 0.9rem;
+}
+
+.timeseriesDiv {
+    padding: 20px 20px;
+    flex: 1;
+    min-width: 0;
+}

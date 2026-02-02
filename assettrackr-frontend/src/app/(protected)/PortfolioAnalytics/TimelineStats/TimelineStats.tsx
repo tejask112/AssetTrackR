@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from './TimelineStats.module.css'
-import ChartsHandler from "../../ReusableComponents/Chart/ChartHandler"; 
+import ChartsHandler from "../../ReusableComponents/ChartComponent/ChartHandler"; 
 
 interface TimelineItem{
     datetime: string; 
