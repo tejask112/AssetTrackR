@@ -142,3 +142,30 @@ button.entireDiv:focus {
     flex: 1;
     min-width: 0;
 }
+
+
+.flashUp {
+  animation: flashUp 2s;
+}
+
+.flashDown {
+  animation: flashDown 2s;
+}
+
+@keyframes flashUp {
+  0%   { color: green; }
+  15%  { color: black; }
+  30%  { color: green; }
+  45%  { color: black; }
+  60%  { color: green; }
+  100% { color: black; }
+}
+
+@keyframes flashDown {
+  0%   { color: red; }
+  15%  { color: black; }
+  30%  { color: red; }
+  45%  { color: black; }
+  60%  { color: red; }
+  100% { color: black; }
+}

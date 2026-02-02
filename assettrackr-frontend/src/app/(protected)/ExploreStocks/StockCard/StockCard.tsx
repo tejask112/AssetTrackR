@@ -5,7 +5,7 @@ import { supabase } from '../../../../supabase/supabaseClient';
 import Image from 'next/image';
 import styles from './StockCard.module.css';
 import StockLineChart from '../../ReusableComponents/StockLineChart/StockLineChart';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 
 interface StockData {
     "company_name": string,
@@ -36,16 +36,38 @@ export default function StockCard({ data }: StockDataProp) {
 
     
     
-    const currentPrice = Number(data.latest_price)
+    const currentPrice = useMemo(() => Number(data.latest_price), [data.latest_price])
     const rangeHigh = Math.max(Number(data.range_high), ...data.prices)
     const rangeLow  = Math.min(Number(data.range_low),  ...data.prices)
 
-    const recommendationMap = new Map<string, string>();
-    recommendationMap.set("strongBuy", "STRONG BUY");
-    recommendationMap.set("buy", "BUY");
-    recommendationMap.set("hold", "HOLD");
-    recommendationMap.set("sell", "SELL");
-    recommendationMap.set("strongSell", "STRONG SELL");
+    const recommendationMap = new Map<string, string>([
+        ['strongBuy', 'STRONG BUY'],
+        ['buy', 'BUY'],
+        ['hold', 'HOLD'],
+        ['sell', 'SELL'],
+        ['strongSell', 'STRONG SELL'],
+    ])
+
+    const [flashClass, setFlashClass] = useState<string>('')
+    const prevPriceRef = useRef<number | null>(null)
+
+    useEffect(() => {
+        const prev = prevPriceRef.current
+        prevPriceRef.current = currentPrice
+
+        if (prev === null) return
+
+        const diff = currentPrice - prev
+        if (diff === 0) return
+
+        setFlashClass('')
+        void document.body.offsetHeight
+
+        setFlashClass(diff > 0 ? styles.flashUp : styles.flashDown)
+
+        const t = window.setTimeout(() => setFlashClass(''), 2000)
+        return () => window.clearTimeout(t)
+    }, [currentPrice])
 
     return (
         <button className={styles.entireDiv} onClick={() => router.push(`DetailedStockView/${data.ticker}`)}>
@@ -57,7 +79,7 @@ export default function StockCard({ data }: StockDataProp) {
                         <h1 className={styles.companyName}>{data.company_name}</h1>
                     </div>
                 </div>
-                <h1 className={styles.price}>{currentPrice} USD</h1>
+                <h1 className={`${styles.price} ${flashClass}`}>{currentPrice} USD</h1>
                 {data.x7d_change ?
                     <h1 className={data.x7d_change > 0 ? styles.pvechange : styles.nvechange}>
                         {(Number(data.latest_price) - (Number(data.latest_price) / (1 + Number(data.x7d_change) / 100))).toFixed(2)} ({Number(data.x7d_change).toFixed(2)}%) 7D
