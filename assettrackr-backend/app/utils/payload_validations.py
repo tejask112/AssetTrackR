@@ -41,11 +41,12 @@ def validate_cancel_order_payload(payload):
     return True, None
     
 def validate_company_data_payload(payload):
-    required_fields = ["ticker"]
+    required_fields = ["uid", "ticker"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
     
+    uid = payload.get("uid", "")
     ticker = payload.get("ticker", "")
     jwt = payload.get("jwt", "")
 

@@ -1,4 +1,4 @@
-import RecommendationChart from "../../RecommendationChart/RecommendationChart";
+import RecommendationChart from "./RecommendationChart/RecommendationChart";
 import styles from './RecommendationVisuals.module.css'
 
 interface Recommendation {

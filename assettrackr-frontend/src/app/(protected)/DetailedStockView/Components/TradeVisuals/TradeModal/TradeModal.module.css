@@ -61,7 +61,7 @@
   padding: 22px 26px;
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: 'Inter';
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-gutter: stable;

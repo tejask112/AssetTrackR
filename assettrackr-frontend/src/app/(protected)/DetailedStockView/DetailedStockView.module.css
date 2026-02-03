@@ -261,6 +261,11 @@
 
 
 
+.flex{
+  display: flex;
+  gap: 15px;
+}
+
 .leftDiv{
   display: flex;
   flex-direction: column; 
@@ -277,4 +282,20 @@
   grid-template-columns: 1.25fr 2fr;
   gap: 20px;
   width: 100%;
+}
+
+
+
+.timeframeButton{
+  padding: 12px 6px;
+  font-weight: 300;
+}
+.timeframeButton:hover{
+  background-color: gainsboro;
+}
+
+.timeframeButtonChosen{
+  padding: 12px 6px;
+  font-weight: 300;   
+  background-color: rgb(204, 204, 204);
 }

@@ -1,0 +1,49 @@
+.addToWatchlist {
+  font-size: 1rem;   
+  font-weight: 500;              
+  color: #555;               
+  margin: 0 0 8px 0;            
+  padding: 4px 8px;           
+  background-color: #f7f7f7;    
+  border-radius: 6px;            
+  display: inline-block;       
+  border: 1px solid #cbcbcb;    
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.addToWatchlist:hover {
+  background-color: #0f6f3d;
+  border-color: #0b5f33;
+  color: #ffffff;
+}
+
+.addToWatchlist:active {
+  background-color: #0b5f33;  
+  border-color: #084a28;
+  color: #ffffff;
+}
+
+.removeFromWatchlist{
+  font-size: 1rem;   
+  font-weight: 500;              
+  color: #555;               
+  margin: 0 0 8px 0;            
+  padding: 4px 8px;           
+  background-color: #f7f7f7;    
+  border-radius: 6px;            
+  display: inline-block;       
+  border: 1px solid #cbcbcb;    
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.removeFromWatchlist:hover {
+  background-color: #b42318;
+  border-color: #8f1d13;
+  color: #ffffff;
+}
+
+.removeFromWatchlist:active {
+  background-color: #8f1d13;  
+  border-color: #6e150d;
+  color: #ffffff;
+}

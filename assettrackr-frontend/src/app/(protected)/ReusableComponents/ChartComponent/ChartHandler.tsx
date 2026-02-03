@@ -10,13 +10,14 @@ interface TimelinePoint {
 type Timeframe = '1D' | '5D' | '1M' | '3M' | '6M' | '1Y' | 'Since Start';
 
 interface Props {
-  data: TimelinePoint[] | 'Error';
+  data: TimelinePoint[] | null;
   timeframe?: Timeframe;
+  height: number;
 }
 
-export default function ChartsHandler({ data, timeframe = '1M' }: Props) {
-  const lineData: LinePoint[] = React.useMemo(() => { 
-    if (!data || data === 'Error' || !Array.isArray(data)) return [];
+export default function ChartsHandler({ data, timeframe = '1M', height }: Props) {
+  const lineData: LinePoint[] = React.useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
 
     const now = new Date();
     const cutoffDate = new Date();
@@ -47,18 +48,32 @@ export default function ChartsHandler({ data, timeframe = '1M' }: Props) {
         break;
     }
 
+    const cutoffSec = Math.floor(cutoffDate.getTime() / 1000);
+    const seenSec = new Set<number>();
+
     return data
+      .map((p) => {
+        const ms = Date.parse(p.date); // ISO with microseconds parses fine
+        if (!Number.isFinite(ms)) return null;
+
+        const sec = Math.floor(ms / 1000); // lightweight-charts line series wants seconds
+        return { timeSec: sec, value: p.price };
+      })
+      .filter((p): p is { timeSec: number; value: number } => p !== null)
+      .filter((p) => p.timeSec >= cutoffSec)
+      .filter((p) => {
+        if (seenSec.has(p.timeSec)) return false;
+        seenSec.add(p.timeSec);
+        return true;
+      })
+      .sort((a, b) => a.timeSec - b.timeSec)
       .map((p) => ({
-        time: p.date,
-        value: p.price,
-      }))
-      .filter((p) => new Date(p.time as string).getTime() >= cutoffDate.getTime())
-      .sort(
-        (a, b) =>
-          new Date(a.time as string).getTime() -
-          new Date(b.time as string).getTime()
-      );
+        time: p.timeSec, 
+        value: p.value,
+      })) as LinePoint[];
   }, [data, timeframe]);
+
+
 
   if (!lineData.length) {
     return <div className={styles.chartDiv}>No data to display</div>;
@@ -66,7 +81,7 @@ export default function ChartsHandler({ data, timeframe = '1M' }: Props) {
 
   return (
     <div className={styles.chartDiv}>
-      <LineDispChart data={lineData} height={505} />
+      <LineDispChart data={lineData} height={height} />
     </div>
   );
 }
