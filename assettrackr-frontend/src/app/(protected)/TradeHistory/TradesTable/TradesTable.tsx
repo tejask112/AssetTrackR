@@ -7,6 +7,8 @@ import { Tooltip } from 'primereact/tooltip';
 import { useRef } from 'react';
 
 import { Row } from 'primereact/row';
+import CancelTradeModal from '../CancelTradeModal/CancelTradeModal';
+import NotificationBox from '../../ReusableComponents/NotificationBox/NotificationBox';
 
 interface Trade {
     action: string;
@@ -19,13 +21,17 @@ interface Trade {
     ticker: string;
     trade_id: string;
     trading_type: string;    
+    uid: string;
 }
 
 interface TradeProps {
-    data: Trade[]
+    data: Trade[],
+    rows: number
 }
 
-export default function TradesTable({ data }: TradeProps) {
+export default function TradesTable({ data, rows }: TradeProps) {
+
+    const showActionsColumn = data.some((row: Trade) => row.status === 'QUEUED');
 
     // ---------------------- formatting the prices ----------------------
     const formatIndividualPriceToUSD = () => (row: any) => usdBody(row['execution_price']);
@@ -89,7 +95,6 @@ export default function TradesTable({ data }: TradeProps) {
         if (isNaN(num)) return String(value);
         return num.toString().replace(/(\.\d*?[1-9])0+$/g, "$1").replace(/\.0+$/, "");
     };
-
     
     // ---------------------- tooltip for status ----------------------
     const tooltipRef = useRef<Tooltip>(null);
@@ -101,10 +106,68 @@ export default function TradesTable({ data }: TradeProps) {
         );
     };
 
+    // cancel trade
+    const actionBodyTemplate = (rowData: Trade) => {
+        return (
+            <button className={styles.cancelButton} onClick={() => cancelTrade(rowData)}>Cancel</button>
+        );
+    };
+
+    const [notification, setNotification] = useState<{message: string, success: boolean} | null>(null);
+    const cancelTrade = async (rowData: Trade) => {
+        try {
+            if (rowData.status !== 'QUEUED') return;
+
+            const uid = rowData.uid;
+            const tradeID = rowData.trade_id;
+            
+            console.log(`/api/cancel-order?uid=${uid}&tradeid=${tradeID}&jwt=abc`);
+
+            const res = await fetch("/api/cancel-order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    uid: uid,
+                    tradeid: tradeID,
+                    jwt: "abc" //change
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) { 
+                console.log(data.error);
+                setNotification({
+                    message: `Error: ${data.error}`,
+                    success: false
+                });
+            } else {
+                setNotification({
+                    message: `id:${rowData.trade_id} cancelled`,
+                    success: true
+                });
+            }
+        } catch (err) {
+            setNotification({ message: "An error occurred", success: false })
+        }
+    }
+
     return (
         <div className={styles.tradeTable}>
             <Tooltip ref={tooltipRef} target=".status-cell" className={styles.statusTooltip}/>
-            <DataTable value={data} paginator rows={10} rowsPerPageOptions={[10, 25, 50, 100]} resizableColumns tableStyle={{ minWidth: '50rem'}} paginatorDropdownAppendTo="self" >
+            <DataTable 
+                value={data} 
+                paginator 
+                rows={rows} 
+                rowsPerPageOptions={[10, 25, 50, 100]} 
+                resizableColumns 
+                tableStyle={{ minWidth: '50rem'}} 
+                paginatorDropdownAppendTo="self" 
+            
+            >
+                
                 <Column field="trade_id" header="ID"></Column>
                 <Column field="date" body={dateBody(makeFormat(NY_timezone))} header={<>Order Date <br/> <span>(New York, America Time)</span></>} headerClassName={styles.orderDateText} bodyClassName={styles.orderDateText} sortable style={{ width: '25%' }}></Column>
                 <Column field="date" body={dateBody(makeFormat(local_timezone))} header={<>Order Date <br/> <span>({new_local_timeZone} Local Time)</span></>} headerClassName={styles.orderDateText} bodyClassName={styles.orderDateText} sortable style={{ width: '25%' }}></Column>
@@ -114,8 +177,29 @@ export default function TradesTable({ data }: TradeProps) {
                 <Column field="quantity" body={(row) => trimZeros(row.quantity)} header="Quantity"></Column>
                 <Column field="execution_price" body={formatIndividualPriceToUSD()} header="Execution Price">USD</Column>
                 <Column field="execution_total_price" body={formatTotalPriceToUSD()} header="Execution Total Price">USD</Column>
-                <Column field="trading_type" header="Trade Type"></Column>
+                
+                
+                {showActionsColumn && (
+                    <Column 
+                        header="Actions" 
+                        body={actionBodyTemplate} 
+                        exportable={false} 
+                        style={{ minWidth: '4rem' }}
+                    />
+                )}
+                
+                {!showActionsColumn && (
+                    <Column field="trading_type" header="Trade Type"></Column>
+                )}
+                
             </DataTable>
+
+            {notification && (
+                <NotificationBox 
+                    message={notification.message} 
+                    success={notification.success}
+                />
+            )}
         </div>
     )
 }

@@ -28,10 +28,12 @@ def validate_submit_order_payload(payload):
     return True, None
 
 def validate_cancel_order_payload(payload):
-    if "trade_id" not in payload:
-        return False, "Bad Request, 'trade_id' parameter cannot be empty."
+    required_fields = ["uid", "tradeid", "jwt"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
     
-    trade_id = payload.get("trade_id")
+    trade_id = payload.get("tradeid")
     try:
         uuid.UUID(str(trade_id)) # trade_id is always a 36-character (incl dashes) 8-4-4-4-12 char pattern (uuid).
     except:

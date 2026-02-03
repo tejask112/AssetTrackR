@@ -14,7 +14,8 @@ interface History {
     status_tooltip: string;
     ticker: string;
     trade_id: string;
-    trading_type: string;    
+    trading_type: string;   
+    uid: string; 
 }
 
 export default function TradeHistory() {
@@ -22,8 +23,12 @@ export default function TradeHistory() {
     const { userID } = useUser();
 
     const [allTradeHistory, setAllTradeHistory] = useState<History[] | null>(null);
-    const finalisedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null,[allTradeHistory]);    
-    const queuedTradeHistory = useMemo(() => allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
+
+    const finalisedTradeHistory = useMemo(() => 
+        allTradeHistory?.filter(h => h.status !== "QUEUED") ?? null, [allTradeHistory]);    
+
+    const queuedTradeHistory = useMemo(() => 
+        allTradeHistory?.filter(h => h.status === "QUEUED") ?? null,[allTradeHistory]);
 
     const buyCount = allTradeHistory?.filter(t => t.action === "BUY").length ?? 0;
     const sellCount = allTradeHistory?.filter(t => t.action === "SELL").length ?? 0;
@@ -35,12 +40,11 @@ export default function TradeHistory() {
     
 
     useEffect(() => {
-        // wait until there is a uid
         if (!userID) return; 
 
         const uid = userID;
         async function getTradeHistory() {
-            const res = await fetch(`/api/trade_history?query=${encodeURIComponent(uid)}`);
+            const res = await fetch(`/api/trade-history?uid=${encodeURIComponent(uid)}&jwt=abc`);
             const json: History[] = await res.json();
             setAllTradeHistory(json);
         }
@@ -85,14 +89,14 @@ export default function TradeHistory() {
                     {queuedTradeHistory && queuedTradeHistory.length > 0 && (
                         <div className={styles.pendingSection}>
                             <h2 className={styles.sectionTitle}>Pending Trades</h2>
-                            <TradesTable data={queuedTradeHistory} />
+                            <TradesTable data={queuedTradeHistory} rows={10} />
                         </div>
                     )}
 
                     {finalisedTradeHistory && finalisedTradeHistory.length > 0 && (
                         <div>
                             <h2 className={styles.sectionTitle}>Confirmed Trades</h2>
-                            <TradesTable data={finalisedTradeHistory} />
+                            <TradesTable data={finalisedTradeHistory} rows={25} />
                         </div>
                     )}
                 </>

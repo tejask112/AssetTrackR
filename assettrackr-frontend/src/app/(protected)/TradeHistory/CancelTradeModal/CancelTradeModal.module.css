@@ -1,0 +1,18 @@
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(950px, 96vw);
+  max-height: min(92vh, 1200px);
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  padding: 22px 26px;
+  display: flex;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}

@@ -54,10 +54,11 @@ def cancel_order():
     if not allowed:
         return jsonify({ "error": error_message }), 400
     
-    trade_id = payload.get("trade_id")
+    uid = payload.get("uid")
+    trade_id = payload.get("tradeid")
 
     try:
-        res = cancel_trade(trade_id)
+        res = cancel_trade(uid, trade_id)
         success, message, status_code = compute_cancel_order_response(res)
 
         if success:

@@ -1,3 +1,25 @@
+
+.cancelButton{
+  margin-top: 1px;
+  padding: 0px 15px;
+  border-radius: 8px;
+  background-color: #e5e7eb;        
+  border: 1px solid #cbd5e1;         
+  color: #111827;         
+
+}
+
+.cancelButton:hover{
+  background-color: #d1d5db;   
+  border-color: #b6c2d1;
+  cursor: pointer;
+}
+
+.cancelButton:active{
+  background-color: #cbd5e1;  
+  cursor: pointer;
+}
+
 .orderDateText {
   text-align: left;   
   padding-left: 0;    

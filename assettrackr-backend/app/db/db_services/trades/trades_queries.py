@@ -57,10 +57,11 @@ def queue_trade(uid, action, quantity, ticker):
         raise ValueError(e)
     
 # ---------------- CANCEL A TRADE  ----------------
-def cancel_trade(trade_id):
+def cancel_trade(uid, trade_id):
     try:
         response = supabase.rpc("cancel_trade", {
-            "trade_id_input": trade_id
+            "trade_id_input": trade_id,
+            "uid_input": uid,
         }).execute()
         return response.data
     
