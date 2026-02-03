@@ -113,8 +113,7 @@ def get_watchlist(uid):
         .select("watchlist")
         .eq("uid", uid)
         .single()
-        .execute()
-    )
+    ).execute()
 
     if response.data is None:
         raise ValueError("User not found")
@@ -128,7 +127,7 @@ def check_in_watchlist(uid, ticker):
     
     try:
         watchlist = get_watchlist(uid)
-        return ticker in watchlist
+        return ticker.upper() in watchlist.get('watchlist').keys()
     except Exception as e:
         raise ValueError(e)
 
@@ -139,8 +138,8 @@ def add_to_watchlist(uid, ticker):
 
     try:
         response = supabase.rpc("add_to_watchlist", {
-        "uid_input": uid,
-        "ticker_input": ticker, 
+            "uid_input": uid,
+            "ticker_input": ticker, 
         }).execute()
 
         if response.data:

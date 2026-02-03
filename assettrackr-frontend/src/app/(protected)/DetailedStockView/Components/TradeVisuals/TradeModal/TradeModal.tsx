@@ -71,14 +71,13 @@ export default function ( {symbol, price}:Props) {
 
     const [submitted, setSubmitted] = useState<boolean>(false);
     const [queued, setQueued] = useState<boolean>(false);
-    const [queuedMessage, setQueuedMessage] = useState<string>("");
     const [failed, setFailed] = useState<boolean>(false);
     const [failedMessage, setFailedMessage] = useState<string>("");
 
     async function submitOrder() {
         const user = auth.currentUser;
         if (!user) {
-            window.alert("User not authenticated");
+            window.alert("User Authentication Error");
             return;
         } 
         const jwt = await user.getIdToken();
@@ -91,9 +90,7 @@ export default function ( {symbol, price}:Props) {
             quantity: form.quantity
         };
 
-        console.log('client payload', payload);  
-
-        const res = await fetch('/api/submit_order', {
+        const res = await fetch('/api/submit-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -101,11 +98,10 @@ export default function ( {symbol, price}:Props) {
         const data = await res.json();
         if (!res.ok) {
             setFailed(true)
-            setFailedMessage(data.error ?? 'Unknown Error')
+            setFailedMessage(data.error ?? 'Internal Error, please try again later.')
         } else {
-            if (data && "message" in data){
+            if (data.ok == 'queued') {
                 setQueued(true);
-                setQueuedMessage(data.message ?? 'time unavailable')
             }
             setSubmitted(true);
         }
@@ -182,13 +178,12 @@ export default function ( {symbol, price}:Props) {
                     </>
                 )}
                 
-
                 {submitted && (
                     <div>
                         <h1 className={styles.submittedText}>Received</h1>
                         <h1 className={styles.submittedExtraText}>
                             {queued 
-                                ? `Your order to ${form.action.toLowerCase()} ${form.symbol} has been received and queued by our system. It will execute when markets open in ${queuedMessage}.`
+                                ? `Your order to ${form.action.toLowerCase()} ${form.symbol} has been received and queued by our system. It will execute when markets next open.`
                                 : `Your order to ${form.action.toLowerCase()} ${form.symbol} has been received by our system and it will be executed shortly.`
                             }
                         </h1>
