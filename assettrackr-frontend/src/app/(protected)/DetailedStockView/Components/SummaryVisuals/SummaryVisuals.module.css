@@ -1,0 +1,54 @@
+.summaryCard {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter';
+    gap: 12px;
+    padding: 18px 22px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.metricsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.label {
+    color: #6f7a9e;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+
+.metricsThreeCol {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.metricsThreeCol .col {
+    flex: 1 1 130px;
+    min-width: 0;
+}

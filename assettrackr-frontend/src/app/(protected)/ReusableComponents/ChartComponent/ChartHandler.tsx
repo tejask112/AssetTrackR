@@ -3,8 +3,8 @@ import LineDispChart, { type LinePoint } from '../ChartComponent/DisplayChart/Di
 import styles from './ChartsHandler.module.css';
 
 interface TimelinePoint {
-  datetime: string;
-  value: string;
+  date: string;
+  price: number;
 }
 
 type Timeframe = '1D' | '5D' | '1M' | '3M' | '6M' | '1Y' | 'Since Start';
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function ChartsHandler({ data, timeframe = '1M' }: Props) {
-  const lineData: LinePoint[] = React.useMemo(() => {
+  const lineData: LinePoint[] = React.useMemo(() => { 
     if (!data || data === 'Error' || !Array.isArray(data)) return [];
 
     const now = new Date();
@@ -49,8 +49,8 @@ export default function ChartsHandler({ data, timeframe = '1M' }: Props) {
 
     return data
       .map((p) => ({
-        time: p.datetime,
-        value: parseFloat(p.value),
+        time: p.date,
+        value: p.price,
       }))
       .filter((p) => new Date(p.time as string).getTime() >= cutoffDate.getTime())
       .sort(

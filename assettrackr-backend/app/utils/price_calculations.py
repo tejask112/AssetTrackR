@@ -8,4 +8,4 @@ def calculate_current_price(company_market_data):
     if not isinstance(latest_price, dict):
         return None
     
-    return latest_price.get("price", None)
+    return latest_price.get("price", None), latest_price.get("date", None)

@@ -1,0 +1,35 @@
+
+.hourText {
+    color: rgb(202, 111, 0);
+    font-weight: 600;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.hourlyChangeStats {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin: 32px 0px 0px 15px;
+}
+
+.metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.metadata h1 {
+    margin: 0; 
+    line-height: 1.2; 
+}
+
+.metadataDiv {
+    margin: 20px 0px 0px 5px;
+}
+
+.visuals {
+    display: flex;
+}

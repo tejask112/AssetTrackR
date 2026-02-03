@@ -22,7 +22,9 @@ def company_data():
     try:
         company_profile_data = get_company_profile(ticker)
         company_market_data = get_market_data(ticker)
-        current_price = calculate_current_price(company_market_data)
+        current_price, current_price_date = calculate_current_price(company_market_data)
+
+        company_market_data.reverse()
     except Exception as e:
         print(f"company_data() - Exception raised: {str(e)}")
         return jsonify({ "error": "Internal Server Error" }), 500
@@ -30,6 +32,7 @@ def company_data():
     response = {
         "company_data": company_profile_data,
         "current_price": current_price,
+        "current_price_date": current_price_date,
         "historical_prices": company_market_data,
     }
 

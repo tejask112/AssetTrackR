@@ -2,7 +2,7 @@
 import { Box } from '@mui/material';
 import styles from './TradeModal.module.css'
 import React, { useState } from 'react';
-import { auth } from '../../../(auth)/firebaseClient'
+import { auth } from '../../../../../(auth)/firebaseClient';
 
 interface Props {
     symbol: string;

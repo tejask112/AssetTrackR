@@ -1,0 +1,30 @@
+.companyName {
+  color: #555;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 4px 0 0;
+}
+
+.companyNameDiv {
+  margin: 5px 10px 0px 20px;
+}
+
+.companyVisuals {
+  background-color: rgb(227, 227, 227);
+  border-radius: 8px;
+  display: flex;
+  width: 100%;
+}
+
+.stockLogo{
+  border-radius: 8px;
+  background-color: white;
+}
+
+.symbolName {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+}

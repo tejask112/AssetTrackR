@@ -11,7 +11,10 @@ import {
   type UTCTimestamp,
 } from 'lightweight-charts';
 
-export type LinePoint = { time: number | string | Date; value: number };
+export type LinePoint = { 
+  time: number | string | Date; 
+  value: number 
+};
 
 type Timeframe = '1D' | '5D' | '1M' | '3M' | '6M' | '1Y' | 'Since Start';
 

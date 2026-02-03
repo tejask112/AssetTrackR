@@ -29,37 +29,11 @@
   background: linear-gradient(165deg, #93ff87, #21af28);
 }
 
-.allButtonsDiv{
-  display: grid;
-  grid-template-columns: 1fr minmax(48px, 10%);
-  gap: 10px;
-  margin: 15px 0;
-  width: 100%;
-  align-items: stretch;
-}
 
-.buttonsDiv{
-  display: flex;
-  gap: 10px;
-  min-width: 0;
-}
-.buttonsDiv > .tradeButton,
-.buttonsDiv > .fundamentalDataButton{
-  flex: 1 1 auto;
-  width: auto;
-  min-width: 0;
-}
 
-.briefCompanyInfoCard {
-  background-color: #ffffff;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Inter', system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  gap: 12px;
-  margin: 20px 0px 10px 0px;
-  padding: 18px 22px;
-}
+
+
+
 
 .cardHeader h2 {
   color: #323a56;
@@ -77,28 +51,7 @@
   min-width: 180px;
 }
 
-.companyName {
-  color: #555;
-  font-size: clamp(1rem, 1.2vw, 1.8rem);
-  font-weight: 400;
-  line-height: 1.2;
-  margin: 4px 0 0;
-}
 
-.companyNameDiv {
-  margin: 5px 10px 0px 20px;
-}
-
-.companyStatsDiv {
-  min-width: 400px;
-  width: 600px;
-}
-
-.companyVisuals {
-  background-color: rgb(227, 227, 227);
-  border-radius: 8px;
-  display: flex;
-}
 
 .entireDiv {
   margin: 35px 100px 10px 100px;
@@ -127,10 +80,7 @@
   flex: 1 1 0;
 }
 
-.hourText {
-  color: rgb(202, 111, 0);
-  font-weight: 600;
-}
+
 
 .label {
   color: #6f7a9e;
@@ -158,43 +108,11 @@
   gap: 40px;
 }
 
-.price {
-  font-size: 3rem;
-  font-weight: 700;
-  
-}
 
-.priceHourlyChangeStats {
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin: 32px 0px 0px 15px;
-}
 
-.priceMetaData {
-  margin: 15px 0px 0px 5px;
-}
 
-.priceVisuals {
-  display: flex;
-  margin: 10px 0px 0px 0px;
-}
 
-.recommendationResult{
-  font-size: 1.25rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
 
-.recommendationSection{
-  display: flex;
-  gap: 5px;
-}
-
-.recommendationTitle{
-  font-size: 1.25rem;
-  font-weight: 475;
-  letter-spacing: 0.5px;
-}
 
 .removeFromWatchlistButton{
   width: 100%;
@@ -237,23 +155,7 @@
   margin: 0;
 }
 
-.tradeButton {
-  background: linear-gradient(165deg, #3bbb00, #257500);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  font-size: 1.3rem;
-  font-weight: 600;
-  padding: 8px 24px;
-  width: 100%;
-}
-.tradeButton:hover {
-  background: linear-gradient(165deg, #38b000, #216800);
-}
-.tradeButton:active {
-  background: linear-gradient(165deg, #38b000, #1b5600);
-}
+
 
 .value {
   color: #1f2d55;
@@ -268,76 +170,10 @@
     gap: 15px;
 }
 
-.timezoneHeading {
-  font-size: 1rem;   
-  font-weight: 500;              
-  color: #555;               
-  margin: 0 0 8px 0;            
-  padding: 4px 8px;           
-  background-color: #f7f7f7;    
-  border-radius: 6px;            
-  display: inline-block;       
-  border: 1px solid #cbcbcb;    
-  font-family: "Segoe UI", Arial, sans-serif;
-}
 
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
 
-.tooltip button {
-  background-color: rgb(209, 209, 209);
-  margin-top: 7px;
-  margin-left: 5px;
-  padding: 3px 10px 3px 10px;
-  color: rgb(106, 106, 106);
-  border: none;
-  border-radius: 8px;
-  font-size: 9px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s ease-out;
-}
 
-.tooltip button:hover {
-  background-color: rgb(159, 159, 159);
-  transform: scale(1.05);
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-
-.tooltiptext {
-  visibility: hidden;
-  width: 450px;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  border-radius: 8px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -225px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
-}
 
 
 
@@ -420,4 +256,25 @@
 
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
+}
+
+
+
+
+.leftDiv{
+  display: flex;
+  flex-direction: column; 
+  gap: 10px;
+}
+
+.rightDiv{
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1.25fr 2fr;
+  gap: 20px;
+  width: 100%;
 }

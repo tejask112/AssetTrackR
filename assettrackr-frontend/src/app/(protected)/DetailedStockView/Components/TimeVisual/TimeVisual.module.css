@@ -1,0 +1,24 @@
+
+.timeVisualDiv {
+    display: flex;
+    gap: 20px;
+}
+
+.timezoneHeading {
+  font-size: 1rem;   
+  font-weight: 500;              
+  color: #555;               
+  margin: 0 0 8px 0;            
+  padding: 4px 8px;           
+  background-color: #f7f7f7;    
+  border-radius: 6px;            
+  display: inline-block;       
+  border: 1px solid #cbcbcb;    
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.times {
+  font-size: 1rem;            
+  margin: 0 0 8px 0;            
+  padding: 4px 8px;     
+}
