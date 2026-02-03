@@ -33,8 +33,7 @@ def create_app():
             db.close()
             SessionLocal.remove()
 
-    from .routes.explore_stocks import bp as exploreStocks_bp
-    from .routes.detailed_stock_view import bp as detailedStockView_bp
+
     from .routes.portfolio_data import bp as portfolioData_bp
     from .routes.login_handler import bp as loginHandler_bp
     from .db.db_routes.database_routes import bp as databaseAccess_bp
@@ -42,8 +41,6 @@ def create_app():
     from .db.db_routes.watchlist.watchlist import bp as watchlist_bp
     from .db.db_routes.balance.balance import bp as balance_bp
 
-    app.register_blueprint(exploreStocks_bp, url_prefix="/api")
-    app.register_blueprint(detailedStockView_bp, url_prefix="/api")
     app.register_blueprint(portfolioData_bp, url_prefix="/api")
     app.register_blueprint(loginHandler_bp, url_prefix="/api")
     app.register_blueprint(databaseAccess_bp, url_prefix="/api")
@@ -55,9 +52,11 @@ def create_app():
     from .routes.operations.order_management import bp as order_management_bp
     from .routes.pages.detailed_stock_view_page import bp as detailed_stock_view_page_bp
     from .routes.pages.explore_stocks_page import bp as explore_stocks_page_bp
+    from .routes.pages.trade_history_page import bp as trade_history_page_bp
     app.register_blueprint(order_management_bp, url_prefix="/api")
     app.register_blueprint(detailed_stock_view_page_bp, url_prefix="/api")
     app.register_blueprint(explore_stocks_page_bp, url_prefix="/api")
+    app.register_blueprint(trade_history_page_bp, url_prefix="/api")
 
     # firebase admin
     cred = credentials.Certificate("firebase-adminsdk.json")
