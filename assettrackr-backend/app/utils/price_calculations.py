@@ -1,3 +1,4 @@
+from ..db.db_services.portfolio.portfolio_queries import get_portfolio
 
 
 def calculate_current_price(company_market_data):

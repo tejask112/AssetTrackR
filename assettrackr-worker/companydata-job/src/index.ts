@@ -53,8 +53,11 @@ export default {
 		}
 
 		// collect market news
+		console.log(`Collecting market news (Date ${new Date})`)
 		const marketNewsUrl = new URL(`https://finnhub.io/api/v1/news?category=general`);
 		const marketNews = await getMarketNews(marketNewsUrl, env.FINNHUB_API_KEY)
+
+		console.log(`Bulk Delete/Insert into supabase`)
 		const { error: news_error_del } = await supabase .from("market_news").delete().neq("id", "00000000-0000-0000-0000-000000000000"); // delete all current rows from table
 		const { error: news_error_ins } = await supabase .from("market_news").insert(marketNews); // insert all new news items into table
 

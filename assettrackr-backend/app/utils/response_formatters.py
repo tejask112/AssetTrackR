@@ -36,4 +36,40 @@ def format_explore_stocks_response(company_data, company_prices):
 
     return company_data
 
+def format_watchlist_data(raw_data, watchlist_json):
+    grouped = defaultdict(list)
+    for entry in raw_data:
+        grouped[entry["ticker"]].append(entry)
 
+    res = {}
+
+    for ticker, entries in grouped.items():
+        entries.sort(key=lambda x: x["date"])
+        
+        prices_list = [e["price"] for e in entries]
+        
+        if not prices_list:
+            continue
+
+        latest_price = prices_list[-1]
+        oldest_price = prices_list[0]
+        change = round(latest_price - oldest_price, 2)
+
+        if oldest_price != 0:
+            change_percent = round((change / oldest_price) * 100, 2)
+        else:
+            change_percent = 0.0
+        
+        formatted_prices = [{"date": e["date"], "price": e["price"]} for e in entries]
+        
+        company_name = watchlist_json.get("watchlist").get(ticker)
+
+        res[ticker] = {
+            "latest_price": latest_price,
+            "x7d_change": change,
+            "x7d_change_pct": change_percent,
+            "prices": formatted_prices,
+            "company_name": company_name
+        }
+
+    return res
