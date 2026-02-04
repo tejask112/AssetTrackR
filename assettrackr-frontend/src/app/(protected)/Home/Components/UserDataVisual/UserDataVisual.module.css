@@ -1,0 +1,79 @@
+.accountValueAmount {
+    font-family: 'Inter';
+    font-size: 3rem;
+    font-weight: 625;
+    margin-top: -10px;
+}
+
+.accountValueSection {
+    margin-bottom: 15px;
+}
+
+.cashAddFundsButton {
+    font-size: 1.2rem;
+    padding: 0px 15px;
+    border: 2px solid lightgray;
+    border-radius: 8px;
+}
+
+.cashAddFundsButton:hover {
+    cursor: pointer;
+    background-color: rgb(229, 229, 229);
+}
+
+.cashAddFundsButton:active {
+    cursor: pointer;
+    background-color: rgb(219, 219, 219);
+}
+
+.cashAddFundsDiv {
+    margin-left: 20px;
+    margin-top: 17px;
+}
+
+.cashAmount {
+    font-family: 'Inter';
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: -10px;
+}
+
+.cashSection {
+    display: flex;
+}
+
+.changeValue {
+    font-family: 'Inter';
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: -10px;
+}
+
+.dataDiv {
+    min-width: 600px;
+}
+
+.overviewChange {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+}
+
+.overviewDiv {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.titleText {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #656c79;
+    margin: 0 0 0.1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Note: 'changeItem' and 'cashDiv' are used in your JSX 
+   but were not defined in the CSS you provided. 
+*/

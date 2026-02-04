@@ -1,16 +1,16 @@
 import React from "react";
 import styles from "./News.module.css";
 
-export type NewsItem = {
-  id: number;
-  headline: string;
-  summary: string;
-  image: string;
-  url: string;
-  source: string;
-  category: string;
-  datetime: number;
-};
+interface MarketNewsItem {
+    category: string;
+    datetime: number;
+    headline: string;
+    id: string;
+    image: string;
+    source: string;
+    summary: string;
+    url: string;
+}
 
 function formatDate(unixSeconds: number) {
   return new Date(unixSeconds * 1000).toLocaleString(undefined, {
@@ -22,7 +22,7 @@ function formatDate(unixSeconds: number) {
   });
 }
 
-export default function NewsCard({ item }: { item: NewsItem }) {
+export default function NewsCard({ item }: { item: MarketNewsItem }) {
   return (
     <a href={item.url} target="_blank" rel="noopener noreferrer">
       <article className={styles.card}>

@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 def format_explore_stocks_response(company_data, company_prices):
-
     prices_dict = defaultdict(list)
     for element in company_prices:
         date = element.get("date", "")
@@ -41,7 +40,7 @@ def format_watchlist_data(raw_data, watchlist_json):
     for entry in raw_data:
         grouped[entry["ticker"]].append(entry)
 
-    res = {}
+    res = []
 
     for ticker, entries in grouped.items():
         entries.sort(key=lambda x: x["date"])
@@ -60,16 +59,17 @@ def format_watchlist_data(raw_data, watchlist_json):
         else:
             change_percent = 0.0
         
-        formatted_prices = [{"date": e["date"], "price": e["price"]} for e in entries]
+        formatted_prices = [e["price"] for e in entries]
         
-        company_name = watchlist_json.get("watchlist").get(ticker)
+        company_name = watchlist_json.get("watchlist", {}).get(ticker, "")
 
-        res[ticker] = {
+        res.append({
+            "ticker": ticker,
+            "company_name": company_name,
             "latest_price": latest_price,
             "x7d_change": change,
             "x7d_change_pct": change_percent,
-            "prices": formatted_prices,
-            "company_name": company_name
-        }
+            "prices": formatted_prices
+        })
 
     return res
