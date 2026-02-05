@@ -33,7 +33,8 @@ export default {
 	},
 
 	async scheduled(controller: ScheduledController, env: Env): Promise<void> {
-		if (!checkMarketOpen()) return;
+		const now = new Date();
+		if (!checkMarketOpen(now)) return;
 		
 		const tickers = ["NVDA", "GOOG", "AAPL", "TSLA", "AMZN", "MSFT", "META", "ORCL", "UBER", "NFLX", "SHOP", "TSM", "AMD", "AVGO", "MU"];
 		
@@ -62,23 +63,30 @@ export default {
 
 		console.log(aggregatedData);
 
-		// push prices to Supabase `market_data` table
 		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-		const {error} = await supabase .from("market_data").insert(aggregatedData);
 
-		if (error) {
-			console.error("Supabase Error")
-			console.error("Message:", error.message);
-			console.error("Details:", error.details);
+		// push prices to Supabase `market_data` table
+		const {error: market_data_err } = await supabase .from("market_data").insert(aggregatedData);
+		if (market_data_err) {
+			console.error("Supabase Error (Inserting Market Data)")
+			console.error("Message:", market_data_err.message);
+			console.error("Details:", market_data_err.details);
 		}
 
+		// run all queued trades using latest prices if: 9:00am <= time <= 9:01am
+		if (!checkFirstMinOfMarket(now)) return;
+		const {error: queued_trades_err } = await supabase.rpc("run_queued_trades");
+		if (queued_trades_err) {
+			console.error("Supabase Error (Running Queued Trades)")
+			console.error("Message:", queued_trades_err.message);
+			console.error("Details:", queued_trades_err.details);
+		}
 
 	},
 } satisfies ExportedHandler<Env>;
 
 // check if market is open
-function checkMarketOpen() {
-
+function checkMarketOpen( now: Date ) {
 	const formatterToNyTimeObj = new Intl.DateTimeFormat("en-US", {
 		timeZone: "America/New_York",
 		hour: "numeric",
@@ -88,8 +96,7 @@ function checkMarketOpen() {
 		weekday: "short",
 	});
 	
-	const currentDate = new Date();
-	const parts = formatterToNyTimeObj.formatToParts(currentDate);
+	const parts = formatterToNyTimeObj.formatToParts(now);
 
 	const weekday = parts.find(p => p.type === "weekday")?.value;
 	const allWeekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -104,3 +111,22 @@ function checkMarketOpen() {
 	// 16:60 --> 4pm
 	return combinedMinutes >= 9 * 60 + 30 && combinedMinutes < 16 * 60;
 }
+
+// check if time: 9:30am <= time < 9:31am
+function checkFirstMinOfMarket( now: Date ) {
+	const formatterToNyTimeObj = new Intl.DateTimeFormat("en-US", {
+		timeZone: "America/New_York",
+		hour: "numeric",
+		minute: "numeric",
+		second: "numeric",
+		hour12: false,
+		weekday: "short",
+	});
+	
+	const parts = formatterToNyTimeObj.formatToParts(now);
+
+	const hour = Number(parts.find(p => p.type === "hour")?.value);
+	const minute = Number(parts.find(p => p.type === "minute")?.value);
+
+	return hour === 9 && minute === 30;
+}	
