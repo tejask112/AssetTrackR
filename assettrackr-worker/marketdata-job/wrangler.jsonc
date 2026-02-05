@@ -13,7 +13,7 @@
 	"triggers": {
 		// ***** -> minute, hour, day of month, month, day of week
 		"crons": [
-			"* * * * *"
+			"*/1 * * * *"
 		]
 	}
 	/**

@@ -5,7 +5,7 @@ def get_user_timeline_2w(uid):
         response = (
             supabase
             .table("timeline")
-            .select("date", "value")
+            .select("date", "price")
             .eq("uid", uid)
             .order("date", desc=True)
         ).execute()

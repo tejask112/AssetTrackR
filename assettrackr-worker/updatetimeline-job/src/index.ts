@@ -16,7 +16,7 @@ export default {
 	async scheduled(event, env, ctx): Promise<void> {
 		console.log(`RUNNING: scheduled event ${new Date}`);
 
-		if (!checkTimelineHours()) return;
+		if (!checkMarketOpen()) return;
 
 		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
@@ -29,7 +29,7 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 // check if market is open and if minute is 0, 15, 30, 45
-function checkTimelineHours() {
+function checkMarketOpen() {
 
 	const formatterToNyTimeObj = new Intl.DateTimeFormat("en-US", {
 		timeZone: "America/New_York",
@@ -54,8 +54,5 @@ function checkTimelineHours() {
 	// 16:60 --> 4pm
 	const combinedMinutes = hour * 60 + minute;
 
-	const marketOpen = (combinedMinutes >= 9 * 60 + 30 && combinedMinutes < 16 * 60);
-	const quarterMinuteInterval = (minute == 0 || minute == 15 || minute == 30 || minute == 45);
-
-	return marketOpen && quarterMinuteInterval;
+	return (combinedMinutes >= 9 * 60 + 30 && combinedMinutes < 16 * 60)
 }
