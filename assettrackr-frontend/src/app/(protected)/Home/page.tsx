@@ -8,6 +8,7 @@ import UserDataVisual from './Components/UserDataVisual/UserDataVisual';
 import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
 import WatchlistVisual from './Components/WatchlistVisual/WatchlistVisual';
 import MarketNewsVisual from './Components/MarketNewsVisual/MarketNews';
+import NotificationBox from '../ReusableComponents/NotificationBox/NotificationBox';
 
 interface HomePageData {
     cash_balance: number;
@@ -53,21 +54,39 @@ export default function Home() {
     const { userID, userEmail, setAuth, clear } = useUser();
 
     const [apiResponse, setApiResponse] = useState<HomePageData | null>(null);
+
+    const [apiError, setApiError] = useState<boolean>(false);
+
     useEffect(() => {
         if (!userID) return; 
         async function fetchHomePageData() {
             const res = await fetch(`api/home-data?uid=${userID}&jwt=abc`);
             const json: HomePageData = await res.json();
+
+            if (!res.ok) {
+                setApiError(true);
+                return;
+            }
+
             setApiResponse(json);
         }
         fetchHomePageData();
     }, [userID])
 
         
-    if (!apiResponse || !userID) {
-        return (
-            <LoadingBar/>
-        )
+    if (!apiResponse || !userID) { 
+        if (apiError) {
+            return (
+                <NotificationBox
+                    success={false}
+                    message={"Server Error. Please try again later"} 
+                />
+            )
+        } else {
+            return (
+                <LoadingBar />
+            ) 
+        }
     }
 
     return (
@@ -83,7 +102,7 @@ export default function Home() {
                 />
 
                 <div className={styles.chartDiv}>
-                    <ChartsHandler data={apiResponse.x2w_timeline} height={120}/>
+                    <ChartsHandler data={apiResponse.x2w_timeline} height={550}/>
                 </div>
 
             </div>

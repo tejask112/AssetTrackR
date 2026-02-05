@@ -21,6 +21,8 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
     const handleOpenDepositModal = () => setOpenDepositModal(true);
     const handleCloseDepositModal = () => setOpenDepositModal(false);
 
+    const [totalAccountBalance, setTotalAccountBalance] = useState<number>(0);
+
     const [changeTradingDay, setChangeTradingDay] = useState<number>(0);
     const [changeTradingDayPct, setChangeTradingDayPct] = useState<number>(0);
 
@@ -36,6 +38,9 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
         const { changeSS, changePctSS } = calculateChangeSinceStart(portfolioBalance, cashBalance);
         setChangeSinceStart(changeSS);
         setChangeSinceStartPct(changePctSS);
+
+        const totalBalance = portfolioBalance + cashBalance;
+        setTotalAccountBalance(totalBalance);
 
     }, [portfolioBalance, cashBalance])
 
@@ -123,6 +128,14 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
                     </div>
 
                 </div>
+
+                <div>
+                    <div className={styles.cashDiv}>
+                        <div className={styles.titleText}>Total Account Balance</div>
+                        <div className={styles.cashAmount}>{totalAccountBalance != null ? totalAccountBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'} USD</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     )

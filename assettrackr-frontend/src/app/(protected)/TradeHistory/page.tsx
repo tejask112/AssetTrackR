@@ -3,6 +3,8 @@ import styles from './page.module.css'
 import TradesTable from './TradesTable/TradesTable'
 import { useEffect, useMemo, useState } from 'react';
 import { useUser } from '@/context/UserContext'
+import NotificationBox from '../ReusableComponents/NotificationBox/NotificationBox';
+import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
 
 interface History {
     action: string;
@@ -38,6 +40,7 @@ export default function TradeHistory() {
     const totalVolume = allTradeHistory?.reduce((sum, trade) => sum + trade.execution_total_price, 0) ?? 0;
     const pendingTrades = queuedTradeHistory?.length ?? 0;
     
+    const [apiError, setApiError] = useState<boolean>(false);
 
     useEffect(() => {
         if (!userID) return; 
@@ -46,11 +49,32 @@ export default function TradeHistory() {
         async function getTradeHistory() {
             const res = await fetch(`/api/trade-history?uid=${encodeURIComponent(uid)}&jwt=abc`);
             const json: History[] = await res.json();
+
+            if (!res.ok) {
+                setApiError(true);
+                return;
+            }
+
             setAllTradeHistory(json);
         }
 
         getTradeHistory();
     }, [userID]);
+
+    if (!allTradeHistory || !userID) { 
+        if (apiError) {
+            return (
+                <NotificationBox
+                    success={false}
+                    message={"Server Error. Please try again later"} 
+                />
+            )
+        } else {
+            return (
+                <LoadingBar />
+            ) 
+        }
+    }
 
     return(
     

@@ -28,6 +28,7 @@ interface ApiResponse {
     "current_price_date": string,
     "historical_prices": Price[],
     "in_watchlist": boolean,
+    error?: string,
 }
 
 export interface CompanyData {
@@ -126,7 +127,6 @@ export default function DetailedStockView({ symbol }: Props) {
     const { userID, userEmail, setAuth, clear } = useUser();
     const [timeframe, setTimeframe] = useState<Timeframe>('1M');
     
-
     const [apiResponse, setApiResponse] = useState<ApiResponse | null>(null);
     const [supabaseConnectedMessage, setSupabaseConnectedMessage] = useState<boolean>(false);
 
@@ -134,11 +134,23 @@ export default function DetailedStockView({ symbol }: Props) {
     const [currentPriceDate, setCurrentPriceDate] = useState<string>("");
     const [historicalPrices, setHistoricalPrices] = useState<Price[]>([]);
 
+    const [apiError, setApiError] = useState<boolean>(false);
+    const [apiErrorMessage, setApiErrorMessage] = useState<string | null>(null);
+
     useEffect(() => {
         if (!userID) return; 
         async function fetchCompanyData() {
-            const res = await fetch(`/api/company-data?uid=${userID}&ticker=`+encodeURIComponent(symbol));
+            const upperSymbol = symbol.toUpperCase();
+
+            const res = await fetch(`/api/company-data?uid=${userID}&ticker=`+encodeURIComponent(upperSymbol));
             const json: ApiResponse = await res.json();
+
+            if (!res.ok) {
+                setApiError(true);
+                setApiErrorMessage(json.error!);
+                return;
+            }
+
             setApiResponse(json);
             setCurrentPrice(json.current_price);
             setCurrentPriceDate(json.current_price_date)
@@ -189,9 +201,19 @@ export default function DetailedStockView({ symbol }: Props) {
     }, [apiResponse])
     
     if (!apiResponse || !userID) { 
-        return (
-            <LoadingBar/>
-        ) 
+        if (apiError){
+            return (
+                <div className={styles.errorDiv}>
+                    <h1 className={styles.errorTitle}>SORRY</h1> 
+                    <h1 className={styles.errorMessage}>{apiErrorMessage}</h1>
+                </div>
+            ) 
+        } else {
+            return (
+                <LoadingBar/>
+            ) 
+        }
+        
     }
 
     return (

@@ -58,6 +58,22 @@
   display: flex;
 }
 
+.errorDiv{
+  margin: 35px 100px 10px 100px;
+}
+
+.errorMessage{
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgb(150, 150, 150);
+}
+
+.errorTitle {
+  font-size: 4rem;
+  font-weight: 700;
+  color: rgb(150, 150, 150);
+}
+
 .fundamentalDataButton {
   background: linear-gradient(165deg, #f6f6f6, #e4e4e4);
   border-radius: 8px;

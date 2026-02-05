@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
 import StockCard from './StockCard/StockCard';
 import { supabase } from '../../../supabase/supabaseClient';
+import NotificationBox from '../ReusableComponents/NotificationBox/NotificationBox';
+
 
 interface StockData {
     "company_name": string,
@@ -37,10 +39,18 @@ export default function SearchStocks() {
 
     const [apiResponse, setApiResponse] = useState<StockData[] | null>(null);
     
+    const [apiError, setApiError] = useState<boolean>(false);
+
     useEffect(() => {
         async function fetchExploreStocks() {
             const res = await fetch('/api/explore-stocks?jwt=abc');
             const json: StockData[] = await res.json();
+
+            if (!res.ok) {
+                setApiError(true);
+                return;
+            }
+
             setApiResponse(json);
         }
         fetchExploreStocks();
@@ -89,9 +99,18 @@ export default function SearchStocks() {
     }, [])
 
     if (!apiResponse) { 
-        return (
-            <LoadingBar />
-        ) 
+        if (apiError) {
+            return (
+                <NotificationBox
+                    success={false}
+                    message={"Server Error. Please try again later"} 
+                />
+            )
+        } else {
+            return (
+                <LoadingBar />
+            ) 
+        }
     }
 
     return(
