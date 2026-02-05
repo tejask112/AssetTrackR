@@ -5,16 +5,6 @@ type Env = {
 	SUPABASE_SERVICE_ROLE_KEY: string
 }
 
-function supabaseSetupClient(env: Env) {
-	return createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
-		auth: {
-			persistSession: false,
-			autoRefreshToken: false,
-			detectSessionInUrl: false,
-		},
-	})
-}
-
 export default {
 	async fetch(req) {
 		const url = new URL(req.url);
@@ -28,7 +18,7 @@ export default {
 
 		if (!checkTimelineHours()) return;
 
-		const supabase = supabaseSetupClient(env);
+		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
 		const { data, error} = await supabase.rpc('update_all_timelines');
 		if (error) {
