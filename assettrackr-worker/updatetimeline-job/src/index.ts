@@ -21,8 +21,10 @@ export default {
 		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
 		const { data, error} = await supabase.rpc('update_all_timelines');
-		if (error) {
-			console.error(`supabase error: ${error}`);
+		if (error)  {
+			console.error("Supabase Error (Inserting Market Data)")
+			console.error("Message:", error.message);
+			console.error("Details:", error.details);
 		}
 
 	},

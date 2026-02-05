@@ -16,9 +16,14 @@ def explore_stocks():
     if not allowed:
         return jsonify({ "error": error_mgs }), 400
     
-    company_data = get_brief_company_profiles()
-    company_prices = get_seven_days_prices()
+    try:
+        company_data = get_brief_company_profiles()
+        company_prices = get_seven_days_prices()
 
-    res = format_explore_stocks_response(company_data, company_prices)
+        res = format_explore_stocks_response(company_data, company_prices)
 
-    return jsonify(res)
+        return jsonify(res)
+    
+    except Exception as e:
+        print(f"explore_stocks() - Exception raised: {str(e)}")
+        return jsonify({ "error": "Internal Server Error" }), 500

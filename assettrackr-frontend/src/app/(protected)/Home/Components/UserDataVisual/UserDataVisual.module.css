@@ -73,7 +73,3 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
-
-/* Note: 'changeItem' and 'cashDiv' are used in your JSX 
-   but were not defined in the CSS you provided. 
-*/

@@ -24,4 +24,15 @@ def get_portfolio_balance(uid):
         return response.data
 
     except Exception as e:
-        raise ValueError(e)    
+        raise ValueError(e) 
+
+# ---------------- GET A USER'S PORTFOLIO VALUE WITH EACH TICKER'S LATESTB PRICE ----------------
+def get_portfolio_with_prices(uid):
+    try:
+        response = supabase.rpc("get_portfolio_with_prices", {
+            "uid_input": uid
+        }).execute()
+        return response.data
+    
+    except Exception as e:
+        raise ValueError(e)

@@ -50,11 +50,13 @@ def create_app():
     from .routes.pages.explore_stocks_page import bp as explore_stocks_page_bp
     from .routes.pages.trade_history_page import bp as trade_history_page_bp
     from .routes.pages.home_page import bp as home_page_bp
+    from .routes.pages.portfolio_analytics_page import bp as portfolio_analytics_bp
     app.register_blueprint(order_management_bp, url_prefix="/api")
     app.register_blueprint(detailed_stock_view_page_bp, url_prefix="/api")
     app.register_blueprint(explore_stocks_page_bp, url_prefix="/api")
     app.register_blueprint(trade_history_page_bp, url_prefix="/api")
     app.register_blueprint(home_page_bp, url_prefix="/api")
+    app.register_blueprint(portfolio_analytics_bp, url_prefix="/api")
 
     # firebase admin
     cred = credentials.Certificate("firebase-adminsdk.json")

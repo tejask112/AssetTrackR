@@ -1,0 +1,29 @@
+
+.accountValueAmount {
+    font-family: 'Inter';
+    font-size: 3rem;
+    font-weight: 625;
+    margin-top: -10px;
+}
+
+.cashAmount {
+    font-family: 'Inter';
+    font-size: 1.85rem;
+    font-weight: 500;
+    margin-top: -5px;
+}
+
+.entireDiv{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px; 
+}
+
+.titleText {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #656c79;
+    margin: 0 0 0.1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}

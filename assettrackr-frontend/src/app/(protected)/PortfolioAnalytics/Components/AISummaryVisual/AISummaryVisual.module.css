@@ -1,0 +1,13 @@
+.summaryDiv{
+    background-color: rgb(237, 237, 237);
+    border: 1px solid gainsboro;
+    border-radius: 16px;
+    padding: 20px 30px;
+    min-height: 400px;
+    max-height: 400px;
+}
+
+.summaryTitle{
+    font-size: 1.5rem;
+    font-weight: 600;
+}

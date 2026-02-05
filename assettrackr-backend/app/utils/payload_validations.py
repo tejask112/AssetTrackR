@@ -91,3 +91,13 @@ def validate_home_data_payload(payload):
     # ADD - VERIFY JWT TOKEN
 
     return True, None
+
+def validate_portfolio_analytics_payload(payload):
+    required_fields = ["uid", "jwt"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+
+    # ADD - VERIFY JWT TOKEN
+
+    return True, None

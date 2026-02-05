@@ -1,0 +1,22 @@
+
+.entireDiv{
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #656c79;
+    margin: 0 0 0.1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.value {
+    font-family: 'Inter';
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: -5px;
+}
