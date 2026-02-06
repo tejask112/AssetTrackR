@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './Watchlist.module.css'
+import { getFirebaseJWT } from '@/authenticator/authenticator';
 import NotificationBox from '@/app/(protected)/ReusableComponents/NotificationBox/NotificationBox';
 
 interface Props {
@@ -21,8 +22,12 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
 
     const addToWatchlist = async () => {
         try {
+            const jwt = await getFirebaseJWT();
+
+            // bad practice: don't send jwt in query string, send as part of header
+            // need to fix
             const res = await fetch(
-                `/api/watchlist-add?uid=${uid}&ticker=${ticker}&companyName=` + encodeURIComponent(companyName),
+                `/api/watchlist-add?uid=${uid}&ticker=${ticker}&companyName=${encodeURIComponent(companyName)}&jwt=${encodeURIComponent(jwt)}`,
                 { method: "POST" }
             );
 
@@ -37,14 +42,19 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
             }
         } catch (error)  {
             console.error(error);
+            setNotif({ msg: "Could not authenticate", success: false });
         }
         setTimeout(() => setNotif(null), 5000);
     }
 
     const removeFromWatchlist = async () => {
         try {
+            const jwt = await getFirebaseJWT();
+
+            // bad practice: don't send jwt in query string, send as part of header
+            // need to fix
             const res = await fetch(
-                `/api/watchlist-remove?uid=${uid}&ticker=${ticker}`,
+                `/api/watchlist-remove?uid=${uid}&ticker=${ticker}&jwt=${encodeURIComponent(jwt)}`,
                 { method: "POST" }
             );
 
@@ -59,6 +69,7 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
             }
         } catch (error)  {
             console.error(error);
+            setNotif({ msg: "Could not authenticate", success: false });
         }
         setTimeout(() => setNotif(null), 5000);
     }

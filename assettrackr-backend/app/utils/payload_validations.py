@@ -140,14 +140,14 @@ def validate_portfolio_analytics_payload(payload):
     return True, None
 
 def validate_deposit_payload(payload):
-    required_fields = ["uid", "jwt"]
+    required_fields = ["uid", "jwt", "value"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
 
     uid = payload.get("uid")
     deposit = payload.get("value")
-    jwt = payload.get("token")
+    jwt = payload.get("jwt")
 
     if deposit>9999999.99 or deposit<0.01:
         return False, f"Bad Request, Invalid deposit quantity"

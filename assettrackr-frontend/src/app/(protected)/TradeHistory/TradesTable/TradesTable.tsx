@@ -9,6 +9,7 @@ import { useRef } from 'react';
 import { Row } from 'primereact/row';
 import CancelTradeModal from '../CancelTradeModal/CancelTradeModal';
 import NotificationBox from '../../ReusableComponents/NotificationBox/NotificationBox';
+import { getFirebaseJWT } from '@/authenticator/authenticator';
 
 interface Trade {
     action: string;
@@ -120,8 +121,8 @@ export default function TradesTable({ data, rows }: TradeProps) {
 
             const uid = rowData.uid;
             const tradeID = rowData.trade_id;
-            
-            console.log(`/api/cancel-order?uid=${uid}&tradeid=${tradeID}&jwt=abc`);
+
+            const jwt = await getFirebaseJWT();
 
             const res = await fetch("/api/cancel-order", {
                 method: "POST",
@@ -131,7 +132,7 @@ export default function TradesTable({ data, rows }: TradeProps) {
                 body: JSON.stringify({
                     uid: uid,
                     tradeid: tradeID,
-                    jwt: "abc" //change
+                    jwt: jwt
                 }),
             });
 

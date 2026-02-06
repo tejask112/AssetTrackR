@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { auth } from '../../../(auth)/firebaseClient'
 import LoadingBar from '@/app/(auth)/LoadingBar/LoadingBar';
 import DepositHistoryInstance from './DepositHistoryInstance/DepositHistoryInstance';
+import { getFirebaseJWT } from '@/authenticator/authenticator';
+import NotificationBox from '../../ReusableComponents/NotificationBox/NotificationBox';
 
 interface Props {
     existingCash: number;
@@ -28,7 +30,8 @@ export default function DepositModal({ existingCash, uid }:Props) {
     const sleep = (ms: number): Promise<void> =>
         new Promise((resolve) => setTimeout(resolve, ms));
 
-    const [history, setHistory] = useState<History|null>();
+    const [history, setHistory] = useState<History>([]);
+    const [historyError, setHistoryError] = useState<boolean>(false);
  
     const formatUSD = (v: unknown) => {
         if (v === '' || v == null) return '-'
@@ -43,9 +46,19 @@ export default function DepositModal({ existingCash, uid }:Props) {
 
     useEffect(() => {
         async function getHistory() {
-            const res = await fetch(`/api/deposit_history?uid=${encodeURIComponent(uid)}`);
-            const json = await res.json();
-            setHistory(json[uid]);
+            try{
+                const jwt = await getFirebaseJWT();
+
+                // bad practice: don't send jwt in query string, send as part of header!!
+                // need to fix
+                const res = await fetch(`/api/deposit-history?uid=${encodeURIComponent(uid)}&jwt=${jwt}`);
+                const json = await res.json();
+                setHistory(json[uid]);
+            } catch (error) {
+                console.error(error);
+                setHistoryError(true);
+                setTimeout(() => setHistoryError(false), 5000);
+            }
         }
         getHistory();
     }, [])
@@ -65,7 +78,7 @@ export default function DepositModal({ existingCash, uid }:Props) {
         const payload = {
             uid: user.uid,
             value: deposit,
-            token: jwt,
+            jwt: jwt,
         };
         
         const res = await fetch('/api/deposit', {
@@ -87,10 +100,18 @@ export default function DepositModal({ existingCash, uid }:Props) {
         setLoading(false);
     }
 
-    if (!history) return(<h1>"Loading"</h1>)
+    if (historyError) {
+        return (
+            <NotificationBox
+                success={false}
+                message={"Server Error. Please try again later"} 
+            />
+        )
+    } 
 
     return(
         <Box className={styles.modal}>
+
             <div className={styles.depositDiv}>
                 <h1 className={styles.title}>Deposit funds into your account</h1>
                 <label className={styles.quantityLabel}>

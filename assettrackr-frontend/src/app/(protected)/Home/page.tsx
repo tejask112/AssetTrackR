@@ -9,6 +9,7 @@ import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
 import WatchlistVisual from './Components/WatchlistVisual/WatchlistVisual';
 import MarketNewsVisual from './Components/MarketNewsVisual/MarketNews';
 import NotificationBox from '../ReusableComponents/NotificationBox/NotificationBox';
+import { getFirebaseJWT } from '@/authenticator/authenticator';
 
 interface HomePageData {
     cash_balance: number;
@@ -54,21 +55,29 @@ export default function Home() {
     const { userID, userEmail, setAuth, clear } = useUser();
 
     const [apiResponse, setApiResponse] = useState<HomePageData | null>(null);
-
     const [apiError, setApiError] = useState<boolean>(false);
 
     useEffect(() => {
         if (!userID) return; 
         async function fetchHomePageData() {
-            const res = await fetch(`api/home-data?uid=${userID}&jwt=abc`);
-            const json: HomePageData = await res.json();
+            try{
+                const jwt = await getFirebaseJWT();
 
-            if (!res.ok) {
+                // bad practice: don't send jwt in query string, send as part of header!!
+                // need to fix
+                const res = await fetch(`api/home-data?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
+                const json: HomePageData = await res.json();
+
+                if (!res.ok) {
+                    setApiError(true);
+                    return;
+                }
+
+                setApiResponse(json);
+            } catch (error) {
+                console.error(error);
                 setApiError(true);
-                return;
             }
-
-            setApiResponse(json);
         }
         fetchHomePageData();
     }, [userID])

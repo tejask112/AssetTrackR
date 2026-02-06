@@ -10,6 +10,7 @@ import AISummaryVisual from "./Components/AISummaryVisual/AISummaryVisual";
 import AccountStatsVisual from "./Components/AccountStatsVisual/AccountStatsVisual";
 import ReturnsVisual from "./Components/ReturnsVisual/ReturnsVisual";
 import PortfolioVisual from "./Components/PortfolioVisual/PortfolioVisual";
+import { getFirebaseJWT } from "@/authenticator/authenticator";
 
 interface Price {
     date: string;
@@ -58,23 +59,29 @@ export default function PortfolioAnalytics() {
     useEffect(() => {
         if (!userID) return; 
         async function fetchAnalyticsData() {
-            const res = await fetch(`api/portfolio-analytics?uid=${userID}&jwt=abc`);
-            const json: ApiResponse = await res.json();
+            try{
+                const jwt = await getFirebaseJWT();
 
-            if (!res.ok) {
+                const res = await fetch(`api/portfolio-analytics?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
+                const json: ApiResponse = await res.json();
+
+                if (!res.ok) {
+                    setApiError(true);
+                    return;
+                }
+
+                setApiResponse(json);
+
+                let total = 0;
+                json.portfolio.forEach((item) => {
+                    total += item.current_price * item.quantity;
+                });
+                setPortfolioBalance(total);
+            } catch (error) {
+                console.error(error);
                 setApiError(true);
-                return;
             }
-
-            setApiResponse(json);
-
-            let total = 0;
-            json.portfolio.forEach((item) => {
-                total += item.current_price * item.quantity;
-            });
-            setPortfolioBalance(total);
-
-        }
+        } 
         fetchAnalyticsData();
     }, [userID])
 

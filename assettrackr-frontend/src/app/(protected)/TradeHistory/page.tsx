@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useUser } from '@/context/UserContext'
 import NotificationBox from '../ReusableComponents/NotificationBox/NotificationBox';
 import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
+import { getFirebaseJWT } from '@/authenticator/authenticator';
 
 interface History {
     action: string;
@@ -47,15 +48,25 @@ export default function TradeHistory() {
 
         const uid = userID;
         async function getTradeHistory() {
-            const res = await fetch(`/api/trade-history?uid=${encodeURIComponent(uid)}&jwt=abc`);
-            const json: History[] = await res.json();
+            try{
+                const jwt = await getFirebaseJWT();
+                
+                // bad practice: don't send jwt in query string, send as part of header!!
+                // need to fix
+                const res = await fetch(`/api/trade-history?uid=${encodeURIComponent(uid)}&jwt=${encodeURIComponent(jwt)}`);
+                const json: History[] = await res.json();
 
-            if (!res.ok) {
+                if (!res.ok) {
+                    setApiError(true);
+                    return;
+                }
+
+                setAllTradeHistory(json);
+            } catch (error) {
+                console.error(error);
                 setApiError(true);
-                return;
             }
-
-            setAllTradeHistory(json);
+            
         }
 
         getTradeHistory();

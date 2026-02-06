@@ -1,6 +1,8 @@
 'use client';
 import styles from './page.module.css';
 import { useState, useEffect } from "react";
+import { getFirebaseJWT } from '@/authenticator/authenticator';
+import { useUser } from '@/context/UserContext';
 import LoadingBar from '../ReusableComponents/LoadingBar/LoadingBar';
 import StockCard from './StockCard/StockCard';
 import { supabase } from '../../../supabase/supabaseClient';
@@ -37,24 +39,35 @@ type InsertPayload<T> = {
 
 export default function SearchStocks() {
 
+    const { userID, userEmail, setAuth, clear } = useUser();
+
     const [apiResponse, setApiResponse] = useState<StockData[] | null>(null);
-    
     const [apiError, setApiError] = useState<boolean>(false);
 
     useEffect(() => {
+        if (!userID) return;
         async function fetchExploreStocks() {
-            const res = await fetch('/api/explore-stocks?jwt=abc');
-            const json: StockData[] = await res.json();
+            try{
+                const jwt = await getFirebaseJWT();
 
-            if (!res.ok) {
+                // bad practice: don't send jwt in query string, send as part of header!!
+                // need to fix
+                const res = await fetch(`/api/explore-stocks?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
+                const json: StockData[] = await res.json();
+
+                if (!res.ok) {
+                    setApiError(true);
+                    return;
+                }
+
+                setApiResponse(json);
+            } catch (error) {
+                console.error(error);
                 setApiError(true);
-                return;
             }
-
-            setApiResponse(json);
         }
         fetchExploreStocks();
-    }, []);
+    }, [userID]);
 
     // supabase realtime connection
     useEffect(() => {

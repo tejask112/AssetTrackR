@@ -9,7 +9,7 @@ bp = Blueprint("balance", __name__)
 
 @bp.route('/deposit', methods=['POST'])
 def deposit():
-    allowed, error_message = validate_deposit_payload(request.args)
+    allowed, error_message = validate_deposit_payload(request.get_json(silent=True))
 
     if not allowed:
         return jsonify({ "error": error_message }), 400

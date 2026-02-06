@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import * as React from 'react';
 import styles from './DetailedStockView.module.css';
 import { useUser } from '@/context/UserContext';
+import { getFirebaseJWT } from '@/authenticator/authenticator';
 import { supabase } from '../../../supabase/supabaseClient'
 
 import CompanyVisuals from "./Components/CompanyVisuals/CompanyVisuals";
@@ -141,20 +142,27 @@ export default function DetailedStockView({ symbol }: Props) {
         if (!userID) return; 
         async function fetchCompanyData() {
             const upperSymbol = symbol.toUpperCase();
+            try {
+                const jwt = await getFirebaseJWT();
 
-            const res = await fetch(`/api/company-data?uid=${userID}&ticker=`+encodeURIComponent(upperSymbol));
-            const json: ApiResponse = await res.json();
+                // bad practice: don't send jwt in query string, send as part of header!!
+                // need to fix
+                const res = await fetch(`/api/company-data?uid=${userID}&ticker=${encodeURIComponent(upperSymbol)}&jwt=${encodeURIComponent(jwt)}`);
+                const json: ApiResponse = await res.json();
 
-            if (!res.ok) {
-                setApiError(true);
-                setApiErrorMessage(json.error!);
-                return;
+                if (!res.ok) {
+                    setApiError(true);
+                    setApiErrorMessage(json.error!);
+                    return;
+                }
+
+                setApiResponse(json);
+                setCurrentPrice(json.current_price);
+                setCurrentPriceDate(json.current_price_date)
+                setHistoricalPrices(json.historical_prices);
+            } catch (error) {
+                console.error(error);
             }
-
-            setApiResponse(json);
-            setCurrentPrice(json.current_price);
-            setCurrentPriceDate(json.current_price_date)
-            setHistoricalPrices(json.historical_prices);
         }
         fetchCompanyData();
     }, [userID])
