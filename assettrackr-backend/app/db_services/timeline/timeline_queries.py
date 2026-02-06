@@ -34,3 +34,19 @@ def get_user_timeline(uid):
 
     except Exception as e:
         raise ValueError(e)
+
+def initialise_user_timeline(uid):
+    try:
+        response = (
+            supabase
+            .table("timeline")
+            .insert({
+                "uid": uid,
+                "price": 0,
+            })
+        ).execute()
+
+        return response.data
+
+    except Exception as e:
+        raise ValueError(e)

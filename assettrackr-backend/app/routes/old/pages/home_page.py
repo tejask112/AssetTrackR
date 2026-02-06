@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify
 
-from ...utils.payload_validations import validate_home_data_payload
-from ...utils.watchlist_aggregator import get_watchlist_data
+from ....utils.payload_validations import validate_home_data_payload
+from ....utils.watchlist_aggregator import get_watchlist_data
 
-from ...db_services.user_accounts.user_account_queries import get_liquid_cash
-from ...db_services.portfolio.portfolio_queries import get_portfolio_balance, get_portfolio
-from ...db_services.timeline.timeline_queries import get_user_timeline_2w
-from ...db_services.market_news.market_news_queries import get_market_news
+from ....db_services.user_accounts.user_account_queries import get_liquid_cash
+from ....db_services.portfolio.portfolio_queries import get_portfolio_balance, get_portfolio
+from ....db_services.timeline.timeline_queries import get_user_timeline_2w
+from ....db_services.market_news.market_news_queries import get_market_news
 
 bp = Blueprint('home_page_bp', __name__)
 

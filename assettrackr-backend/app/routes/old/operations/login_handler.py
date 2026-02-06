@@ -5,7 +5,8 @@ from firebase_admin import auth
 from functools import wraps
 import datetime
 
-from ..db_services.user_accounts.user_account_queries import create_user
+from ....db_services.user_accounts.user_account_queries import create_user
+from ....db_services.timeline.timeline_queries import initialise_user_timeline
 
 bp = Blueprint("login_handler", __name__)
 
@@ -44,6 +45,7 @@ def initialise_user():
     email = request.user["email"]
     
     create_user(uid, email)
+    initialise_user_timeline(uid)
 
     return jsonify({"ok": True, "uid": request.user["uid"]})
 

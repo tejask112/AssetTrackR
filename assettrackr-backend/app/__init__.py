@@ -13,25 +13,27 @@ def create_app():
     CORS(app, supports_credentials=True)
     init_firebase()
 
-    from .routes.login_handler import bp as loginHandler_bp
-    app.register_blueprint(loginHandler_bp, url_prefix="/api")
+    # from .routes.login_handler import bp as loginHandler_bp
+    # from .routes.operations.order_management import bp as order_management_bp
+    # from .routes.operations.balance_management import bp as balance_management_bp
+    # from .routes.operations.watchlist_management import bp as watchlist_management_bp
+    # from .routes.pages.detailed_stock_view_page import bp as detailed_stock_view_page_bp
+    # from .routes.pages.explore_stocks_page import bp as explore_stocks_page_bp
+    # from .routes.pages.trade_history_page import bp as trade_history_page_bp
+    # from .routes.pages.home_page import bp as home_page_bp
+    # from .routes.pages.portfolio_analytics_page import bp as portfolio_analytics_bp
+    # app.register_blueprint(loginHandler_bp, url_prefix="/api")
+    # app.register_blueprint(order_management_bp, url_prefix="/api")
+    # app.register_blueprint(balance_management_bp, url_prefix="/api")
+    # app.register_blueprint(watchlist_management_bp, url_prefix="/api")
+    # app.register_blueprint(detailed_stock_view_page_bp, url_prefix="/api")
+    # app.register_blueprint(explore_stocks_page_bp, url_prefix="/api")
+    # app.register_blueprint(trade_history_page_bp, url_prefix="/api")
+    # app.register_blueprint(home_page_bp, url_prefix="/api")
+    # app.register_blueprint(portfolio_analytics_bp, url_prefix="/api")
 
-    from .routes.operations.order_management import bp as order_management_bp
-    from .routes.operations.balance_management import bp as balance_management_bp
-    from .routes.operations.watchlist_management import bp as watchlist_management_bp
-    from .routes.pages.detailed_stock_view_page import bp as detailed_stock_view_page_bp
-    from .routes.pages.explore_stocks_page import bp as explore_stocks_page_bp
-    from .routes.pages.trade_history_page import bp as trade_history_page_bp
-    from .routes.pages.home_page import bp as home_page_bp
-    from .routes.pages.portfolio_analytics_page import bp as portfolio_analytics_bp
-    app.register_blueprint(order_management_bp, url_prefix="/api")
-    app.register_blueprint(balance_management_bp, url_prefix="/api")
-    app.register_blueprint(watchlist_management_bp, url_prefix="/api")
-    app.register_blueprint(detailed_stock_view_page_bp, url_prefix="/api")
-    app.register_blueprint(explore_stocks_page_bp, url_prefix="/api")
-    app.register_blueprint(trade_history_page_bp, url_prefix="/api")
-    app.register_blueprint(home_page_bp, url_prefix="/api")
-    app.register_blueprint(portfolio_analytics_bp, url_prefix="/api")
+    from .routes.vercel_routes import api as vercel_routes_api
+    app.register_blueprint(vercel_routes_api, url_prefix="/api")
 
     @app.get("/api/health")
     def health():

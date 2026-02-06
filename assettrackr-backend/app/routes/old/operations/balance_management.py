@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify, g
 
-from ...utils.payload_validations import validate_deposit_payload, validate_deposit_history_payload
+from ....utils.payload_validations import validate_deposit_payload, validate_deposit_history_payload
 
-from ...db_services.user_accounts.user_account_queries import update_liquid_cash
-from ...db_services.deposit_logs.deposit_logs_queries import add_deposit_log_entry, get_deposit_logs
+from ....db_services.user_accounts.user_account_queries import update_liquid_cash
+from ....db_services.deposit_logs.deposit_logs_queries import add_deposit_log_entry, get_deposit_logs
 
 bp = Blueprint("balance", __name__)
 

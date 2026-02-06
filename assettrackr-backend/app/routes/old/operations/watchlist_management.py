@@ -2,8 +2,8 @@ from flask import Blueprint, request, jsonify
 
 bp = Blueprint("watchlist", __name__)
 
-from ...db_services.user_accounts.user_account_queries import add_to_watchlist, remove_from_watchlist
-from ...utils.payload_validations import validate_watchlist_add_payload, validate_watchlist_remove_payload
+from ....db_services.user_accounts.user_account_queries import add_to_watchlist, remove_from_watchlist
+from ....utils.payload_validations import validate_watchlist_add_payload, validate_watchlist_remove_payload
 
 # ---------------- ADD TICKER/COMPANYNAME TO WATCHLIST  ----------------
 @bp.route('/watchlist-add', methods=["POST"])

@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
 
-from ...utils.payload_validations import validate_explore_stocks_payload
-from ...utils.response_formatters import format_explore_stocks_response
+from ....utils.payload_validations import validate_explore_stocks_payload
+from ....utils.response_formatters import format_explore_stocks_response
 
-from ...db_services.company_profile.company_profile_queries import get_brief_company_profiles
-from ...db_services.market_data.market_data_queries import get_seven_days_prices
+from ....db_services.company_profile.company_profile_queries import get_brief_company_profiles
+from ....db_services.market_data.market_data_queries import get_seven_days_prices
 
 bp = Blueprint("explore_stocks_page", __name__)
 
