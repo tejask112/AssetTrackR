@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 
 from ...utils.payload_validations import validate_trade_history_payload
 
-from ...db.db_services.trades.trades_queries import get_user_trades
+from ...db_services.trades.trades_queries import get_user_trades
 
 bp = Blueprint("trade_history_page", __name__)
 

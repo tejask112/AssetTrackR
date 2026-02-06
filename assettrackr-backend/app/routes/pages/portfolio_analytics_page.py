@@ -3,9 +3,9 @@ from flask import Blueprint, request, jsonify
 from ...utils.payload_validations import validate_portfolio_analytics_payload
 from ...utils.price_calculations import calculate_returns
 
-from ...db.db_services.timeline.timeline_queries import get_user_timeline
-from ...db.db_services.portfolio.portfolio_queries import get_portfolio_with_prices
-from ...db.db_services.user_accounts.user_account_queries import get_liquid_cash
+from ...db_services.timeline.timeline_queries import get_user_timeline
+from ...db_services.portfolio.portfolio_queries import get_portfolio_with_prices
+from ...db_services.user_accounts.user_account_queries import get_liquid_cash
 
 
 bp = Blueprint("portfolio_analytics_page",  __name__)

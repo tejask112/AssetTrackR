@@ -1,5 +1,5 @@
-from ..db.db_services.user_accounts.user_account_queries import get_watchlist
-from ..db.db_services.market_data.market_data_queries import get_selected_seven_days_prices
+from ..db_services.user_accounts.user_account_queries import get_watchlist
+from ..db_services.market_data.market_data_queries import get_selected_seven_days_prices
 
 from ..utils.response_formatters import format_watchlist_data
 

@@ -3,10 +3,10 @@ from decimal import Decimal
 
 from ...utils.payload_validations import validate_submit_order_payload, validate_cancel_order_payload
 from ...utils.api_responses import compute_submit_order_response, compute_cancel_order_response
-from ...db.db_utils.market_hours import check_market_open, check_when_market_opens
+from ...utils.market_hours import check_market_open, check_when_market_opens
 
 
-from ...db.db_services.trades.trades_queries import execute_trade, queue_trade, cancel_trade
+from ...db_services.trades.trades_queries import execute_trade, queue_trade, cancel_trade
 
 bp = Blueprint("order_management", __name__)
 

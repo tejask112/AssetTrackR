@@ -101,3 +101,44 @@ def validate_portfolio_analytics_payload(payload):
     # ADD - VERIFY JWT TOKEN
 
     return True, None
+
+def validate_deposit_payload(payload):
+    required_fields = ["uid", "jwt"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+
+    uid = payload.get("uid")
+    deposit = payload.get("value")
+    jwt = payload.get("token")
+
+    if deposit>9999999.99 or deposit<0.01:
+        return False, f"Bad Request, Invalid deposit quantity"
+
+    # ADD - VERIFY JWT TOKEN
+
+    return True, None
+
+def validate_deposit_history_payload(payload):
+    required_fields = ["uid"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+    
+    return True, None
+
+def validate_watchlist_add_payload(payload):
+    required_fields = ["uid", "ticker", "companyName"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+    
+    return True, None
+
+def validate_watchlist_remove_payload(payload):
+    required_fields = ["uid", "ticker"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+    
+    return True, None

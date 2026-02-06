@@ -3,9 +3,9 @@ from flask import Blueprint, request, jsonify
 from ...utils.payload_validations import validate_company_data_payload
 from ...utils.price_calculations import calculate_current_price
 
-from ...db.db_services.company_profile.company_profile_queries import get_company_profile
-from ...db.db_services.market_data.market_data_queries import get_market_data
-from ...db.db_services.user_accounts.user_account_queries import check_in_watchlist
+from ...db_services.company_profile.company_profile_queries import get_company_profile
+from ...db_services.market_data.market_data_queries import get_market_data
+from ...db_services.user_accounts.user_account_queries import check_in_watchlist
 
 bp = Blueprint("detailed_stock_view_page", __name__)
 

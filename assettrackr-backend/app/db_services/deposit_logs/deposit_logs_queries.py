@@ -1,5 +1,5 @@
 from ..supabase_client import supabase
-from ...db_utils.deposit_logs_formatter import deposit_logs_formatter
+from ...utils.response_formatters import deposit_logs_formatter
 
 # ---------------- ADD USER DEPOSIT TO TABLE  ----------------
 def add_deposit_log_entry(uid, deposit_value):
