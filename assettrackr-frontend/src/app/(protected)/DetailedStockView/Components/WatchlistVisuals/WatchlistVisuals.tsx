@@ -22,7 +22,7 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
     const addToWatchlist = async () => {
         try {
             const res = await fetch(
-                `/api/watchlist_add?uid=${uid}&ticker=${ticker}&companyName=` + encodeURIComponent(companyName),
+                `/api/watchlist-add?uid=${uid}&ticker=${ticker}&companyName=` + encodeURIComponent(companyName),
                 { method: "POST" }
             );
 
@@ -44,7 +44,7 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
     const removeFromWatchlist = async () => {
         try {
             const res = await fetch(
-                `/api/watchlist_remove?uid=${uid}&ticker=${ticker}`,
+                `/api/watchlist-remove?uid=${uid}&ticker=${ticker}`,
                 { method: "POST" }
             );
 
