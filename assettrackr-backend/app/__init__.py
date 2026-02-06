@@ -32,8 +32,8 @@ def create_app():
     # app.register_blueprint(home_page_bp, url_prefix="/api")
     # app.register_blueprint(portfolio_analytics_bp, url_prefix="/api")
 
-    from .api.index import api as index_api
-    app.register_blueprint(index_api, url_prefix="/api")
+    from .routes.index import api as routes
+    app.register_blueprint(routes, url_prefix="/api")
 
     @app.get("/api/health")
     def health():
