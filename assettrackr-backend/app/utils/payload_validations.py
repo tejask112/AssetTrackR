@@ -1,14 +1,16 @@
 from decimal import Decimal
 import uuid
 
+from .authenticator import verify_jwt
+
 def validate_submit_order_payload(payload):
-    required_fields = ["uid", "ticker", "action", "quantity"]
+    required_fields = ["uid", "ticker", "action", "quantity", "jwt"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
 
     uid = payload["uid"]
-    # jwt = payload["jwt"]
+    jwt = payload["jwt"]
     ticker = payload["ticker"].upper()
     action = payload["action"].upper()
     quantity = Decimal(str(payload["quantity"]))
@@ -23,7 +25,9 @@ def validate_submit_order_payload(payload):
     if ticker not in recognised_tickers:
         return False, f"Bad Request, {ticker} currently not recognised/supported. Support for this asset may be coming soon. Please stay tuned for future updates - AssetTrackR team."
     
-    # ADD - VERIFY JWT TOKEN
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
 
     return True, None
 
@@ -39,18 +43,22 @@ def validate_cancel_order_payload(payload):
     except:
         return False, "Bad Request, 'trade_id' is not a valid UUID code."
     
-    # ADD - VERIFY JWT TOKEN
+    uid = payload.get("uid")
+    jwt = payload.get("jwt")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
+
     return True, None
     
 def validate_company_data_payload(payload):
-    required_fields = ["uid", "ticker"]
+    required_fields = ["uid", "ticker", "jwt"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
     
-    uid = payload.get("uid", "")
     ticker = payload.get("ticker", "")
-    jwt = payload.get("jwt", "")
 
     if len(ticker.strip()) == 0:
         return False, f"Bad Request, 'ticker' cannot be an empty string."
@@ -59,16 +67,30 @@ def validate_company_data_payload(payload):
     if ticker not in recognised_tickers:
         return False, f"Bad Request, {ticker} is currently not recognised/supported. Support for this asset may be coming soon. Please stay tuned for future updates - AssetTrackR team."
     
-    # ADD - VERIFY JWT TOKEN
+    uid = payload.get("uid")
+    jwt = payload.get("jwt")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
+    
     return True, None
 
 def validate_explore_stocks_payload(payload):
+    required_fields = ["uid", "jwt"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+
     jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
 
     if len(jwt.strip()) == 0:
-        return False, f"Bad Request, Missing fields: JWT Token"
-    
-    # ADD - VERIFY JWT TOKEN
+        return False, f"Bad Request, Missing fields: JWT Token"    
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
 
     return True, None
 
@@ -78,7 +100,12 @@ def validate_trade_history_payload(payload):
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
 
-    # ADD - VERIFY JWT TOKEN
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
 
     return True, None
 
@@ -88,7 +115,12 @@ def validate_home_data_payload(payload):
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
 
-    # ADD - VERIFY JWT TOKEN
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
 
     return True, None
 
@@ -98,7 +130,12 @@ def validate_portfolio_analytics_payload(payload):
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
 
-    # ADD - VERIFY JWT TOKEN
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
 
     return True, None
 
@@ -115,30 +152,53 @@ def validate_deposit_payload(payload):
     if deposit>9999999.99 or deposit<0.01:
         return False, f"Bad Request, Invalid deposit quantity"
 
-    # ADD - VERIFY JWT TOKEN
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
 
     return True, None
 
 def validate_deposit_history_payload(payload):
-    required_fields = ["uid"]
+    required_fields = ["uid", "jwt"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
     
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
+
     return True, None
 
 def validate_watchlist_add_payload(payload):
-    required_fields = ["uid", "ticker", "companyName"]
+    required_fields = ["uid", "ticker", "companyName", "jwt"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
     
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
+
     return True, None
 
 def validate_watchlist_remove_payload(payload):
-    required_fields = ["uid", "ticker"]
+    required_fields = ["uid", "ticker", "jwt"]
     missing_fields = [field for field in required_fields if field not in payload]
     if len(missing_fields)>0:
         return False, f"Bad Request, Missing fields: {missing_fields}"
     
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
+
     return True, None

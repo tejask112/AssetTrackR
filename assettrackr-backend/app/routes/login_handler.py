@@ -75,7 +75,7 @@ def create_session():
         sessionCookie,
         max_age=int(expiresIn.total_seconds()),
         httponly=True,
-        secure=False,   # set true in production
+        secure=True,
         samesite="Lax",
         path="/"
     )
