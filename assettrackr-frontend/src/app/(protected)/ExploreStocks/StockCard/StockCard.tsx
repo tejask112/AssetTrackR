@@ -82,7 +82,7 @@ export default function StockCard({ data }: StockDataProp) {
                 <h1 className={`${styles.price} ${flashClass}`}>{currentPrice} USD</h1>
                 {data.x7d_change ?
                     <h1 className={data.x7d_change > 0 ? styles.pvechange : styles.nvechange}>
-                        {(Number(data.latest_price) - (Number(data.latest_price) / (1 + Number(data.x7d_change) / 100))).toFixed(2)} ({Number(data.x7d_change).toFixed(2)}%) 7D
+                        {Number(data.x7d_change).toFixed(2)} ({( (Number(data.x7d_change) / (Number(data.latest_price) - Number(data.x7d_change))) * 100 ).toFixed(2)}%) 7D
                     </h1> 
                     : 
                     <h1 className={styles.change}> - 7D</h1>

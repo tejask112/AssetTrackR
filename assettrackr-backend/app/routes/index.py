@@ -11,12 +11,14 @@ from ..utils.payload_validations import (
     validate_submit_order_payload, validate_cancel_order_payload,
     validate_watchlist_add_payload, validate_watchlist_remove_payload,
     validate_company_data_payload, validate_home_data_payload,
-    validate_portfolio_analytics_payload, validate_trade_history_payload
+    validate_portfolio_analytics_payload, validate_trade_history_payload,
+    validate_explore_stocks_payload
 )
 from ..utils.api_responses import compute_submit_order_response, compute_cancel_order_response
 from ..utils.market_hours import check_market_open, check_when_market_opens
 from ..utils.price_calculations import calculate_returns, calculate_current_price
 from ..utils.watchlist_aggregator import get_watchlist_data
+from ..utils.response_formatters import format_explore_stocks_response
 
 from ..db_services.user_accounts.user_account_queries import (
     update_liquid_cash, create_user, add_to_watchlist, 
@@ -25,8 +27,8 @@ from ..db_services.user_accounts.user_account_queries import (
 from ..db_services.deposit_logs.deposit_logs_queries import add_deposit_log_entry, get_deposit_logs
 from ..db_services.timeline.timeline_queries import initialise_user_timeline, get_user_timeline_2w, get_user_timeline
 from ..db_services.trades.trades_queries import execute_trade, queue_trade, cancel_trade, get_user_trades
-from ..db_services.company_profile.company_profile_queries import get_company_profile
-from ..db_services.market_data.market_data_queries import get_market_data
+from ..db_services.company_profile.company_profile_queries import get_company_profile, get_brief_company_profiles
+from ..db_services.market_data.market_data_queries import get_market_data, get_seven_days_prices
 from ..db_services.portfolio.portfolio_queries import get_portfolio_balance, get_portfolio, get_portfolio_with_prices
 from ..db_services.market_news.market_news_queries import get_market_news
 
