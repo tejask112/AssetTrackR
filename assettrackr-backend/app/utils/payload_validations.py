@@ -202,3 +202,18 @@ def validate_watchlist_remove_payload(payload):
         return False, error_message
 
     return True, None
+
+def validate_portfolio_summary_payload(payload):
+    required_fields = ["uid", "jwt"]
+    missing_fields = [field for field in required_fields if field not in payload]
+    if len(missing_fields)>0:
+        return False, f"Bad Request, Missing fields: {missing_fields}"
+    
+    jwt = payload.get("jwt", "")
+    uid = payload.get("uid", "")
+
+    valid, error_message = verify_jwt(uid, jwt)
+    if not valid:
+        return False, error_message
+
+    return True, None    
