@@ -1,77 +1,84 @@
-
-.amountTitle{
-    font-size: 1.1rem;
-    font-weight: 400px;
+.amountTitle {
+    font-size: 0.88rem;
+    font-weight: 400;
     margin-left: auto;
 }
 
-.balanceAfterTransactionText{
-    margin-top: 15px;
+.balanceAfterTransactionText {
+    font-size: 0.9rem;
+    margin-top: 12px;
 }
 
-.confirmButton{
-    border: 1px solid lightgray;
-    border-radius: 8px;
-    padding: 5px 15px;
-    margin-top: 5px;
-    margin-left: 275px;
+.confirmButton {
+    background-color: #16a34a; 
+    color: #ffffff; 
+    border: 1px solid #15803d; 
+    border-radius: 6px;
+    padding: 3px 18px; 
+    font-size: 14px;
+    font-weight: 500; 
+    margin-top: 4px;
+    margin-left: 205px; 
 }
-.confirmButton:hover{
+.confirmButton:hover {
     cursor: pointer;
-    background-color: lightgreen;
+    background-color: #15803d;
+    border-color: #166534;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-.confirmButton:active{
-    background-color: rgb(109, 236, 109);
+.confirmButton:active {
+    background-color: #166534; 
+    box-shadow: none; 
 }
-.confirmButton:disabled{
+.confirmButton:disabled {
     background-color: rgb(229, 229, 229);
-    color: grey
+    border: 1px solid rgb(229, 229, 229);
+    color: grey;
 }
 
-.dateTitle{
-    font-size: 1.1rem;
-    font-weight: 400px;
+.dateTitle {
+    font-size: 0.88rem;
+    font-weight: 400; 
 }
 
-.depositDiv{
-    width: 375px;
+.depositDiv {
+    width: 300px;
 }
 
 .divider {
     border: none;
-    border-top: 1px solid #c2c2c2;
-    margin: 16px 35px;       
+    border-top: 0.8px solid #c2c2c2;
+    margin: 12.8px 28px;       
 }
 
-
-.errorMessage{
+.errorMessage {
     font-weight: 600;
     color: darkred;
 }
 
-.historyContainer{
-    max-height: 125px;  
+.historyContainer {
+    max-height: 100px;  
     overflow-y: auto;  
-    padding-right: 4px;
+    padding-right: 3.2px;
 }
 
-.historyDiv{
-    margin-left: 30px;
+.historyDiv {
+    margin-left: 24px;
     width: 100%;
 }
 
-.historyTableHeadings{
+.historyTableHeadings {
     display: flex;
     align-items: center;
 }
 
-.historyTitle{
-    font-size: 1.5rem;
+.historyTitle {
+    font-size: 1.2rem;
     font-weight: 300;
 }
 
-.loadingBarDiv{
-    margin: 5px;
+.loadingBarDiv {
+    margin: 4px;
 }
 
 .modal {
@@ -79,13 +86,13 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(950px, 96vw);
-  max-height: min(92vh, 1200px);
+  width: min(760px, 96vw); 
+  max-height: min(92vh, 960px); 
   background: #fff;
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-  padding: 22px 26px;
+  border: 0.8px solid var(--border, #e5e7eb);
+  border-radius: 9.6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 17.6px 20.8px;
   display: flex;
   font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   overflow-y: auto;
@@ -93,21 +100,25 @@
   scrollbar-gutter: stable;
 }
 
-.quantityInput{
-    min-width: 320px;
+.quantityInput {
+    min-width: 256px;
     text-align: right;
 }
 
-.quantityLabel{
-    font-size: 1.25rem;
+.quantityLabel {
+    font-size: 1rem;
 }
 
-.successMessage{
+.successMessage {
     font-weight: 600;
     color: darkgreen;
 }
 
-.title{
-    font-size: 1.5rem;
+.newBalanceMessage {
+    font-size: 0.9rem;
+}
+
+.title {
+    font-size: 1.2rem;
     font-weight: 700;
 }

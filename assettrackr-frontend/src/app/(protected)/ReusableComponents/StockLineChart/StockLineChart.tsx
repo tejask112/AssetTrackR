@@ -10,7 +10,7 @@ export default function StockLineChart({prices, chartColor}: StockLineChartProps
    const data = prices.map((price: number, index: number) => ({ index,close: price, }));
 
     return (
-        <div className="w-full h-40" >
+        <div className="w-full h-full" >
             <ResponsiveContainer width="100%" height="80%">
                 <LineChart data={data}>
                     <XAxis dataKey="index" hide />

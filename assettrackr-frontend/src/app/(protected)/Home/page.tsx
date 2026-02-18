@@ -112,7 +112,7 @@ export default function Home() {
                 />
 
                 <div className={styles.chartDiv}>
-                    <ChartsHandler data={apiResponse.x2w_timeline} height={550}/>
+                    <ChartsHandler data={apiResponse.x2w_timeline} height={440}/>
                 </div>
 
             </div>

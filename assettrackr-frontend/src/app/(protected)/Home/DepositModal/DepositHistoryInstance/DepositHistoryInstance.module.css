@@ -1,13 +1,14 @@
-
-.container{
+.container {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     align-items: center;
 }
 
-.dateText{
+.dateText {
+    font-size: 0.8rem;
 }
 
-.valueText{
+.valueText {
+    font-size: 0.8rem;
     margin-left: auto;
 }

@@ -136,7 +136,7 @@ export default function DepositModal({ existingCash, uid }:Props) {
                     <div>
                         <hr className={styles.divider} />
                         <h1 className={styles.successMessage}>Deposit completed. Thank you!</h1>
-                        <h1>New balance: {formatUSD(newBalance.toFixed(2))} USD</h1>
+                        <h1 className={styles.newBalanceMessage}>New balance: {formatUSD(newBalance.toFixed(2))} USD</h1>
                     </div>
                 )}
             </div>
@@ -149,7 +149,7 @@ export default function DepositModal({ existingCash, uid }:Props) {
                 <div className={styles.historyContainer}>
                     {history.map((deposit, index) => (
                         <div key={index}>
-                            <DepositHistoryInstance date={deposit.date} value={deposit.value}/>
+                            <DepositHistoryInstance date={deposit.date.toString()} value={deposit.value}/>
                         </div>
                     ))}
                 </div>

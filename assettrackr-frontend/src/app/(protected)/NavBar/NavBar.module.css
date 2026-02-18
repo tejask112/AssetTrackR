@@ -15,9 +15,9 @@
 .button {
     background-color: #323a56;
     font-family: 'Inter', Arial;
-    font-size: 1.4rem;
+    font-size: 1.12rem;
     font-weight: 300;
-    padding: 5px 25px 5px 25px;
+    padding: 4px 20px 4px 20px;
     transition: background-color 0.1s ease;   
     cursor: pointer;
 }
@@ -34,23 +34,23 @@
 }
 
 .buttonDiv {
-    padding: 2px 0px 0px 0px;
+    padding: 1.6px 0px 0px 0px;
 }
 
 .logo {
     font-family: 'Inter', Arial;
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 500;
-    padding: 5px 0px 10px 25px;
+    padding: 4px 0px 8px 20px;
 }
 
 .logOut {
     background-color: #323a56;
     border: 0px solid white;
     font-family: 'Inter', Arial;
-    font-size: 1.1rem;
+    font-size: 0.88rem;
     font-weight: 200;
-    padding: 0px 20px 0px 20px;
+    padding: 0px 16px 0px 16px;
     transition: background-color 0.1s ease;   
     cursor: pointer;
 }
@@ -68,17 +68,18 @@
     display: flex;
     justify-content: flex-end;
     align-items: center; 
-    margin-right: 20px;
-    margin-top: -25px;
+    margin-right: 16px;
+    margin-top: -20px;
 }
 
 .marketStatusText{
-    padding-left: 5px;
+    padding-left: 4px;
+    font-size: 0.8rem;
 }
 
 .topBar {
-    padding-left: 75px;
-    padding-right: 75px;
+    padding-left: 60px;
+    padding-right: 60px;
     background-color: #323a56;
     color: white;
 }
@@ -89,9 +90,9 @@
 }
 
 .user{
-    padding: 5px 10px 5px 10px;
+    padding: 4px 8px 4px 8px;
     font-weight: 300;
-    font-size: 1.2rem;
+    font-size: 0.96rem;
 }
 
 .userData{
@@ -99,4 +100,3 @@
     justify-content: flex-end;
     align-items: center; 
 }
-

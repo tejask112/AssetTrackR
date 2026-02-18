@@ -1,31 +1,31 @@
-.card{
+.card {
   font-family: 'Inter', Arial;
-  border-radius: 12px;
-  margin-bottom: 15px;
+  border-radius: 9.6px;
+  margin-bottom: 12px;
   width: 100%;
   overflow: hidden;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.45);
   display: flex;
-  min-height: 185px;
+  min-height: 148px;
 }
-.card:hover{
+.card:hover {
   cursor: pointer;
 }
 
-.category{
+.category {
   background-color: rgb(209, 209, 255);
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 1.6px 6.4px;
+  border-radius: 4.8px;
   text-transform: capitalize;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 96px;
   font-weight: 600;
 }
 
 .content {
-  margin: 15px;
+  margin: 12px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -36,53 +36,53 @@
 .footer {
   margin-top: auto;
   display: flex;         
-  gap: 10px; 
+  gap: 8px; 
   align-items: center;
   color: #666;
-  border-radius: 6px;
+  border-radius: 4.8px;
   flex-shrink: 0;
 }
 
-.headline{
+.headline {
   font-weight: 700;
-  font-size: 1.15rem;
-  max-height: 50px;
+  font-size: 0.92rem;
+  max-height: 40px;
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical; /*for text overlow*/
   -webkit-line-clamp: 2;  /*for text overlow*/
   text-overflow: ellipsis;
   line-height: 1.4;
-  margin: 0 0 8px 0;
+  margin: 0 0 6.4px 0;
 }
 
-.image{
+.image {
   object-fit: cover;
   width: 100%;
   height: 100%;
 }
 
-.imageContainer{
-  min-width: 275px;
-  max-width: 275px;
-  border-radius: 12px;
+.imageContainer {
+  min-width: 220px;
+  max-width: 220px;
+  border-radius: 9.6px;
   overflow: hidden;
   flex-shrink: 0;
 }
 
-.source{
+.source {
   background-color: rgb(209, 255, 216);
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 1.6px 6.4px;
+  border-radius: 4.8px;
   text-transform: capitalize;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 120px;
 }
 
-.summary{
-  max-height: 85px;
+.summary {
+  max-height: 68px;
   overflow: hidden;
   color: rgb(141, 141, 141);
   display: -webkit-box;
@@ -90,6 +90,6 @@
   -webkit-line-clamp: 3; /*for text overlow*/
   text-overflow: ellipsis;
   line-height: 1.5;
-  font-size: 14px;
-  margin: 0 0 8px 0;
+  font-size: 11.2px;
+  margin: 0 0 6.4px 0;
 }

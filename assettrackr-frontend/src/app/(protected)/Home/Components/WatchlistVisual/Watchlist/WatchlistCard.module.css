@@ -1,5 +1,5 @@
-
 .change{
+    font-size: 0.8rem;
     font-weight: 200;
 }
 
@@ -8,13 +8,13 @@
 }
 
 .companyLogo{
-    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
+    box-shadow: 0 0.8px 5.6px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
 }
 
 .companyName{
-    font-size: 1.1rem;
-    max-height: 50px;
+    font-size: 0.88rem;
+    max-height: 40px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -23,77 +23,79 @@
 }
 
 .companyNamesDiv{
-    margin: 3px 10px 0px 10px;
+    margin: 2.4px 8px 0px 8px;
     flex: 1;     
     min-width: 0;
 }
 
 .dataDiv{
-    min-width: 275px;
-    max-width: 275px;
+    min-width: 220px;
+    max-width: 220px;
     background-color: rgb(241, 241, 241);
-    padding: 15px 15px;
-    border-radius: 12px;
+    padding: 12px 12px;
+    border-radius: 9.6px;
 }
 
 .entireDiv{
     font-family: 'Inter', Arial;
-    border-radius: 12px;
-    margin-bottom: 15px;
+    border-radius: 9.6px;
+    margin-bottom: 12px;
     width: 100%;
     overflow-x: hidden;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.45);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.45);
     display: flex;
-    min-height: 185px;
+    min-height: 148px;
 }
 .entireDiv:hover {
     cursor: pointer;
 }
 
 button.entireDiv {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
-  border: 0;
-  background: transparent;
-  padding: 0;
+    border: 0;
+    background: transparent;
+    padding: 0;
 
-  display: flex;   
-  width: 100%;
-  text-align: left;     
-  cursor: pointer;
+    display: flex;   
+    width: 100%;
+    text-align: left;    
+    cursor: pointer;
 }
 
 button.entireDiv:focus {
-  outline: 2px solid #4a90e2;
-  outline-offset: 2px;
+    outline: 1.6px solid #4a90e2;
+    outline-offset: 1.6px;
 }
 
 .nvechange {
+    font-size: 0.8rem;
     font-weight: 200;
     color: red;
 }
 
 .price{
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-size: 1.4rem;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 1.2rem;
     font-weight: 700;
 }
 
 .pvechange {
+    font-size: 0.8rem;
     font-weight: 200;
     color: green;
 }
 
 .ticker{
     font-weight: 900;
-    font-size: 0.9rem;
+    font-size: 0.72rem;
 }
 
 .timeseriesDiv{
-    margin: 20px 20px 0px 20px;
-    flex: 1;
+    margin: 16px 16px 0px 16px;
+    flex: 1; 
     min-width: 0;
 }
