@@ -1,14 +1,14 @@
 .chartsDiv{
-    min-width: 95px;
-    max-width: 95px;
-    padding-top: 5px;
+    min-width: 76px;
+    max-width: 76px;
+    padding-top: 4px;
 }
 
 .companyName{
-    font-size: 0.85rem;
+    font-size: 0.68rem;
     font-weight: 300;
-    max-width: 75px;
-    min-width: 45px;
+    max-width: 60px;
+    min-width: 36px;
     white-space: nowrap; 
     overflow: hidden;  
     text-overflow: ellipsis;
@@ -16,40 +16,40 @@
 
 .entireDiv{
     display: flex;
-    margin: 5px 0px 40px 0px;
+    margin: 4px 0px 32px 0px;
 }
 
 .lineSeparator{
-    width: 1px;
+    width: 0.8px;
     background-color: gray;
-    flex: 0 0 1px;          
+    flex: 0 0 0.8px;          
     align-self: stretch;   
-    margin: 0 6px;  
+    margin: 0 4.8px;  
 }
 
 .namesDiv{
-    max-width: 75px;
-    min-width: 55px;
-    margin-right: 5px;
+    max-width: 60px;
+    min-width: 44px;
+    margin-right: 4px;
 }
 
 .percentage{
-    font-size: 0.85rem;
+    font-size: 0.68rem;
     font-weight: 400;
 }
 
 .price{
-    font-size: 1.2rem;
+    font-size: 0.96rem;
     font-weight: 700;
 }
 
 .pricesDiv{
     text-align: right;
-    margin-left: 5px;
-    margin-right: 3px;
+    margin-left: 4px;
+    margin-right: 2.4px;
 }
 
 .ticker{
-    font-size: 1.3rem;
+    font-size: 1.04rem;
     font-weight: 700;
 }

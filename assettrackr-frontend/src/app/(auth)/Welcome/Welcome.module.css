@@ -3,52 +3,55 @@
   display: flex;
   justify-content: center;     
   align-items: center;
-  gap: 16px;                    
+  gap: 12.8px;                    
 }
 
 .rightDiv {
   box-sizing: border-box;
-  width: 420px;   
-  height: 450px;
+  width: 336px;   
+  height: 360px;
   background-color: white;
   align-items: flex-start;     
   justify-content: flex-start;
-  padding: 16px;            
+  padding: 12.8px;            
 }
 
 .leftDiv {
   box-sizing: border-box;
-  width: 750px;   
-  height: 450px;
+  width: 600px;   
+  height: 360px;
   background-color: white;
   align-items: flex-start;     
   justify-content: flex-start;     
 }
 
-.loginUtilitiesButton{
+.loginUtilitiesButton {
     color: rgb(121, 121, 121);
     font-weight: 450;
     cursor: pointer;
+    font-size: 0.9rem;
 }
-.loginUtilitiesButton:hover{
+
+.loginUtilitiesButton:hover {
     text-decoration: underline;
 }
 
-.loginUtilitiesDiv{
+.loginUtilitiesDiv {
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
-.loginUtilitiesText{
-    font-weight: 300;
-    color: rgb(121, 121, 121);
+.loginUtilitiesText {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgb(121, 121, 121);
 }
 
 /* stack on small screens */
-@media (max-width: 900px) {
+@media (max-width: 720px) {
   .entireDiv {
     flex-direction: column;
   }
