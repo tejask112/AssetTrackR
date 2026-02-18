@@ -32,9 +32,9 @@ const RecommendationChart: React.FC<RecommendationChartProps> = ({ data: rawData
     });
 
     return (
-        <div style={{ width: '100%', height: 225 }}>
+        <div style={{ width: '100%', height: 180 }}>
             <ResponsiveContainer>
-                <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={data} margin={{ top: 16, right: 24, left: 16, bottom: 4 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name"/>
                     <YAxis label={{
@@ -42,7 +42,7 @@ const RecommendationChart: React.FC<RecommendationChartProps> = ({ data: rawData
                         angle: -90,
                         offset: 10,
                         position: 'insideLeft',
-                        style: { textAnchor: 'middle', fontSize: 14 }
+                        style: { textAnchor: 'middle', fontSize: 11 }
                     }}/>
                     <Tooltip 
                         wrapperStyle={{ zIndex: 1000 }}

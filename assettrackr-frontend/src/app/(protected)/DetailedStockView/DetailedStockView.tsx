@@ -293,7 +293,7 @@ export default function DetailedStockView({ symbol }: Props) {
                         </div>
                         <ChartsHandler 
                             data={historicalPrices} 
-                            height={650} 
+                            height={520} 
                             timeframe={timeframe}
                         />
                     </div>

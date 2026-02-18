@@ -6,25 +6,25 @@
   font-style: normal;
 }
 
-.entireDiv{
+.entireDiv {
     min-width: 0;
 }
 
 .marketCards {
-    margin: 20px 200px 20px 0px;
+    margin: 16px 160px 16px 0px;
     flex: 1 1 auto;
     min-width: 0;
     position: relative;
 }
 
-.entireDiv{
-    margin: 20px 80px 40px 80px;
+.entireDiv {
+    margin: 16px 64px 32px 64px;
 }
 
 .title {
-    font-size: 1.75rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: #000000;
-    margin-bottom: 1rem;
-    letter-spacing: -0.025em;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
 }

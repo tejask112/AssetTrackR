@@ -73,7 +73,7 @@ export default function StockCard({ data }: StockDataProp) {
         <button className={styles.entireDiv} onClick={() => router.push(`DetailedStockView/${data.ticker}`)}>
             <div className={styles.dataDiv}>
                 <div className={styles.companyDataDiv}>
-                    <Image src={logoUrl.publicUrl} alt={data.ticker} className={styles.companyLogo} width={55} height={55}/>
+                    <Image src={logoUrl.publicUrl} alt={data.ticker} className={styles.companyLogo} width={44} height={44}/>
                     <div className={styles.companyNamesDiv}>
                         <h1 className={styles.ticker}>{data.ticker}</h1>
                         <h1 className={styles.companyName}>{data.company_name}</h1>

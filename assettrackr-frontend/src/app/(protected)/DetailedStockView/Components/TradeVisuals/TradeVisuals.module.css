@@ -1,9 +1,9 @@
-
-.buttonsDiv{
+.buttonsDiv {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
+
 .buttonsDiv > .tradeButton,
 .buttonsDiv > .fundamentalDataButton {
   flex: 1;     
@@ -13,17 +13,19 @@
 
 .fundamentalDataButton {
   background: linear-gradient(165deg, #f6f6f6, #e4e4e4);
-  border-radius: 8px;
+  border-radius: 6.4px;
   color: #323a56;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 0.96rem;
   font-weight: 400;
-  padding: 8px 24px;
+  padding: 6.4px 19.2px;
   width: 100%;
 }
+
 .fundamentalDataButton:hover {
   background: linear-gradient(165deg, #f6f6f6, #d0d0d0);
 }
+
 .fundamentalDataButton:active {
   background: linear-gradient(165deg, #f6f6f6, #c9c9c9);
 }
@@ -31,17 +33,19 @@
 .tradeButton {
   background: linear-gradient(165deg, #3bbb00, #257500);
   border: none;
-  border-radius: 8px;
+  border-radius: 6.4px;
   color: white;
   cursor: pointer;
-  font-size: 1.3rem;
+  font-size: 1.04rem;
   font-weight: 600;
-  padding: 8px 24px;
+  padding: 6.4px 19.2px;
   width: 100%;
 }
+
 .tradeButton:hover {
   background: linear-gradient(165deg, #38b000, #216800);
 }
+
 .tradeButton:active {
   background: linear-gradient(165deg, #38b000, #1b5600);
 }

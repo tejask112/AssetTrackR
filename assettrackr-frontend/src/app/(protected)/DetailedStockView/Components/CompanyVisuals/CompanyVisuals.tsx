@@ -19,7 +19,7 @@ export default function CompanyVisuals({ ticker, companyName }: Props) {
     return (
         <div className={styles.companyVisuals}>
             <div className={styles.imageDiv}>
-                <Image src={logoUrl.publicUrl} alt={ticker} className={styles.stockLogo} width={90} height={90} />
+                <Image src={logoUrl.publicUrl} alt={ticker} className={styles.stockLogo} width={72} height={72} />
             </div>
             <div className={styles.companyNameDiv}>
                 <h1 className={styles.symbolName}>{ticker}</h1>

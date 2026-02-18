@@ -1,18 +1,18 @@
-.recommendationResult{
-  font-size: 1.25rem;
+.recommendationResult {
+  font-size: 1rem; 
   font-weight: 500;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px; 
 }
 
-.recommendationSection{
+.recommendationSection {
   display: flex;
-  gap: 5px;
+  gap: 4px; 
 }
 
-.recommendationTitle{
-  font-size: 1.25rem;
+.recommendationTitle {
+  font-size: 1rem; 
   font-weight: 475;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px; 
 }
 
 .tooltip {
@@ -23,13 +23,13 @@
 
 .tooltip button {
   background-color: rgb(209, 209, 209);
-  margin-top: 7px;
-  margin-left: 5px;
-  padding: 3px 10px 3px 10px;
+  margin-top: 5.6px; 
+  margin-left: 4px; 
+  padding: 2.4px 8px 2.4px 8px; 
   color: rgb(106, 106, 106);
   border: none;
-  border-radius: 8px;
-  font-size: 9px;
+  border-radius: 6.4px; 
+  font-size: 7.2px; 
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s ease-out;
 }
@@ -40,23 +40,24 @@
 }
 
 .tooltip:hover .tooltiptext {
+  font-size: 0.8rem;
   visibility: visible;
   opacity: 1;
 }
 
 .tooltiptext {
   visibility: hidden;
-  width: 450px;
+  width: 360px; 
   background-color: #333;
   color: #fff;
   text-align: center;
-  border-radius: 8px;
-  padding: 5px;
+  border-radius: 6.4px;
+  padding: 4px;
   position: absolute;
   z-index: 1;
   bottom: 125%;
   left: 50%;
-  margin-left: -225px;
+  margin-left: -180px; 
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -66,8 +67,8 @@
   position: absolute;
   top: 100%;
   left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
+  margin-left: -4px; 
+  border-width: 4px; 
   border-style: solid;
   border-color: #333 transparent transparent transparent;
 }

@@ -50,7 +50,7 @@ export default function PriceVisual({ price, date, percentageChange}: Props) {
             <div className={styles.metadataDiv}>
                 <div className={styles.metadata}> 
                     <h1 className={styles.hourText}>{nyTime}</h1>
-                    <h1>USD</h1>
+                    <h1 className={styles.usdText}>USD</h1>
                 </div>
             </div>
             {/* <h1 className={styles.hourlyChangeStats} style={{color:percentageChange == null? undefined : percentageChange > 0? "green": percentageChange < 0  ? "red": undefined}}>

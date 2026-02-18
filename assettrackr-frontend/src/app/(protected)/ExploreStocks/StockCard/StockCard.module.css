@@ -1,4 +1,5 @@
 .change {
+    font-size: 0.8rem;
     font-weight: 200;
 }
 
@@ -7,14 +8,14 @@
 }
 
 .companyLogo {
-    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
+    box-shadow: 0 0.8px 5.6px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
     background-color: white;
 }
 
 .companyName {
-    font-size: 1.1rem;
-    max-height: 50px;
+    font-size: 0.88rem;
+    max-height: 40px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -23,26 +24,26 @@
 }
 
 .companyNamesDiv {
-    margin: 3px 10px 0px 10px;
+    margin: 2.4px 8px 0px 8px;
     flex: 1;
     min-width: 0;
 }
 
 .dataDiv {
-    min-width: 325px;
-    max-width: 325px;
+    min-width: 260px;
+    max-width: 260px;
     background-color: rgb(241, 241, 241);
-    padding: 15px 15px;
-    border-radius: 12px;
+    padding: 12px 12px;
+    border-radius: 9.6px;
 }
 
 .entireDiv {
     font-family: 'Inter', Arial;
-    border-radius: 12px;
-    margin-bottom: 15px;
+    border-radius: 9.6px;
+    margin-bottom: 12px;
     width: 100%;
     overflow-x: hidden;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.45);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.45);
     display: flex;
     align-items: stretch;
 }
@@ -65,13 +66,13 @@ button.entireDiv {
 }
 
 button.entireDiv:focus {
-    outline: 2px solid #4a90e2;
-    outline-offset: 2px;
+    outline: 1.6px solid #4a90e2;
+    outline-offset: 1.6px;
 }
 
 .exchangeDiv {
     display: flex;
-    gap: 5px;
+    gap: 4px;
     align-items: baseline;
 }
 
@@ -80,16 +81,16 @@ button.entireDiv:focus {
 }
 
 .metadataDiv {
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    min-width: 280px;
+    gap: 12px;
+    min-width: 224px;
 }
 
 .metadataDiv h1 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .metadataTitle {
@@ -97,26 +98,28 @@ button.entireDiv:focus {
 }
 
 .nvechange {
+    font-size: 0.8rem;
     font-weight: 200;
     color: red;
 }
 
 .price {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-size: 1.5rem;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 1.2rem;
     font-weight: 700;
     font-family: 'Inter';
 }
 
 .pvechange {
+    font-size: 0.8rem;
     font-weight: 200;
     color: green;
 }
 
 .recommendationDiv {
     display: flex;
-    gap: 5px;
+    gap: 4px;
     align-items: baseline;
 }
 
@@ -129,43 +132,42 @@ button.entireDiv:focus {
 .statsRow {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
 .ticker {
     font-weight: 900;
-    font-size: 0.9rem;
+    font-size: 0.72rem;
 }
 
 .timeseriesDiv {
-    padding: 20px 20px;
+    padding: 16px 16px;
     flex: 1;
     min-width: 0;
 }
 
-
 .flashUp {
-  animation: flashUp 2s;
+    animation: flashUp 2s;
 }
 
 .flashDown {
-  animation: flashDown 2s;
+    animation: flashDown 2s;
 }
 
 @keyframes flashUp {
-  0%   { color: green; }
-  15%  { color: black; }
-  30%  { color: green; }
-  45%  { color: black; }
-  60%  { color: green; }
-  100% { color: black; }
+    0%   { color: green; }
+    20%  { color: black; }
+    40%  { color: green; }
+    60%  { color: black; }
+    80%  { color: green; }
+    100% { color: black; }
 }
 
 @keyframes flashDown {
-  0%   { color: red; }
-  15%  { color: black; }
-  30%  { color: red; }
-  45%  { color: black; }
-  60%  { color: red; }
-  100% { color: black; }
+    0%   { color: red; }
+    20%  { color: black; }
+    40%  { color: red; }
+    60%  { color: black; }
+    80%  { color: red; }
+    100% { color: black; }
 }

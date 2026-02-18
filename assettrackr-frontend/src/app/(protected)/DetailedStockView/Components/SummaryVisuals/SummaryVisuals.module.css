@@ -2,16 +2,16 @@
     display: flex;
     flex-direction: column;
     font-family: 'Inter';
-    gap: 12px;
-    padding: 18px 22px;
+    gap: 9.6px; 
+    padding: 14.4px 17.6px; 
     width: 100%;
     box-sizing: border-box;
 }
 
 .metricsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px; 
+    grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
+    gap: 8px; 
     width: 100%;
     box-sizing: border-box;
 }
@@ -19,15 +19,15 @@
 .col {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 9.6px;
     min-width: 0;
 }
 
 .label {
     color: #6f7a9e;
-    font-size: 0.75rem;
+    font-size: 0.6rem; 
     font-weight: 600;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.64px; 
     text-transform: uppercase;
     line-height: 1.2;
 }
@@ -35,20 +35,23 @@
 .metric {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3.2px;
     min-width: 0;
 }
-
 
 .metricsThreeCol {
     display: flex;
     flex-wrap: wrap; 
-    gap: 10px;
+    gap: 8px; 
     width: 100%;
     box-sizing: border-box;
 }
 
 .metricsThreeCol .col {
-    flex: 1 1 130px;
+    flex: 1 1 104px; 
     min-width: 0;
+}
+
+.value{
+    font-size: 0.9rem;
 }

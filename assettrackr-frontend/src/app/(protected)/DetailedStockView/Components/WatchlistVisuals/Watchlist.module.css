@@ -1,13 +1,13 @@
 .addToWatchlist {
-  font-size: 1rem;   
+  font-size: 0.8rem;   
   font-weight: 500;              
   color: #555;               
-  margin: 0 0 8px 0;            
-  padding: 4px 8px;           
+  margin: 0 0 6.4px 0;            
+  padding: 3.2px 6.4px;           
   background-color: #f7f7f7;    
-  border-radius: 6px;            
+  border-radius: 4.8px;            
   display: inline-block;       
-  border: 1px solid #cbcbcb;    
+  border: 0.8px solid #cbcbcb;    
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
@@ -23,16 +23,16 @@
   color: #ffffff;
 }
 
-.removeFromWatchlist{
-  font-size: 1rem;   
+.removeFromWatchlist {
+  font-size: 0.8rem;   
   font-weight: 500;              
   color: #555;               
-  margin: 0 0 8px 0;            
-  padding: 4px 8px;           
+  margin: 0 0 6.4px 0;            
+  padding: 3.2px 6.4px;           
   background-color: #f7f7f7;    
-  border-radius: 6px;            
+  border-radius: 4.8px;            
   display: inline-block;       
-  border: 1px solid #cbcbcb;    
+  border: 0.8px solid #cbcbcb;    
   font-family: "Segoe UI", Arial, sans-serif;
 }
 

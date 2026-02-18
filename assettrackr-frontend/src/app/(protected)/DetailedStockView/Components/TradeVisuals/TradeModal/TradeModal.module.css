@@ -1,64 +1,66 @@
-
-.dropDownActionLabel{
-    font-size: 1.25rem;
+.dropDownActionLabel {
+    font-size: 1rem;
 }
 
-.entireDiv{
+.entireDiv {
     display: flex;
 }
 
-.formButtons{
+.formButtons {
   display: flex;
-  gap: 12px;  
+  gap: 9.6px;  
   width: 100%;
-  margin-top: 12px;
+  margin-top: 9.6px;
 }
 
 .formButtons button,
 .formClear,
-.formPreview{
+.formPreview {
   flex: 1 1 0;
   min-width: 0;      
-  padding: 10px 14px;   
+  padding: 8px 11.2px;   
   white-space: nowrap;  
 }
 
-.formClear{
+.formClear {
     background-color: rgb(217, 217, 217);
-    border-radius: 10px;
+    border-radius: 8px;
 }
+
 .formClear:hover {
     background-color: rgb(198, 198, 198);
 }
+
 .formClear:active {
-    background-color:  rgb(180, 180, 180);
+    background-color: rgb(180, 180, 180);
 }
 
-.formPreview{
+.formPreview {
     background: green;
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
 }
+
 .formPreview:hover {
     background: rgb(0, 111, 0);
 }
+
 .formPreview:active {
     background: rgb(0, 95, 0);
 }
-
 
 .modal {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(800px, 96vw);
-  max-height: min(92vh, 1200px);
+  width: min(640px, 96vw);
+  max-height: min(92vh, 960px);
   background: #fff;
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-  padding: 22px 26px;
+  border: 0.8px solid var(--border, #e5e7eb);
+  border-radius: 9.6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 17.6px 20.8px;
   display: flex;
   flex-direction: column;
   font-family: 'Inter';
@@ -67,32 +69,32 @@
   scrollbar-gutter: stable;
 }
 
-.price{
-    font-size: 2rem;
+.price {
+    font-size: 1.6rem;
 }
 
-.quantityInput{
-    min-width: 25px;
+.quantityInput {
+    min-width: 20px;
 }
 
-.quantityLabel{
-    font-size: 1.25rem;
+.quantityLabel {
+    font-size: 1rem;
 }
 
-.title{
-    font-size: 1.5rem;
+.title {
+    font-size: 1.2rem;
     font-weight: 700;
 }
 
-.titleDiv{
+.titleDiv {
     margin-right: 5%;
 }
 
-.userDiv{
+.userDiv {
     flex: 1;
     display: flex;          
     flex-direction: column; 
-    gap: 12px;             
+    gap: 9.6px;             
     align-items: flex-start;
 }
 
@@ -100,95 +102,87 @@
   width: 100%;
 }
 
-
-
-/* -------- Preview section polish (add-only) -------- */
-
-.previewSection{
-  margin-top: 12px;
+.previewSection {
+  margin-top: 9.6px;
 }
 
-/* the thin grey line between the form and preview (lives in the preview area) */
-.previewDivider{
-  border-top: 1px solid #e5e7eb; /* grey-200 */
-  margin: 6px 0 14px;
+.previewDivider {
+  border-top: 0.8px solid #e5e7eb;
+  margin: 4.8px 0 11.2px;
 }
 
-/* card-like preview container */
-.previewDiv{
-  background: #f9fafb;                 /* grey-50 */
-  border: 1px solid #e5e7eb;            /* grey-200 */
-  border-radius: 12px;
-  padding: 16px 18px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+.previewDiv {
+  background: #f9fafb;
+  border: 0.8px solid #e5e7eb;
+  border-radius: 9.6px;
+  padding: 12.8px 14.4px;
+  box-shadow: 0 3.2px 8px rgba(0,0,0,0.04);
 }
 
-.previewHeader{
-  margin: 0 0 10px 0;
-  font-size: 1.25rem;
+.previewHeader {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
   font-weight: 600;
-  color: #111827;                       /* grey-900 */
+  color: #111827;
 }
 
-/* tidy rows: label on left, value on right */
-.previewDiv p{
+.previewDiv p {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 8px 0;
+  padding: 6.4px 0;
   margin: 0;
-  border-bottom: 1px dashed #e5e7eb;    /* subtle separators */
+  border-bottom: 1px dashed #e5e7eb;
 }
-.previewDiv p:last-of-type{
+
+.previewDiv p:last-of-type {
   border-bottom: none;
 }
 
-.k{
-  color: #6b7280;                       /* grey-500 */
-  font-size: 0.95rem;
+.k {
+  color: #6b7280;
+  font-size: 0.76rem;
 }
-.v{
+
+.v {
   font-weight: 600;
 }
 
-/* action buttons under the preview */
-.previewActions{
+.previewActions {
   display: flex;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 9.6px;
+  margin-top: 9.6px;
 }
 
-.previewActions button{
+.previewActions button {
   flex: 1 1 0;
   min-width: 0;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 8px 11.2px;
+  border-radius: 8px;
   white-space: nowrap;
   cursor: pointer;
   border: none;
 }
 
-/* cancel: light grey */
-.previewCancel{
-  background-color: rgb(217, 217, 217);                  /* grey-100 */
+.previewCancel {
+  background-color: rgb(217, 217, 217);
 }
-.previewCancel:hover{  background-color: rgb(198, 198, 198); }  /* grey-200 */
-.previewCancel:active{ background-color:  rgb(180, 180, 180); } /* grey-300 */
 
-/* submit: green to match your existing style */
-.previewSubmit{
+.previewCancel:hover { background-color: rgb(198, 198, 198); }
+.previewCancel:active { background-color: rgb(180, 180, 180); }
+
+.previewSubmit {
   background: green;
   color: #fff;
 }
-.previewSubmit:hover{ background: rgb(0, 111, 0); }
-.previewSubmit:active{ background: rgb(0, 95, 0); }
 
-/* accessible focus */
-.previewActions button:focus-visible{
-  outline: 2px solid #3b82f6;           /* blue-500 */
-  outline-offset: 2px;
+.previewSubmit:hover { background: rgb(0, 111, 0); }
+.previewSubmit:active { background: rgb(0, 95, 0); }
+
+.previewActions button:focus-visible {
+  outline: 1.6px solid #3b82f6;
+  outline-offset: 1.6px;
 }
-
 
 .formPreview:disabled,
 .previewSubmit:disabled,
@@ -200,17 +194,13 @@
   filter: saturate(0.5);
 }
 
-
-
-
-
-.submittedText{
-    font-size: 1.75rem;
+.submittedText {
+    font-size: 1.4rem;
     font-weight: 600;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
 }
 
-.submittedExtraText{
-    font-size: 1.1rem;
+.submittedExtraText {
+    font-size: 0.88rem;
     font-weight: 300;
 }
