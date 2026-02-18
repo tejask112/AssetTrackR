@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function TreeMap({ data }: Props) {
-    const HEIGHT = 400;
+    const HEIGHT = 320;
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [width, setWidth] = useState(0);
@@ -92,16 +92,16 @@ export default function TreeMap({ data }: Props) {
                                 fill={colorScale(item.change_5d_pct ?? 0)}
                                 stroke="rgba(255,255,255,0.15)"
                             />
-                            <text x={10} y={25} fontSize={20} fill="white" fontWeight={700}>
+                            <text x={10} y={25} fontSize={18} fill="white" fontWeight={700}>
                                 {item.ticker}
                             </text>
-                            <text x={10} y={45} fontSize={16} fill="white" fontWeight={400}>
+                            <text x={10} y={45} fontSize={12} fill="white" fontWeight={500}>
                                 {item.quantity} shares
                             </text>
-                            <text x={10} y={65} fontSize={16} fill="white" fontWeight={400}>
+                            <text x={10} y={60} fontSize={12} fill="white" fontWeight={400}>
                                 {(item.quantity * item.current_price).toFixed(2)} USD
                             </text>
-                            <text x={10} y={85} fontSize={16} fill="white" fontWeight={400}>
+                            <text x={10} y={75} fontSize={12} fill="white" fontWeight={400}>
                                 {item.change_5d_pct?.toFixed(2)}% 5D 
                             </text>
                         </g>

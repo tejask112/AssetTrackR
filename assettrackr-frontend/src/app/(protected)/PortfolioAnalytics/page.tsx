@@ -102,7 +102,7 @@ export default function PortfolioAnalytics() {
 
     return(
         <div className={styles.entireDiv}>
-            <ChartsHandler data={apiResponse.timeline} timeframe={timeframe} height={550}/>
+            <ChartsHandler data={apiResponse.timeline} timeframe={timeframe} height={440}/>
             <div className={styles.divw}>
                 <button className={timeframe=='1D' ? styles.timeframeButtonChosen : styles.timeframeButton} onClick={() => setTimeframe('1D')}>1D</button>
                 <button className={timeframe=='5D' ? styles.timeframeButtonChosen : styles.timeframeButton} onClick={() => setTimeframe('5D')}>5D</button>

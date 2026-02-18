@@ -1,13 +1,13 @@
-.summaryDiv{
+.summaryDiv {
     background-color: rgb(237, 237, 237);
-    border: 1px solid gainsboro;
-    border-radius: 16px;
-    padding: 20px 30px;
-    min-height: 400px;
-    max-height: 400px;
+    border: 0.8px solid gainsboro;
+    border-radius: 12.8px;
+    padding: 16px 24px;
+    min-height: 320px;
+    max-height: 320px;
 }
 
-.summaryTitle{
-    font-size: 1.5rem;
+.summaryTitle {
+    font-size: 1.2rem;
     font-weight: 600;
 }
