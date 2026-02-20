@@ -37,7 +37,7 @@ export default function Welcome() {
 
                 {login && (
                     <div className={styles.loginUtilitiesDiv}>
-                        <h1 className={styles.loginUtilitiesText}>Don't have an account?</h1>
+                        <h1 className={styles.loginUtilitiesText}>Don&apos;t have an account?</h1>
                         <button onClick={toggleRegister} className={styles.loginUtilitiesButton}>Sign Up!</button>
                     </div>  
                 )}

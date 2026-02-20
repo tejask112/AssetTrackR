@@ -7,6 +7,11 @@ import { useUser } from '@/context/UserContext'
 import styles from './Login.module.css'
 import LoadingBar from '../../LoadingBar/LoadingBar'
 
+interface FirebaseError {
+    code: string;
+    message: string;
+}
+
 function safeRedirect(path: string | null): string {
     if (path && path.startsWith('/') && !path.startsWith('//')) return path; 
     return '/Home';
@@ -72,8 +77,9 @@ export default function Login() {
                 setAuth(user.uid, user.email);
                 router.replace(redirectTo);
             }    
-        } catch (err: any) {
-            switch (err.code) {
+        } catch (err: unknown) {
+            const fbErr = err as FirebaseError;
+            switch (fbErr.code) {
             case "auth/invalid-email":
                 setErrorMsg("That email address is not valid.");
                 break;

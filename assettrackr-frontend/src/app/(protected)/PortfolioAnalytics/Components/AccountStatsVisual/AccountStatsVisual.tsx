@@ -19,7 +19,7 @@ export default function AccountStatsVisual({ cashBalance, portfolioBalance }: Pr
         <div className={styles.entireDiv}>
             
             <div>
-                <div className={styles.titleText}>Total Asset's value</div>
+                <div className={styles.titleText}>Total Asset&apos;s value</div>
                 <div className={styles.cashAmount}>{portfolioBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</div>
             </div>
 

@@ -7,6 +7,11 @@ import styles from './Register.module.css'
 import LoadingBar from '../../LoadingBar/LoadingBar'
 import { useUser } from '@/context/UserContext'
 
+interface FirebaseError {
+    code: string;
+    message: string;
+}
+
 function safeRedirect(p: string | null): string {
     if (p && p.startsWith('/') && !p.startsWith('//')) return p;
     return '/Home';
@@ -63,8 +68,9 @@ export default function Register() {
             if (!resReg) throw new Error("Error in register new user. Please try again later")
             setAuth(user.uid, user.email);
             router.replace(redirectTo);
-        } catch (err: any) {
-            switch (err.code) {
+        } catch (err: unknown) {
+            const fbErr = err as FirebaseError;
+            switch (fbErr.code) {
                 case "auth/invalid-email":
                     setErrorMsg("That email address is not valid.");
                     break;

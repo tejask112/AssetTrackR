@@ -84,7 +84,7 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
             <div className={styles.overviewDiv}>
                 <div className={styles.accountValueSection}>
 
-                    <div className={styles.titleText}>Total Asset's value</div>
+                    <div className={styles.titleText}>Total Asset&apos;s value</div>
                     <div className={styles.accountValueAmount}>
                         {portfolioBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                     </div>
@@ -94,7 +94,7 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
                 <div className={styles.overviewChange}>
 
                     <div className={styles.changeItem}>
-                        <div className={styles.titleText}>Today's change</div>
+                        <div className={styles.titleText}>Today&apos;s change</div>
                         <div className={styles.changeValue} 
                              style={{color:typeof changeTradingDay === 'number'? changeTradingDay > 0 ? '#059669' : changeTradingDay < 0 ? '#dc2626' : undefined: undefined }}
                         >

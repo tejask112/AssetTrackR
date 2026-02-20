@@ -17,7 +17,7 @@ interface FormData{
     symbol: string,
 }
 
-export default function ( {symbol, price}:Props) {
+export default function TradeModal( {symbol, price}:Props ) {
 
     // ------------------------ Actions Dropdown list ------------------------
     const actions = [
