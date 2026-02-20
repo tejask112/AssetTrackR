@@ -1,10 +1,10 @@
-
 import DetailedStockView from "../DetailedStockView";
 
 interface Props {
-  params: { symbol: string };
+  params: Promise<{ symbol: string }>;
 }
 
-export default function Page({ params }: Props) {
-  return <DetailedStockView symbol={params.symbol} />;
+export default async function Page({ params }: Props) {
+  const { symbol } = await params;
+  return <DetailedStockView symbol={symbol} />;
 }
