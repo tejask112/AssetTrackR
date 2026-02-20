@@ -28,7 +28,7 @@ export default function NewsCard({ item }: { item: MarketNewsItem }) {
     <a href={item.url} target="_blank" rel="noopener noreferrer">
       <article className={styles.card}>
         <div className={styles.imageContainer}>
-          <Image src={item.image} alt={item.headline} className={styles.image} />
+          <Image src={item.image} alt={item.headline} fill className={styles.image} />
         </div>
         <div className={styles.content}>
           <h2 className={styles.headline}>{item.headline}</h2>

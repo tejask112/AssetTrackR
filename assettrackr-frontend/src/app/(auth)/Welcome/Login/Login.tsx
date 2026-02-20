@@ -168,7 +168,7 @@ export default function Login() {
             <h1 className={styles.welcomeMessage}>Welcome to AssetTrackR</h1>
             <button className={styles.googleLogInButton} onClick={loginGoogle}>
                 <span>Log in with</span>
-                <Image src="/images/google-logo.png" alt="GOOGLE" className={styles.icon}/>
+                <Image src="/images/google-logo.png" alt="GOOGLE" width={16} height={16} className={styles.icon}/>
             </button>
 
             <div className={styles.orDivider} role="separator" aria-label="or">

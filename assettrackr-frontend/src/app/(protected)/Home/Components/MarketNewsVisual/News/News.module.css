@@ -68,6 +68,7 @@
   border-radius: 9.6px;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
 }
 
 .source {
