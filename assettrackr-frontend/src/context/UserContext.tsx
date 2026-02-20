@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from "react";
 
 type UserContextValue = {
     userID: string | null;
@@ -12,25 +12,38 @@ type UserContextValue = {
 
 const UserContext = createContext<UserContextValue | null>(null);
 
-export function UserProvider(
-    { initialUser = null, initialEmail = null, children, persist = false }: 
-    { initialUser?: null, initialEmail?: null, children: ReactNode, persist?: boolean }) {
+export function UserProvider({ 
+    initialUser = null, 
+    initialEmail = null, 
+    children, 
+    persist = false 
+}: { 
+    initialUser?: string | null,
+    initialEmail?: string | null, 
+    children: ReactNode, 
+    persist?: boolean 
+}) {
 
     const [userID, setUserID] = useState<string | null>(initialUser);
     const [userEmail, setUserEmail] = useState<string | null>(initialEmail);
-    
+
     useEffect(() => {
         if (!persist) return;
 
         const savedUID = localStorage.getItem("uid");
-        if ((savedUID && savedUID !== userID)) { setUserID(savedUID); } 
+        if (savedUID && savedUID !== userID) { 
+            setUserID(savedUID); 
+        } 
         
         const savedUEmail = localStorage.getItem("email");
-        if ((savedUEmail && savedUEmail !== userEmail)) { setUserEmail(savedUEmail); }
-    }, [persist]);
+        if (savedUEmail && savedUEmail !== userEmail) { 
+            setUserEmail(savedUEmail); 
+        }
+    }, [persist, userID, userEmail]);
 
     useEffect(() => {
         if (!persist) return;
+        
         if (userID) localStorage.setItem("uid", userID);
         else localStorage.removeItem("uid");
 
@@ -38,23 +51,34 @@ export function UserProvider(
         else localStorage.removeItem("email");
     }, [userID, userEmail, persist]);
 
-    const clear = () => {
+    const clear = useCallback(() => {
         setUserID(null);
         setUserEmail(null);
-    }
+        if (persist) {
+            localStorage.removeItem("uid");
+            localStorage.removeItem("email");
+        }
+    }, [persist]);
 
-    const setAuth = (id: string | null, email: string | null) => {
+    const setAuth = useCallback((id: string | null, email: string | null) => {
         setUserID(id);
         setUserEmail(email);
-    }
-    
-    // useMemo avoids creating a new object for each render
-    const value = useMemo(                          
-        () => ({ userID, userEmail, setUserID, setUserEmail, setAuth, clear }), [userID]
+    }, []);
+
+    const value = useMemo(                        
+        () => ({ 
+            userID, 
+            userEmail, 
+            setUserID, 
+            setUserEmail, 
+            setAuth, 
+            clear 
+        }), 
+        [userID, userEmail, setAuth, clear] 
     );
 
     return (
-        <UserContext.Provider value={ value }>
+        <UserContext.Provider value={value}>
             {children}
         </UserContext.Provider>
     );

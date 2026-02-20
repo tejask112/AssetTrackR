@@ -17,7 +17,7 @@ interface NotificationBox {
 
 export default function WatchlistVisuals({ ticker, companyName, uid, currentStatus }: Props) {
 
-    const [localStatus, setLocalStatus] = useState<Boolean>(currentStatus);
+    const [localStatus, setLocalStatus] = useState<boolean>(currentStatus);
     const [notif, setNotif] = useState<NotificationBox | null>(null);
 
     const addToWatchlist = async () => {

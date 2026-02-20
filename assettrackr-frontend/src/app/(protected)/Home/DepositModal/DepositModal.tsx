@@ -13,7 +13,7 @@ interface Props {
 }
 
 interface DepositInstance {
-    date: String;
+    date: string;
     value: number;
 }
 

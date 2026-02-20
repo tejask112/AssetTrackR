@@ -81,8 +81,18 @@ export default function PortfolioTreemap({
     },
     stroke: { width: 1, colors: ['#ffffff'] },
     states: {
-      hover: { filter: { type: 'lighten', value: 0.04 } as any },
-      active: { filter: { type: 'darken', value: 0.06 } as any },
+      hover: { 
+        filter: { 
+          type: 'lighten', 
+          value: 0.04 
+        } as Record<string, unknown> 
+      },
+      active: { 
+        filter: { 
+          type: 'darken', 
+          value: 0.06 
+        } as Record<string, unknown> 
+      },
     },
     fill: { opacity: 1 },
     plotOptions: {

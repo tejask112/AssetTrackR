@@ -8,7 +8,7 @@ import LoadingBar from '../../LoadingBar/LoadingBar'
 import { useUser } from '@/context/UserContext'
 
 function safeRedirect(p: string | null): string {
-    if (p && p.startsWith('/') && !p.startsWith('//')) { return p; }
+    if (p && p.startsWith('/') && !p.startsWith('//')) return p;
     return '/Home';
 }
 
@@ -22,8 +22,8 @@ export default function Register() {
     const [passwordReg, setPasswordReg] = useState("");
     const [passwordRetypeReg, setPasswordRetypeReg] = useState("");
 
-    const [errorMsg, setErrorMsg] = useState<String | null>(null);
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { setAuth } = useUser();
 

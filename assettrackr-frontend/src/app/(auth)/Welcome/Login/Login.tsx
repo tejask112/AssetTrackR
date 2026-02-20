@@ -8,7 +8,7 @@ import styles from './Login.module.css'
 import LoadingBar from '../../LoadingBar/LoadingBar'
 
 function safeRedirect(path: string | null): string {
-    if (path && path.startsWith('/') && !path.startsWith('//')) { return path; }
+    if (path && path.startsWith('/') && !path.startsWith('//')) return path; 
     return '/Home';
 }
 
@@ -17,8 +17,8 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [errorMsg, setErrorMsg] = useState<String | null>(null);
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter();
     const searchParams = useSearchParams();

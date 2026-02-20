@@ -35,8 +35,8 @@ export default function TradesTable({ data, rows }: TradeProps) {
     const showActionsColumn = data.some((row: Trade) => row.status === 'QUEUED');
 
     // ---------------------- formatting the prices ----------------------
-    const formatIndividualPriceToUSD = () => (row: any) => usdBody(row['execution_price']);
-    const formatTotalPriceToUSD = () => (row: any) => usdBody(row['execution_total_price']);
+    const formatIndividualPriceToUSD = () => (row: Trade) => usdBody(row['execution_price']);
+    const formatTotalPriceToUSD = () => (row: Trade) => usdBody(row['execution_total_price']);
     const usdBody = (v: unknown) => {
         const n = typeof v === 'number' ? v : Number(v);
         if (n == 0) {
@@ -53,7 +53,7 @@ export default function TradesTable({ data, rows }: TradeProps) {
     });
 
     // ---------------------- formatting the Date ----------------------
-    const normaliseDate = (s: String) => s.replace(/(\.\d{3})\d+/, "$1")
+    const normaliseDate = (s: string) => s.replace(/(\.\d{3})\d+/, "$1")
 
     const NY_timezone = "America/New_York"
     const local_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
