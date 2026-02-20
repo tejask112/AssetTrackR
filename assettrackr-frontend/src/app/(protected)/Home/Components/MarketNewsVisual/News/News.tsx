@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./News.module.css";
+import Image from 'next/image';
 
 interface MarketNewsItem {
     category: string;
@@ -27,7 +28,7 @@ export default function NewsCard({ item }: { item: MarketNewsItem }) {
     <a href={item.url} target="_blank" rel="noopener noreferrer">
       <article className={styles.card}>
         <div className={styles.imageContainer}>
-          <img src={item.image} alt={item.headline} className={styles.image} />
+          <Image src={item.image} alt={item.headline} className={styles.image} />
         </div>
         <div className={styles.content}>
           <h2 className={styles.headline}>{item.headline}</h2>

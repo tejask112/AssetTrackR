@@ -42,7 +42,7 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
         const totalBalance = portfolioBalance + cashBalance;
         setTotalAccountBalance(totalBalance);
 
-    }, [portfolioBalance, cashBalance])
+    }, [portfolioBalance, cashBalance, timeline])
 
     function calculateChangeTradingDay( portfolioBalance: number, timeline: Price[] ) {
         const todayOpeningPrice = timeline.find(entry => {

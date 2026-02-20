@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import {
   createChart,
   ColorType,
@@ -52,23 +52,23 @@ export default function LineDispChart({
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
   const normalizedDataRef = useRef<AreaData<UTCTimestamp>[]>([]);
 
-  const toUTCTimestamp = (t: LinePoint['time']): UTCTimestamp => {
+  const toUTCTimestamp = useCallback((t: LinePoint['time']): UTCTimestamp => {
     let n: number;
     if (t instanceof Date) n = Math.floor(t.getTime() / 1000);
     else if (typeof t === 'number') n = t > 1e12 ? Math.floor(t / 1000) : t;
     else n = Math.floor(new Date(t).getTime() / 1000);
     return n as UTCTimestamp;
-  };
+  }, []);
 
-  const normalize = (arr: LinePoint[]): AreaData<UTCTimestamp>[] =>
+  const normalize = useCallback((arr: LinePoint[]): AreaData<UTCTimestamp>[] =>
     arr
       .map((p) => ({ time: toUTCTimestamp(p.time), value: p.value }))
-      .sort((a, b) => (a.time as number) - (b.time as number));
+      .sort((a, b) => (a.time as number) - (b.time as number)), 
+  [toUTCTimestamp]);
 
-  const getTimeframeSeconds = (tf: Timeframe): number | null => {
+  const getTimeframeSeconds = useCallback((tf: Timeframe): number | null => {
     const DAY = 24 * 60 * 60;
     const MONTH = 30 * DAY;
-    
     switch (tf) {
       case '1D': return DAY;
       case '5D': return 5 * DAY;
@@ -79,16 +79,15 @@ export default function LineDispChart({
       case 'Since Start': return null;
       default: return null;
     }
-  };
+  }, []);
 
-  const applyTimeframeRange = () => {
+  const applyTimeframeRange = useCallback(() => {
     const chart = chartRef.current;
-    const data = normalizedDataRef.current;
-    if (!chart || data.length === 0) return;
+    const currentData = normalizedDataRef.current;
+    if (!chart || currentData.length === 0) return;
 
-    const to = data[data.length - 1].time as UTCTimestamp;
-    const first = data[0].time as UTCTimestamp;
-    
+    const to = currentData[currentData.length - 1].time as UTCTimestamp;
+    const first = currentData[0].time as UTCTimestamp;
     const timeframeSeconds = getTimeframeSeconds(timeframe);
     
     let from: UTCTimestamp;
@@ -99,13 +98,8 @@ export default function LineDispChart({
       if ((from as number) < (first as number)) from = first;
     }
 
-    chart.timeScale().applyOptions({
-      timeVisible: true,
-      secondsVisible: false,
-    });
-
     chart.timeScale().setVisibleRange({ from, to });
-  };
+  }, [timeframe, getTimeframeSeconds]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -145,10 +139,7 @@ export default function LineDispChart({
       seriesRef.current = null;
       chartRef.current = null;
     };
-  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor, height]);
-
-  // Use stringified data to avoid dependency array size issues
-  const dataString = JSON.stringify(data);
+  }, [backgroundColor, textColor, lineColor, areaTopColor, areaBottomColor, height, data, normalize, applyTimeframeRange]);
 
   useEffect(() => {
     const s = seriesRef.current;
@@ -157,7 +148,7 @@ export default function LineDispChart({
     normalizedDataRef.current = nd;
     s.setData(nd);
     applyTimeframeRange();
-  }, [dataString, timeframe]);
+  }, [data, timeframe, normalize, applyTimeframeRange]);
 
   return <div ref={containerRef} style={{ flex: '1 1 0', width: '100%' }} />;
 }

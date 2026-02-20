@@ -61,7 +61,7 @@ export default function DepositModal({ existingCash, uid }:Props) {
             }
         }
         getHistory();
-    }, [])
+    }, [uid])
 
     async function depositFunds() {
         setLoading(true);

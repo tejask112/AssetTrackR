@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from '@/context/UserContext'
 import styles from './Login.module.css'
 import LoadingBar from '../../LoadingBar/LoadingBar'
+import Image from 'next/image';
 
 interface FirebaseError {
     code: string;
@@ -134,8 +135,9 @@ export default function Login() {
                 setAuth(user.uid, user.email);
                 router.replace(redirectTo);
             }  
-        } catch (err: any) {
-            switch (err.code) {
+        } catch (err: unknown) {
+            const fbErr = err as FirebaseError;
+            switch (fbErr.code) {
             case "auth/invalid-email":
                 setErrorMsg("That email address is not valid.");
                 break;
@@ -166,7 +168,7 @@ export default function Login() {
             <h1 className={styles.welcomeMessage}>Welcome to AssetTrackR</h1>
             <button className={styles.googleLogInButton} onClick={loginGoogle}>
                 <span>Log in with</span>
-                <img src="/images/google-logo.png" alt="GOOGLE" className={styles.icon}/>
+                <Image src="/images/google-logo.png" alt="GOOGLE" className={styles.icon}/>
             </button>
 
             <div className={styles.orDivider} role="separator" aria-label="or">

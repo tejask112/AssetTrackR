@@ -165,7 +165,7 @@ export default function DetailedStockView({ symbol }: Props) {
             }
         }
         fetchCompanyData();
-    }, [userID])
+    }, [userID, symbol])
 
     // supabase realtime connection
     useEffect(() => {
