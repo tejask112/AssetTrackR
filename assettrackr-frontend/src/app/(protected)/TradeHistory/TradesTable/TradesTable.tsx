@@ -7,7 +7,6 @@ import { Tooltip } from 'primereact/tooltip';
 import { useRef } from 'react';
 
 import { Row } from 'primereact/row';
-import CancelTradeModal from '../CancelTradeModal/CancelTradeModal';
 import NotificationBox from '../../ReusableComponents/NotificationBox/NotificationBox';
 import { getFirebaseJWT } from '@/authenticator/authenticator';
 
