@@ -10,6 +10,7 @@ import WatchlistVisual from './Components/WatchlistVisual/WatchlistVisual';
 import MarketNewsVisual from './Components/MarketNewsVisual/MarketNews';
 import NotificationBox from '../ReusableComponents/NotificationBox/NotificationBox';
 import { getFirebaseJWT } from '@/authenticator/authenticator';
+import MarketMoverVisual from './Components/MarketMoverVisual/MarketMoverVisual';
 
 interface HomePageData {
     cash_balance: number;
@@ -18,6 +19,16 @@ interface HomePageData {
     portfolio_balance: number;
     watchlist_data: Watchlist[];
     x2w_timeline: Price[];
+    top_gainers: MoverData[];
+    top_losers: MoverData[];
+}
+
+interface MoverData {
+    change: number;
+    change_pct: number;
+    old_price: number;
+    current_price: number;
+    ticker: string;
 }
 
 interface MarketNewsItem {
@@ -58,9 +69,9 @@ export default function Home() {
     const [apiError, setApiError] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!userID) return; 
+        if (!userID) return;
         async function fetchHomePageData() {
-            try{
+            try {
                 const jwt = await getFirebaseJWT();
 
                 // bad practice: don't send jwt in query string, send as part of header!!
@@ -83,36 +94,44 @@ export default function Home() {
     }, [userID])
 
 
-        
-    if (!apiResponse || !userID) { 
+
+    if (!apiResponse || !userID) {
         if (apiError) {
             return (
                 <NotificationBox
                     success={false}
-                    message={"Server Error. Please try again later"} 
+                    message={"Server Error. Please try again later"}
                 />
             )
         } else {
             return (
                 <LoadingBar />
-            ) 
+            )
         }
     }
 
     return (
         <div className={styles.externalDiv}>
-            
+
             <div className={styles.portfolioDiv}>
+
+                <div>
+                    <UserDataVisual
+                        portfolioBalance={apiResponse.portfolio_balance}
+                        cashBalance={apiResponse.cash_balance}
+                        uid={userID}
+                        timeline={apiResponse.x2w_timeline}
+                    />
+
+                    <MarketMoverVisual
+                        gainers={apiResponse.top_gainers}
+                        losers={apiResponse.top_losers}
+                    />
+                </div>
                 
-                <UserDataVisual 
-                    portfolioBalance={apiResponse.portfolio_balance}
-                    cashBalance={apiResponse.cash_balance}
-                    uid={userID}
-                    timeline={apiResponse.x2w_timeline}
-                />
 
                 <div className={styles.chartDiv}>
-                    <ChartsHandler data={apiResponse.x2w_timeline} height={440}/>
+                    <ChartsHandler data={apiResponse.x2w_timeline} height={460} />
                 </div>
 
             </div>
@@ -120,19 +139,19 @@ export default function Home() {
             <div className={styles.additionalInfoDiv}>
 
                 <div className={styles.watchlistDiv}>
-                    <WatchlistVisual 
+                    <WatchlistVisual
                         watchlistData={apiResponse.watchlist_data}
                     />
                 </div>
-                
+
                 <div className={styles.newsDiv}>
-                    <MarketNewsVisual 
+                    <MarketNewsVisual
                         data={apiResponse.market_news}
                     />
                 </div>
 
             </div>
-           
+
         </div>
     )
 }

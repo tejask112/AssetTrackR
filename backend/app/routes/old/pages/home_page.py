@@ -7,6 +7,7 @@ from ....db_services.user_accounts.user_account_queries import get_liquid_cash
 from ....db_services.portfolio.portfolio_queries import get_portfolio_balance, get_portfolio
 from ....db_services.timeline.timeline_queries import get_user_timeline_2w
 from ....db_services.market_news.market_news_queries import get_market_news
+from ....db_services.market_movers.market_movers_queries import get_market_movers
 
 bp = Blueprint('home_page_bp', __name__)
 
@@ -26,6 +27,7 @@ def home_data():
         portfolio = get_portfolio(uid)
         timeline = get_user_timeline_2w(uid)
         watchlist_data = get_watchlist_data(uid)
+        top_gainers, top_losers = get_market_movers()
 
         return jsonify({ 
             "cash_balance": cash_balance,
@@ -33,7 +35,9 @@ def home_data():
             "portfolio": portfolio,
             "x2w_timeline": timeline,
             "market_news": market_news,
-            "watchlist_data": watchlist_data
+            "watchlist_data": watchlist_data,
+            "top_gainers": top_gainers,
+            "top_losers": top_losers,
         })
 
     except Exception as e:

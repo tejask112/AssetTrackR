@@ -6,7 +6,7 @@
 }
 
 .accountValueSection {
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 }
 
 .cashAddFundsButton {
@@ -56,13 +56,13 @@
 .overviewChange {
     display: flex;
     gap: 20px;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 }
 
 .overviewDiv {
     width: 100%;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 }
 
 .titleText {

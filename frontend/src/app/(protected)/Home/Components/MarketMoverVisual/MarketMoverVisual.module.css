@@ -1,0 +1,75 @@
+.entireDiv {
+  background: #ffffff;
+  border: 1px solid #e3e7ef;
+  border-radius: 9.6px;
+  padding: 14px 16px;
+}
+
+.gain {
+  font-family: 'Inter';
+  font-weight: 600;
+  color: #059669;
+}
+
+.header {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #656c79;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.loss {
+  font-family: 'Inter';
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.row{
+  display: flex;
+  margin: 0px 10px;
+  font-size: 0.9rem;
+  gap: 15px;
+}
+
+.section {
+  margin: 5px 0px;
+}
+
+.ticker {
+  font-weight: 700;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #42474f;
+  margin: 0 0 0.08rem 0;
+  text-transform: uppercase;
+}
+
+
+
+
+.priceFlow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1;
+  font-family: 'Inter';
+  color: #4b556b;
+}
+
+.oldPrice {
+  opacity: 0.85;
+}
+
+.arrow {
+  opacity: 0.8;
+}
+
+.currentPrice {
+  color: black;
+}

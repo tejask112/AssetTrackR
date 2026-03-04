@@ -66,7 +66,7 @@ export default {
 		const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
 		// push prices to Supabase `market_data` table
-		const {error: market_data_err } = await supabase .from("market_data").insert(aggregatedData);
+		const { error: market_data_err } = await supabase .from("market_data").insert(aggregatedData);
 		if (market_data_err) {
 			console.error("Supabase Error (Inserting Market Data)")
 			console.error("Message:", market_data_err.message);
@@ -75,12 +75,15 @@ export default {
 
 		// run all queued trades using latest prices if: 9:00am <= time <= 9:01am
 		if (!checkFirstMinOfMarket(now)) return;
-		const {error: queued_trades_err } = await supabase.rpc("run_queued_trades");
+		const { error: queued_trades_err } = await supabase.rpc("run_queued_trades");
 		if (queued_trades_err) {
 			console.error("Supabase Error (Running Queued Trades)")
 			console.error("Message:", queued_trades_err.message);
 			console.error("Details:", queued_trades_err.details);
 		}
+
+		// calculate all market movers
+		const { error: movers_err } = await supabase.rpc("calculate_movers");
 
 	},
 } satisfies ExportedHandler<Env>;

@@ -31,6 +31,7 @@ from ..db_services.company_profile.company_profile_queries import get_company_pr
 from ..db_services.market_data.market_data_queries import get_market_data, get_seven_days_prices
 from ..db_services.portfolio.portfolio_queries import get_portfolio_balance, get_portfolio, get_portfolio_with_prices
 from ..db_services.market_news.market_news_queries import get_market_news
+from ..db_services.market_movers.market_movers_queries import get_market_movers
 
 # --------------------------------------------------------------------------------
 # LOGIN + LOGOUT
@@ -336,6 +337,7 @@ def home_data():
         portfolio = get_portfolio(uid)
         timeline = get_user_timeline_2w(uid)
         watchlist_data = get_watchlist_data(uid)
+        top_gainers, top_losers = get_market_movers()
 
         return jsonify({ 
             "cash_balance": cash_balance,
@@ -343,7 +345,9 @@ def home_data():
             "portfolio": portfolio,
             "x2w_timeline": timeline,
             "market_news": market_news,
-            "watchlist_data": watchlist_data
+            "watchlist_data": watchlist_data,
+            "top_gainers": top_gainers,
+            "top_losers": top_losers,
         })
 
     except Exception as e:

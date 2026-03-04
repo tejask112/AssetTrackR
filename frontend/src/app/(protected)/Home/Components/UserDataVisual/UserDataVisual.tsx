@@ -50,7 +50,7 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
             const hours = date_timestamp.getUTCHours(); 
             const minutes = date_timestamp.getUTCMinutes();
 
-            return hours === 9 && minutes >= 0 && minutes < 15;
+            return hours === 14 && minutes >= 30 && minutes < 45;
         })?.price;
         
         let change = 0;
@@ -96,7 +96,7 @@ export default function UserDataVisual({ portfolioBalance, cashBalance, uid, tim
                     <div className={styles.changeItem}>
                         <div className={styles.titleText}>Today&apos;s change</div>
                         <div className={styles.changeValue} 
-                             style={{color:typeof changeTradingDay === 'number'? changeTradingDay > 0 ? '#059669' : changeTradingDay < 0 ? '#dc2626' : undefined: undefined }}
+                            style={{color:typeof changeTradingDay === 'number'? changeTradingDay > 0 ? '#059669' : changeTradingDay < 0 ? '#dc2626' : undefined: undefined }}
                         >
                             {changeTradingDay != null && changeTradingDay > 0 ? "+" : ""}
                             {changeTradingDay ? changeTradingDay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'} {changeTradingDayPct != null ? `(${changeTradingDayPct.toFixed(2)}%)` : ''}

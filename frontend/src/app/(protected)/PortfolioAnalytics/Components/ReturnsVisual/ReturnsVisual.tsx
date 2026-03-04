@@ -24,7 +24,7 @@ export default function ReturnsVisual({ returns }: Props) {
 
             <div>
                 <h1 className={styles.title}>1D</h1>
-                <h1 className={styles.value}>{returns.x1d_return?.toFixed(2) ?? '-'}</h1>
+                <h1 className={styles.value}>{returns.x1d_return?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '-'}</h1>
                 <h1 className={styles.value}>
                     {returns.x1d_return_pct != null ? `${returns.x1d_return_pct.toFixed(2)}%` : '-'}
                 </h1>
@@ -32,7 +32,7 @@ export default function ReturnsVisual({ returns }: Props) {
 
             <div>
                 <h1 className={styles.title}>5D</h1>
-                <h1 className={styles.value}>{returns.x5d_return?.toFixed(2) ?? '-'}</h1>
+                <h1 className={styles.value}>{returns.x5d_return?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '-'}</h1>
                 <h1 className={styles.value}>
                     {returns.x5d_return_pct != null ? `${returns.x5d_return_pct.toFixed(2)}%` : '-'}
                 </h1>
@@ -40,7 +40,7 @@ export default function ReturnsVisual({ returns }: Props) {
 
             <div>
                 <h1 className={styles.title}>1M</h1>
-                <h1 className={styles.value}>{returns.x1m_return?.toFixed(2) ?? '-'}</h1>
+                <h1 className={styles.value}>{returns.x1m_return?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '-'}</h1>
                 <h1 className={styles.value}>
                     {returns.x1m_return_pct != null ? `${returns.x1m_return_pct.toFixed(2)}%` : '-'}
                 </h1>
@@ -48,7 +48,7 @@ export default function ReturnsVisual({ returns }: Props) {
 
             <div>
                 <h1 className={styles.title}>3M</h1>
-                <h1 className={styles.value}>{returns.x3m_return?.toFixed(2) ?? '-'}</h1>
+                <h1 className={styles.value}>{returns.x3m_return?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '-'}</h1>
                 <h1 className={styles.value}>
                     {returns.x3m_return_pct != null ? `${returns.x3m_return_pct.toFixed(2)}%` : '-'}
                 </h1>
@@ -56,7 +56,7 @@ export default function ReturnsVisual({ returns }: Props) {
 
             <div>
                 <h1 className={styles.title}>6M</h1>
-                <h1 className={styles.value}>{returns.x6m_return?.toFixed(2) ?? '-'}</h1>
+                <h1 className={styles.value}>{returns.x6m_return?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '-'}</h1>
                 <h1 className={styles.value}>
                     {returns.x6m_return_pct != null ? `${returns.x6m_return_pct.toFixed(2)}%` : '-'}
                 </h1>
