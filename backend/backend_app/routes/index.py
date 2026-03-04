@@ -299,7 +299,7 @@ def company_data():
 # --------------------------------------------------------------------------------
 # PAGES - ExploreStocks (fetch brief company data for all companies)
 # --------------------------------------------------------------------------------
-@api.route("explore-stocks", methods=["GET"])
+@api.route("/explore-stocks", methods=["GET"])
 def explore_stocks():
     allowed, error_mgs = validate_explore_stocks_payload(request.args)
 

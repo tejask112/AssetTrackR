@@ -1,6 +1,3 @@
-# ENTRYPOINT - for development
-# cmd -> python run.py
-
 from backend_app import create_app
 app = create_app()
 
