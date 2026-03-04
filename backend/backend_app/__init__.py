@@ -37,10 +37,6 @@ def create_app():
 
     from .routes.index import api as routes
     app.register_blueprint(routes, url_prefix="/api")
-
-    @app.get("/api/health")
-    def health():
-        return {"ok": True}
     
     return app
 

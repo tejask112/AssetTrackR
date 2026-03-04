@@ -405,3 +405,7 @@ def trade_history():
         print(f"trade_history() - Exception raised: {str(e)}")
         return jsonify({ "error": "Internal Server Error" }), 500
 
+# Health
+@api.route('/health', methods=["GET"])
+def health():
+    return {"ok": True}
