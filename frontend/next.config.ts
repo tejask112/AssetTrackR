@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:path*",
-        destination: "https://assettrackr-api.vercel.app/",
+        destination: "https://assettrackr-api.vercel.app/:path*",
       },
       {
         source: "/logo/:path*",

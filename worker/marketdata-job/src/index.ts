@@ -74,12 +74,13 @@ export default {
 		}
 
 		// run all queued trades using latest prices if: 9:00am <= time <= 9:01am
-		if (!checkFirstMinOfMarket(now)) return;
-		const { error: queued_trades_err } = await supabase.rpc("run_queued_trades");
-		if (queued_trades_err) {
-			console.error("Supabase Error (Running Queued Trades)")
-			console.error("Message:", queued_trades_err.message);
-			console.error("Details:", queued_trades_err.details);
+		if (checkFirstMinOfMarket(now)) {
+			const { error: queued_trades_err } = await supabase.rpc("run_queued_trades");
+			if (queued_trades_err) {
+				console.error("Supabase Error (Running Queued Trades)")
+				console.error("Message:", queued_trades_err.message);
+				console.error("Details:", queued_trades_err.details);
+			}
 		}
 
 		// calculate all market movers

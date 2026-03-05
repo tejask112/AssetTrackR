@@ -1,8 +1,9 @@
+// src/middleware.ts
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export function proxy(req: NextRequest) {
-    const { pathname, searchParams } = req.nextUrl;
+export function middleware(req: NextRequest) {
+    const { pathname } = req.nextUrl;
     const session = req.cookies.get('session')?.value;
 
     if (pathname !== '/Welcome' && !session) {
