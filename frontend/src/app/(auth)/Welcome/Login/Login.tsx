@@ -112,7 +112,7 @@ export default function Login() {
             const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
             
             // verifies the JWT 
-            const res = await fetch('/api/authenticate', {
+            const res = await fetch('/authenticate', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${idToken}` },
             });
