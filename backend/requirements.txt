@@ -1,12 +1,11 @@
-Flask
+python-dotenv
+flask
 flask-cors
 requests
 pandas
 websocket-client
 finnhub-python
 gevent
-SQLAlchemy>=2.0
-psycopg2-binary
 firebase-admin
 supabase
 google-genai
