@@ -53,7 +53,7 @@ export default function TradeHistory() {
                 
                 // bad practice: don't send jwt in query string, send as part of header!!
                 // need to fix
-                const res = await fetch(`/api/trade-history?uid=${encodeURIComponent(uid)}&jwt=${encodeURIComponent(jwt)}`);
+                const res = await fetch(`/trade-history?uid=${encodeURIComponent(uid)}&jwt=${encodeURIComponent(jwt)}`);
                 const json: History[] = await res.json();
 
                 if (!res.ok) {

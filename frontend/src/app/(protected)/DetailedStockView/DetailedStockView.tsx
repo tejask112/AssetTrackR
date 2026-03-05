@@ -147,7 +147,7 @@ export default function DetailedStockView({ symbol }: Props) {
 
                 // bad practice: don't send jwt in query string, send as part of header!!
                 // need to fix
-                const res = await fetch(`/api/company-data?uid=${userID}&ticker=${encodeURIComponent(upperSymbol)}&jwt=${encodeURIComponent(jwt)}`);
+                const res = await fetch(`/company-data?uid=${userID}&ticker=${encodeURIComponent(upperSymbol)}&jwt=${encodeURIComponent(jwt)}`);
                 const json: ApiResponse = await res.json();
 
                 if (!res.ok) {

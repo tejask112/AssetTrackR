@@ -52,7 +52,7 @@ export default function SearchStocks() {
 
                 // bad practice: don't send jwt in query string, send as part of header!!
                 // need to fix
-                const res = await fetch(`/api/explore-stocks?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
+                const res = await fetch(`/explore-stocks?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
                 const json: StockData[] = await res.json();
 
                 if (!res.ok) {

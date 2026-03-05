@@ -90,7 +90,7 @@ export default function TradeModal( {symbol, price}:Props ) {
             quantity: form.quantity
         };
 
-        const res = await fetch('/api/submit-order', {
+        const res = await fetch('/submit-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)

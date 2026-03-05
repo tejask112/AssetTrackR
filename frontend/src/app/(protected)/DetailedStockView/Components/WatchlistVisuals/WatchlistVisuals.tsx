@@ -27,7 +27,7 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
             // bad practice: don't send jwt in query string, send as part of header
             // need to fix
             const res = await fetch(
-                `/api/watchlist-add?uid=${uid}&ticker=${ticker}&companyName=${encodeURIComponent(companyName)}&jwt=${encodeURIComponent(jwt)}`,
+                `/watchlist-add?uid=${uid}&ticker=${ticker}&companyName=${encodeURIComponent(companyName)}&jwt=${encodeURIComponent(jwt)}`,
                 { method: "POST" }
             );
 
@@ -54,7 +54,7 @@ export default function WatchlistVisuals({ ticker, companyName, uid, currentStat
             // bad practice: don't send jwt in query string, send as part of header
             // need to fix
             const res = await fetch(
-                `/api/watchlist-remove?uid=${uid}&ticker=${ticker}&jwt=${encodeURIComponent(jwt)}`,
+                `/watchlist-remove?uid=${uid}&ticker=${ticker}&jwt=${encodeURIComponent(jwt)}`,
                 { method: "POST" }
             );
 

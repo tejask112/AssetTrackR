@@ -55,7 +55,7 @@ export default function Login() {
             const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (email + password)#
 
             // verifies the JWT 
-            const res = await fetch('/api/authenticate', {
+            const res = await fetch('/authenticate', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${idToken}` },
             });
@@ -66,7 +66,7 @@ export default function Login() {
             }
 
             // sets up a session
-            const res2 = await fetch('/api/session', {
+            const res2 = await fetch('/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idToken })
@@ -123,7 +123,7 @@ export default function Login() {
             }
 
             // sets up a session
-            const res2 = await fetch('/api/session', {
+            const res2 = await fetch('/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idToken })

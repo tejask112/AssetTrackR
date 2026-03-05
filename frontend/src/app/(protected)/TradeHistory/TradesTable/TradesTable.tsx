@@ -123,7 +123,7 @@ export default function TradesTable({ data, rows }: TradeProps) {
 
             const jwt = await getFirebaseJWT();
 
-            const res = await fetch("/api/cancel-order", {
+            const res = await fetch("/cancel-order", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

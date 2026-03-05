@@ -19,7 +19,7 @@ export default function NavBar() {
 
   async function handleLogout() {
     await Promise.all([
-      fetch('/api/logout', { method: 'POST' }),
+      fetch('/logout', { method: 'POST' }),
       signOut(auth),
     ]);
     clear()
