@@ -76,7 +76,7 @@ export default function Home() {
 
                 // bad practice: don't send jwt in query string, send as part of header!!
                 // need to fix
-                const res = await fetch(`/home-data?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
+                const res = await fetch(`/api/home-data?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
                 const json: HomePageData = await res.json();
 
                 if (!res.ok) {

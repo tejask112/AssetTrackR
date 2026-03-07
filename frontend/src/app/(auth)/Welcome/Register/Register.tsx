@@ -48,7 +48,7 @@ export default function Register() {
             const idTokenReg = await user.getIdToken();
 
             // verifies the JWT + initialises the user (since they're new)
-            const resInitialise = await fetch('/initialise_user', {
+            const resInitialise = await fetch('/api/initialise_user', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${idTokenReg}` },
             });
@@ -60,7 +60,7 @@ export default function Register() {
             }
 
             // sets up a session
-            const resReg = await fetch("/session", {
+            const resReg = await fetch("/api/session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ idToken: idTokenReg })

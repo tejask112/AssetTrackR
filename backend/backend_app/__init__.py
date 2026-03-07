@@ -36,7 +36,7 @@ def create_app():
     # app.register_blueprint(ai_portfolio_summary_bp, url_prefix="/api")
 
     from .routes.index import api as routes
-    app.register_blueprint(routes)
+    app.register_blueprint(routes, url_prefix='/api')
     
     return app
 

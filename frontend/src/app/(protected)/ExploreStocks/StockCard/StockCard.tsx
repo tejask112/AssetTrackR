@@ -70,7 +70,7 @@ export default function StockCard({ data }: StockDataProp) {
     }, [currentPrice])
 
     return (
-        <button className={styles.entireDiv} onClick={() => router.push(`DetailedStockView/${data.ticker}`)}>
+        <button className={styles.entireDiv} onClick={() => router.push(`/DetailedStockView/${data.ticker}`)}>
             <div className={styles.dataDiv}>
                 <div className={styles.companyDataDiv}>
                     <Image src={logoUrl.publicUrl} alt={data.ticker} className={styles.companyLogo} width={44} height={44}/>

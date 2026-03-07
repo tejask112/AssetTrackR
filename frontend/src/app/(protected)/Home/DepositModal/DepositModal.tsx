@@ -51,7 +51,7 @@ export default function DepositModal({ existingCash, uid }:Props) {
 
                 // bad practice: don't send jwt in query string, send as part of header!!
                 // need to fix
-                const res = await fetch(`/deposit-history?uid=${encodeURIComponent(uid)}&jwt=${jwt}`);
+                const res = await fetch(`/api/deposit-history?uid=${encodeURIComponent(uid)}&jwt=${jwt}`);
                 const json = await res.json();
                 setHistory(json[uid]);
             } catch (error) {

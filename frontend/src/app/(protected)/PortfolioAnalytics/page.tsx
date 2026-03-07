@@ -62,7 +62,7 @@ export default function PortfolioAnalytics() {
             try{
                 const jwt = await getFirebaseJWT();
 
-                const res = await fetch(`/portfolio-analytics?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
+                const res = await fetch(`/api/portfolio-analytics?uid=${userID}&jwt=${encodeURIComponent(jwt)}`);
                 const json: ApiResponse = await res.json();
 
                 if (!res.ok) {

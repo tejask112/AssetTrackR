@@ -50,15 +50,18 @@ export default function Login() {
         setErrorMsg('');
 
         try{
+            console.log("entering login via email")
             const { user } = await signInWithEmailAndPassword(auth, email, password);
             setLoading(true);
             const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (email + password)#
 
+            console.log("sending off /authenticate")
             // verifies the JWT 
-            const res = await fetch('/authenticate', {
+            const res = await fetch('/api/authenticate', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${idToken}` },
             });
+            console.log("sent")
             if (!res.ok) {
                 console.error('Flask rejected:', res.status);
             } else {
@@ -66,7 +69,7 @@ export default function Login() {
             }
 
             // sets up a session
-            const res2 = await fetch('/session', {
+            const res2 = await fetch('/api/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idToken })
@@ -112,7 +115,7 @@ export default function Login() {
             const idToken = await user.getIdToken(); // <--- RETRIEVES THE JWT (google sign on)
             
             // verifies the JWT 
-            const res = await fetch('/authenticate', {
+            const res = await fetch('/api/authenticate', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${idToken}` },
             });
@@ -123,7 +126,7 @@ export default function Login() {
             }
 
             // sets up a session
-            const res2 = await fetch('/session', {
+            const res2 = await fetch('/api/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idToken })
