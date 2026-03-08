@@ -6,9 +6,9 @@ AssetTrackR is a full-stack paper trading web app that lets users simulate stock
 
 [assettrackr.com](https://assettrackr.vercel.app/)
 
-Create your own account, or use:
-email: ```testing5@testing.com```
-password: ```password```
+Create your own account, or use:  
+email: `testing5@testing.com`  
+password: `password`
 
 ## Features
 
