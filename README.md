@@ -53,9 +53,9 @@ _This project tech stack was inspired by my COMP3207 Cloud coursework group._
 ```bash
 AssetTrackR/
 ├── frontend/                      
-|   └── src/app                    # Next.js frontend
-|        ├── (auth)                # Login/Registration Pages
-|        └── (protected)           # All Authenticated Pages
+│   └── src/app                    # Next.js frontend
+│        ├── (auth)                # Login/Registration Pages
+│        └── (protected)           # All Authenticated Pages
 ├── backend/                       
 │   ├── api/                       # Flask Backend Deployment entrypoint(s)
 │   ├── backend_app/               # Application factory, routes, services, utilities
