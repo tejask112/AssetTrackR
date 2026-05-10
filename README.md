@@ -10,6 +10,15 @@ Create your own account, or use:
 email: `testing5@testing.com`  
 password: `password`
 
+## Tech Stack
+
+- **Frontend:** Next.js (TypeScript + CSS) — deployed on Vercel
+- **Backend:** Flask (Python) — deployed on Vercel
+- **Database:** PostgreSQL (+ RPC Postgres functions) — deployed on Supabase
+- **Workers:** TypeScript — deployed on Cloudflare
+
+_This project tech stack was inspired by my COMP3207 Cloud coursework group._
+
 ## Features
 
 ### Authentication
@@ -39,24 +48,23 @@ password: `password`
 - View trade history
 - Track account timeline and portfolio changes over time
 
-## Tech Stack
-
-Frontend: Next.js (TypeScript + CSS) - Deployed on Vercel
-Backend: Flask (Python) - Deployed on Vercel
-Database: PostgreSQL - Deployed on Supabase
-Cron Job Workers: TypeScript - Deployed on Cloudflare
-
 ## Project Structure
 
 ```bash
 AssetTrackR/
-├── frontend/                      # Next.js frontend
-├── backend/                       # Flask API
-│   ├── api/                       # Deployment entrypoint(s)
+├── frontend/                      
+|   └── src/app                    # Next.js frontend
+|        ├── (auth)                # Login/Registration Pages
+|        └── (protected)           # All Authenticated Pages
+├── backend/                       
+│   ├── api/                       # Flask Backend Deployment entrypoint(s)
 │   ├── backend_app/               # Application factory, routes, services, utilities
-│   └── supabase_pg_functions/
+│   └── supabase_pg_functions/     # All RPC Postgres functions 
 ├── worker/
 │   ├── companydata-job/           # Company data update worker
 │   ├── marketdata-job/            # Market data update worker
 │   └── updatetimeline-job/        # Timeline update worker
-└── docs/                          # Project requirements / notes
+└── docs/
+```
+
+
