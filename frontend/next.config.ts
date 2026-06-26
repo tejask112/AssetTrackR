@@ -26,14 +26,14 @@ const nextConfig: NextConfig = {
 
   async rewrites() {
     return [
-      {
-        source: "/api/:path*",
-        destination: "https://assettrackr-api.vercel.app/api/:path*",
-      },
       // {
-      //   source: '/api/:path*',
-      //   destination: 'http://127.0.0.1:5000/api/:path*',
+      //   source: "/api/:path*",
+      //   destination: "https://assettrackr-api.vercel.app/api/:path*",
       // },
+      {
+        source: '/api/:path*',
+        destination: 'http://127.0.0.1:5000/api/:path*',
+      },
       {
         source: "/logo/:path*",
         destination: "https://logo.dev/:path*",
