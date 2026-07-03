@@ -20,4 +20,17 @@ Buy/Sell Stock
 [x] Place Buy order on requested stock
 [x] Place Sell order on requested stock
 [x] View Line chart (history performance) for each stock
-[x] View stock information (Company, Q1/2/3/4 Profits, Stats]
+[x] View stock information (Company, Q1/2/3/4 Profits, Stats)
+
+Updated Features
+[ ] Clean up Repository
+[ ] Port over to FastAPI
+[ ] Add more stocks
+[ ] Debug CF Workers
+[ ] Redesign Detailed Stock View page
+[ ] Optimise + Reduce Latency
+[ ] Feature: Add Subscription Banner
+[ ] Feature: Add Stop Loss + Take Profit
+[ ] Feature: Price Alerts
+[ ] Feature: X (Twitter) Posts Scraper
+[ ] Feature: Compare charts in Detailed Stock View
