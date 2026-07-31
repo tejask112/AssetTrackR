@@ -1,20 +1,15 @@
 import os
 from dotenv import load_dotenv
 import aiohttp
-import asyncio
-import logging
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 load_dotenv()
-logger = logging.getLogger(__name__)
 
 FINNHUB_API_KEY_2 = os.environ["FINNHUB_API_KEY_2"]
 FINNHUB_URL = "https://finnhub.io/api/v1/stock/market-status"
 
 async def check_market_open() -> None:
-    logger.info("Starting market cycle")
-
     params = { "exchange": "US" }
     headers = { "X-Finnhub-Token": FINNHUB_API_KEY_2 }
 
@@ -38,6 +33,12 @@ async def check_market_open() -> None:
             f"Market Status Open?: {is_open}, session: {session}, holiday: {holiday}"
         )
 
-    except Exception as e:
-        print(f"Exception raised in market_status.py: {str(e)}")
+    except aiohttp.ClientResponseError as error:
+        print(f"check_market_open() failed: Finnhub returned HTTP {error.status} — {error.message}")
+
+    except aiohttp.ClientError as error:
+        print(f"check_market_open() failed: Finnhub request error — {error}")
+
+    except Exception as error:
+        print(f"check_market_open() failed: {error}")
 

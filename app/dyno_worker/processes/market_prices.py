@@ -37,7 +37,7 @@ async def collect_stock_price(session: aiohttp.ClientSession, symbol: str) -> No
         print(f"collect_stock_price({symbol}) failed: Finnhub returned HTTP {error.status} — {error.message}")
 
     except aiohttp.ClientError as error:
-        print(f"collect_stock_price({symbol}) failed: " "Finnhub request error — {error}")
+        print(f"collect_stock_price({symbol}) failed: Finnhub request error — {error}")
 
     except Exception as error:
         print(f"collect_stock_price({symbol}) failed unexpectedly: {error}")
