@@ -19,9 +19,7 @@ async def check_market_open() -> None:
     headers = { "X-Finnhub-Token": FINNHUB_API_KEY_2 }
 
     try:
-        timeout = aiohttp.ClientTimeout(total=10)
-
-        async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with aiohttp.ClientSession() as session:
             async with session.get(
                 url=FINNHUB_URL,
                 params=params,
@@ -35,7 +33,10 @@ async def check_market_open() -> None:
         session = market_status["session"]
         holiday = market_status["holiday"]
 
-        print(f"{date}, {is_open}, {session}, {holiday}")
+        print(
+            f"[{date:%Y-%m-%d %H:%M:%S}] "
+            f"Market Status Open?: {is_open}, session: {session}, holiday: {holiday}"
+        )
 
     except Exception as e:
         print(f"Exception raised in market_status.py: {str(e)}")
