@@ -3,6 +3,7 @@ from db.tables.base import Base
 
 from db.tables.market import MarketStatus
 from db.tables.stocks import Stocks, StockHistoricalPrices, StockCurrentPrices, StockNewsArticles, StockRecommendations
+from db.tables.news import NewsArticles
 
 def create_tables() -> None:
     try:

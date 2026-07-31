@@ -65,7 +65,8 @@ class StockNewsArticles(Base):
     news_id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, nullable=False)
     stock_id: Mapped[int] = mapped_column(Integer, ForeignKey("stocks.stock_id"), primary_key=True, nullable=False)
 
-    stock_fk: Mapped["Stocks"] = relationship(back_populates="stock_news_articles_fk") 
+    stock_fk: Mapped["Stocks"] = relationship(back_populates="stock_news_articles_fk")
+    news_fk: Mapped["NewsArticles"] = relationship(back_populates="stock_news_article_relationships")
 
 
 class StockRecommendations(Base):
