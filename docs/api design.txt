@@ -1,0 +1,41 @@
+ENDPOINT, SUMMARY
+
+GET /api/health     - Basic health check to verify backend is running (call from login page to warm up server)
+
+GET /api/auth/user     - Verifies the current token and allows the user to log in
+POST /api/auth/session     - Creates a secure session cookie from the JWT token
+DELETE /api/auth/session     - Deletes the user's session cookie when user logs out
+
+POST /api/user/initialise     - Creates a user account. Initialises the user in the database, creates empty timeline, portfolio etc
+DELETE /api/user/delete     - Deletes the user's account and all related information
+
+GET /api/user/account-summary     - Returns account summary details: portfolio balance, available cash, returns 
+
+GET /api/user/portfolio     - Returns the user's portfolio balance and holdings (stock tickers and quantity owned)
+GET /api/user/portfolio/analytics     - Returns user's portfolio returns and performance
+GET /api/user/portfolio/timeline     - Returns user's portfolio timeline overtime.
+GET /api/user/portfolio/ai-insight     - Returns AI generated summary of user's portfolio holdings
+
+GET /api/user/orders/executed     - Returns user's executed orders history (include cursor pagination!!)
+GET /api/user/orders/queued     - Returns user's queued orders (include cursor pagination!!)
+
+GET /api/user/watchlist     - Returns user's watchlist
+PUT /api/user/watchlist/{ticker}     - Add a ticker to user's watchlist
+DELETE /api/user/watchlist/{ticker}     - Remove a ticker from user's watchlist
+
+GET /api/user/available-cash     - Returns user's available cash balance
+
+POST /api/user/order     - Places an order (e.g. buy/sell/market)
+DELETE /api/user/order/{orderID}     - Cancels an order (if queued/not executed yet)
+
+GET /api/stock     - Returns a list of supported/tradeable stocks
+GET /api/stock/{ticker}/basic-data     - Returns ticker, company name, price, industry, stock exchance etc
+GET /api/stock/{ticker}/price     - Returns latest OHLC quote
+GET /api/stock/{ticker}/price-timeline     - Returns timeline of stock's price
+GET /api/stock/{ticker}/fundamental-data     - Returns ticker's fundamental data
+GET /api/stock/{ticker}/recommendations     - Returns ticker's current recomendation and recommendation history
+GET /api/stock/{ticker}/bluesky-posts     - Returns Bluesky posts for the specific stock, makes direct api call to bluesky
+GET /api/stock/{ticker}/news     - Returns latest news articles for specific stock
+
+GET /api/stock/news     - Returns latest news articles
+GET /api/stock/explore/     - Returns companies for the explore page, with filters: top gainers/losers, most active etc

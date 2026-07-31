@@ -1,0 +1,324 @@
+table: users
+- field:user_id, type:varchar(128), not null, (note: this is the Firebase Auth UID, its not a postgresql UUID)
+- field:email, type:text, not null,
+- field:first_name, type:text,  not null
+- field:last_name, type:text, not null
+- field:cash_balance, type:numeric, not null
+- field:cash_reserved, type:numeric, not null
+- field:created_at, type:timestamptz, not null
+- primary key on (user_id)
+
+table: watchlist
+- field:user_id, type:varchar(128), not null
+- field:stock_id, type:integer, not null
+- primary key on (user_id, stock_id)
+- foreign key on (user_id) to 'users'
+- foreign key on (stock_id) to 'stocks'
+
+table: portfolio
+- field:user_id, type:varchar(128), not null
+- field:stock_id, type:integer, not null
+- field:total_quantity, type:numeric, not null, (note: total number of shares user currently owns, including reserved shares for pending sell, available quantity = total_quantity - reserved_quantity)
+- field:reserved_quantity, type:numeric, not null, (note: nuber of shares within total_quantity that are committed/locked to a pending sell order.)
+- primary key on (user_id, stock_id)
+- foreign key on (user_id) to 'users'
+- foreign key on (stock_id) to 'stocks'
+
+table: portfolio_history
+- field:user_id, type:varchar(128), not null
+- field:date_recorded, type:timestamptz, not null
+- field:cash_value, type:numeric, not null
+- field:portfolio_value, type:numeric, not null
+- primary key on (user_id, date_recorded)
+- foreign key on (user_id) to 'users'
+- index on (user_id, date_recorded desc)
+- note: total account value is cash_value + portfolio_value
+
+table: orders
+- field:order_id, type:uuid, not null
+- field:user_id, type:varchar(128), not null
+- field:stock_id, type:integer, not null
+- field:side, type:text, not null, (note: either 'buy' or 'sell')
+- field:order_type, type:text, not null, (note: either 'market', 'limit', 'stop')
+- field:status, type:text, not null, (note: either 'executed', 'queued', 'pending', 'cancelled' or 'rejected')
+- field:quantity, type:numeric, not null
+- field:reserved_cash, type:numeric
+- field:trigger_price, type:numeric, (note: the price that activates stop loss/take profit, null for normal market orders)
+- field:date_submitted, type:timestamptz, not null
+- field:date_executed, type:timestamptz
+- field:execution_price, type:numeric, (note: individual price per stock, not total execution price)
+- field:rejection_reason, type:text
+- field:idempotency_key, type:uuid, not null
+- primary key on (order_id)
+- foreign key on (user_id) to 'users'
+- foreign key on (stock_id) to 'stocks'
+- unique constraint (user_id, idempotency_key)
+- index on (user_id, date_submitted DESC)
+- index on (user_id, stock_id, date_submitted DESC)
+- index on (stock_id) where status = 'queued'
+- index on (stock_id) where status = 'pending'
+
+note on orders.status:
+executed = the entire order was successfully executed.
+queued = an accepted market order waiting specifically only for the next market open.
+pending = an accepted limit or stop order waiting for its price trigger.
+cancelled = a queued or pending order cancelled by the user.
+rejected = the system wasn't accepted by the user due to some condition.
+
+table: ai_portfolio_summaries
+- field:summary_id, type:uuid, not null
+- field:user_id, type:varchar(128), not null
+- field:status, type:text, not null, (note: either 'generating', 'completed' or 'failed')
+- field:idempotency_key, type:uuid, not null
+- field:model, type:text, not null
+- field:portfolio_snapshot, type:jsonb, not null
+- field:summary, type:text
+- field:error_message, type:text
+- field:requested_at, type:timestamptz, not null
+- primary key on (summary_id)
+- foreign key on (user_id) to 'users'
+- index on (user_id, requested_at desc)
+- unique constraint on (user_id, idempotency_key)
+- unique constraint (index) on (user_id, status) where status='generating' -> don't want user to request twice
+    - lazy timeout logic if status='generating' and worker unexpectedly shuts down
+    1. leave the status as 'generating'
+    2. next time user clicks 'generate ai summary' button, check the existing row's 'requested_at'
+    3. if it is less than 3 min old, treat it as active and dont create new summary.
+    4. if it is older than 3 mins, assume the generation was interrupted
+    5. update abandoned row to status='failed' and add appropriate 'error_message'
+    6. insert new row with status='generating' and make new ai request
+    7. store it once done and mark as status='completed'
+
+table: news_articles
+- field:news_id, type:uuid, not null
+- field:finnhub_id, type:bigint, not null
+- field:category, type:text, not null
+- field:headline, type:text, not null
+- field:image_url, type:text
+- field:source, type:text, not null
+- field:summary, type:text
+- field:article_url, type:text, not null
+- field:published_at, type:timestamptz, not null
+- field:general_feed, type:boolean, not null, default false
+- field:ingested_at, type:timestamptz, not null
+- primary key on (news_id)
+- unique constraint on (finnhub_id)
+- index on (published_at desc) where general_feed = true
+
+table: market_status
+- field:date, type:timestamptz, not null
+- field:is_open, type:boolean, not null, default false
+- field:session, type:text
+- field:holiday, type:text 
+
+table: stocks
+- field:stock_id, type:integer generated always as identity, (note: dont need uuids - too overkill)
+- field:symbol, type:text, not null, (note: always store as upper case)
+- primary key on (stock_id)
+- unique constraint on symbol
+
+table: stock_historical_prices
+- field:stock_id, type:integer, not null
+- field:price, type:numeric, not null
+- field:recorded_at, type:timestamptz, not null
+- field:recorded_minute, type:timestamptz, not null
+- primary key on (stock_id, recorded_minute)
+- foreign key on (stock_id) to 'stocks'
+- index on (stock_id, recorded_minute desc)
+
+table: stock_current_prices
+- field:stock_id, type:integer, not null
+- field:price, type:numeric, not null
+- field:recorded_at, type:timestamptz, not null
+- field:recorded_minute, type:timestamptz, not null
+- primary key on (stock_id)
+- foreign key on (stock_id) to 'stocks'
+
+table: stock_news_articles
+- field:news_id, type:uuid, not null
+- field:stock_id, type:integer, not null
+- primary key on (news_id, stock_id)
+- foreign key on (news_id) to 'news_articles'
+- foreign key on (stock_id) to 'stocks'
+- index on (stock_id, news_id)
+
+table: stock_recommendations
+- field:stock_id, type:integer, not null
+- field:covering_date_period, type:date, not null
+- field:strong_buy, type:integer, not null
+- field:buy, type:integer, not null
+- field:hold, type:integer, not null
+- field:sell, type:integer, not null
+- field:strong_sell, type:integer, not null
+- primary key on (stock_id, covering_date_period)
+- foreign key on (stock_id) to 'stocks'
+
+table: company_profile
+- field:stock_id, type:integer, not null
+- field:exchange, type:text, not null (source: Financial Modeling Prep, exchange, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:name, type:text, not null (source: Financial Modeling Prep, companyName, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:description, type:text (source: Financial Modeling Prep, description, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:industry, type:text (source: Financial Modeling Prep, industry, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:sector, type:text (source: Financial Modeling Prep, sector, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:website, type:text (source: Financial Modeling Prep, website, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:country, type:text (source: Financial Modeling Prep, country, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:full_time_employees, type:integer (source: Financial Modeling Prep, fullTimeEmployees, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:address, type:text (source: Financial Modeling Prep, address, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:ipo_date, type:date (source: Financial Modeling Prep, ipoDate, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:ceo, type:text (source: Financial Modeling Prep, ceo, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:cik, type:text (source: Financial Modeling Prep, cik, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:isin, type:text (source: Financial Modeling Prep, isin, https://financialmodelingprep.com/stable/profile?symbol=x)
+- field:cusip, type:text (source: Financial Modeling Prep, cusip, https://financialmodelingprep.com/stable/profile?symbol=x)
+- primary key on (stock_id)
+- foreign key on (stock_id) to 'stocks'
+
+table: company_metrics
+- field:stock_id, type:integer, not null
+- field:upcoming_earnings_date, type:date
+- field:upcoming_earnings_hour_type, type:text 
+- field:market_capitalization, type:numeric (note: API field/name: marketCapitalization; category: Valuation.)
+- field:enterprise_value, type:numeric (note: API field/name: enterpriseValue; category: Valuation.)
+- field:enterprise_value_to_ebitda_ttm, type:numeric (note: API field/name: evEbitdaTTM; category: Valuation.)
+- field:enterprise_value_to_revenue_ttm, type:numeric (note: API field/name: evRevenueTTM; category: Valuation.)
+- field:enterprise_value_to_free_cash_flow_ttm, type:numeric (note: API field/name: currentEv/freeCashFlowTTM; category: Valuation.)
+- field:enterprise_value_to_free_cash_flow_annual, type:numeric (note: API field/name: currentEv/freeCashFlowAnnual; category: Valuation.)
+- field:pe_ratio_ttm, type:numeric (note: API field/name: peTTM; category: Valuation.)
+- field:pe_ratio_annual, type:numeric (note: API field/name: peAnnual; category: Valuation.)
+- field:forward_pe_ratio, type:numeric (note: API field/name: forwardPE; category: Valuation.)
+- field:basic_pe_ratio_excluding_extraordinary_items_ttm, type:numeric (note: API field/name: peBasicExclExtraTTM; category: Valuation.)
+- field:pe_ratio_excluding_extraordinary_items_ttm, type:numeric (note: API field/name: peExclExtraTTM; category: Valuation.)
+- field:pe_ratio_excluding_extraordinary_items_annual, type:numeric (note: API field/name: peExclExtraAnnual; category: Valuation.)
+- field:pe_ratio_including_extraordinary_items_ttm, type:numeric (note: API field/name: peInclExtraTTM; category: Valuation.)
+- field:normalized_pe_ratio_annual, type:numeric (note: API field/name: peNormalizedAnnual; category: Valuation.)
+- field:peg_ratio_ttm, type:numeric (note: API field/name: pegTTM; category: Valuation.)
+- field:forward_peg_ratio, type:numeric (note: API field/name: forwardPEG; category: Valuation.)
+- field:ps_ratio_ttm, type:numeric (note: API field/name: psTTM; category: Valuation.)
+- field:ps_ratio_annual, type:numeric (note: API field/name: psAnnual; category: Valuation.)
+- field:pb_ratio, type:numeric (note: API field/name: pb; category: Valuation.)
+- field:pb_ratio_quarterly, type:numeric (note: API field/name: pbQuarterly; category: Valuation.)
+- field:pb_ratio_annual, type:numeric (note: API field/name: pbAnnual; category: Valuation.)
+- field:price_to_tangible_book_value_quarterly, type:numeric (note: API field/name: ptbvQuarterly; category: Valuation.)
+- field:price_to_tangible_book_value_annual, type:numeric (note: API field/name: ptbvAnnual; category: Valuation.)
+- field:price_to_cash_flow_per_share_ttm, type:numeric (note: API field/name: pcfShareTTM; category: Valuation.)
+- field:price_to_cash_flow_per_share_annual, type:numeric (note: API field/name: pcfShareAnnual; category: Valuation.)
+- field:price_to_free_cash_flow_per_share_ttm, type:numeric (note: API field/name: pfcfShareTTM; category: Valuation.)
+- field:price_to_free_cash_flow_per_share_annual, type:numeric (note: API field/name: pfcfShareAnnual; category: Valuation.)
+- field:revenue_per_share_ttm, type:numeric (note: API field/name: revenuePerShareTTM; category: Income Statement and Per-Share Metrics.)
+- field:revenue_per_share_annual, type:numeric (note: API field/name: revenuePerShareAnnual; category: Income Statement and Per-Share Metrics.)
+- field:eps_ttm, type:numeric (note: API field/name: epsTTM; category: Income Statement and Per-Share Metrics.)
+- field:eps_annual, type:numeric (note: API field/name: epsAnnual; category: Income Statement and Per-Share Metrics.)
+- field:basic_eps_excluding_extraordinary_items_ttm, type:numeric (note: API field/name: epsBasicExclExtraItemsTTM; category: Income Statement and Per-Share Metrics.)
+- field:basic_eps_excluding_extraordinary_items_annual, type:numeric (note: API field/name: epsBasicExclExtraItemsAnnual; category: Income Statement and Per-Share Metrics.)
+- field:eps_excluding_extraordinary_items_ttm, type:numeric (note: API field/name: epsExclExtraItemsTTM; category: Income Statement and Per-Share Metrics.)
+- field:eps_excluding_extraordinary_items_annual, type:numeric (note: API field/name: epsExclExtraItemsAnnual; category: Income Statement and Per-Share Metrics.)
+- field:eps_including_extraordinary_items_ttm, type:numeric (note: API field/name: epsInclExtraItemsTTM; category: Income Statement and Per-Share Metrics.)
+- field:eps_including_extraordinary_items_annual, type:numeric (note: API field/name: epsInclExtraItemsAnnual; category: Income Statement and Per-Share Metrics.)
+- field:normalized_eps_annual, type:numeric (note: API field/name: epsNormalizedAnnual; category: Income Statement and Per-Share Metrics.)
+- field:ebitda_per_share_ttm, type:numeric (note: API field/name: ebitdPerShareTTM; category: Income Statement and Per-Share Metrics.)
+- field:ebitda_per_share_annual, type:numeric (note: API field/name: ebitdPerShareAnnual; category: Income Statement and Per-Share Metrics.)
+- field:cash_flow_per_share_ttm, type:numeric (note: API field/name: cashFlowPerShareTTM; category: Cash Flow and Cash Per Share.)
+- field:cash_flow_per_share_quarterly, type:numeric (note: API field/name: cashFlowPerShareQuarterly; category: Cash Flow and Cash Per Share.)
+- field:cash_flow_per_share_annual, type:numeric (note: API field/name: cashFlowPerShareAnnual; category: Cash Flow and Cash Per Share.)
+- field:cash_per_share_quarterly, type:numeric (note: API field/name: cashPerSharePerShareQuarterly; category: Cash Flow and Cash Per Share.)
+- field:cash_per_share_annual, type:numeric (note: API field/name: cashPerSharePerShareAnnual; category: Cash Flow and Cash Per Share.)
+- field:book_value_per_share_quarterly, type:numeric (note: API field/name: bookValuePerShareQuarterly; category: Balance Sheet, Liquidity, and Leverage.)
+- field:book_value_per_share_annual, type:numeric (note: API field/name: bookValuePerShareAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:tangible_book_value_per_share_quarterly, type:numeric (note: API field/name: tangibleBookValuePerShareQuarterly; category: Balance Sheet, Liquidity, and Leverage.)
+- field:tangible_book_value_per_share_annual, type:numeric (note: API field/name: tangibleBookValuePerShareAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:current_ratio_quarterly, type:numeric (note: API field/name: currentRatioQuarterly; category: Balance Sheet, Liquidity, and Leverage.)
+- field:current_ratio_annual, type:numeric (note: API field/name: currentRatioAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:quick_ratio_quarterly, type:numeric (note: API field/name: quickRatioQuarterly; category: Balance Sheet, Liquidity, and Leverage.)
+- field:quick_ratio_annual, type:numeric (note: API field/name: quickRatioAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:long_term_debt_to_equity_quarterly, type:numeric (note: API field/name: longTermDebt/equityQuarterly; category: Balance Sheet, Liquidity, and Leverage.)
+- field:long_term_debt_to_equity_annual, type:numeric (note: API field/name: longTermDebt/equityAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:total_debt_to_total_equity_quarterly, type:numeric (note: API field/name: totalDebt/totalEquityQuarterly; category: Balance Sheet, Liquidity, and Leverage.)
+- field:total_debt_to_total_equity_annual, type:numeric (note: API field/name: totalDebt/totalEquityAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:net_interest_coverage_ttm, type:numeric (note: API field/name: netInterestCoverageTTM; category: Balance Sheet, Liquidity, and Leverage.)
+- field:net_interest_coverage_annual, type:numeric (note: API field/name: netInterestCoverageAnnual; category: Balance Sheet, Liquidity, and Leverage.)
+- field:gross_margin_ttm, type:numeric (note: API field/name: grossMarginTTM; category: Profitability.)
+- field:gross_margin_annual, type:numeric (note: API field/name: grossMarginAnnual; category: Profitability.)
+- field:gross_margin_5y, type:numeric (note: API field/name: grossMargin5Y; category: Profitability.)
+- field:operating_margin_ttm, type:numeric (note: API field/name: operatingMarginTTM; category: Profitability.)
+- field:operating_margin_annual, type:numeric (note: API field/name: operatingMarginAnnual; category: Profitability.)
+- field:operating_margin_5y, type:numeric (note: API field/name: operatingMargin5Y; category: Profitability.)
+- field:pretax_margin_ttm, type:numeric (note: API field/name: pretaxMarginTTM; category: Profitability.)
+- field:pretax_margin_annual, type:numeric (note: API field/name: pretaxMarginAnnual; category: Profitability.)
+- field:pretax_margin_5y, type:numeric (note: API field/name: pretaxMargin5Y; category: Profitability.)
+- field:net_profit_margin_ttm, type:numeric (note: API field/name: netProfitMarginTTM; category: Profitability.)
+- field:net_profit_margin_annual, type:numeric (note: API field/name: netProfitMarginAnnual; category: Profitability.)
+- field:net_profit_margin_5y, type:numeric (note: API field/name: netProfitMargin5Y; category: Profitability.)
+- field:return_on_assets_ttm, type:numeric (note: API field/name: roaTTM; category: Efficiency and Returns.)
+- field:return_on_assets_rfy, type:numeric (note: API field/name: roaRfy; category: Efficiency and Returns.)
+- field:return_on_assets_5y, type:numeric (note: API field/name: roa5Y; category: Efficiency and Returns.)
+- field:return_on_equity_ttm, type:numeric (note: API field/name: roeTTM; category: Efficiency and Returns.)
+- field:return_on_equity_rfy, type:numeric (note: API field/name: roeRfy; category: Efficiency and Returns.)
+- field:return_on_equity_5y, type:numeric (note: API field/name: roe5Y; category: Efficiency and Returns.)
+- field:return_on_investment_ttm, type:numeric (note: API field/name: roiTTM; category: Efficiency and Returns.)
+- field:return_on_investment_annual, type:numeric (note: API field/name: roiAnnual; category: Efficiency and Returns.)
+- field:return_on_investment_5y, type:numeric (note: API field/name: roi5Y; category: Efficiency and Returns.)
+- field:asset_turnover_ttm, type:numeric (note: API field/name: assetTurnoverTTM; category: Efficiency and Returns.)
+- field:asset_turnover_annual, type:numeric (note: API field/name: assetTurnoverAnnual; category: Efficiency and Returns.)
+- field:inventory_turnover_ttm, type:numeric (note: API field/name: inventoryTurnoverTTM; category: Efficiency and Returns.)
+- field:inventory_turnover_annual, type:numeric (note: API field/name: inventoryTurnoverAnnual; category: Efficiency and Returns.)
+- field:receivables_turnover_ttm, type:numeric (note: API field/name: receivablesTurnoverTTM; category: Efficiency and Returns.)
+- field:receivables_turnover_annual, type:numeric (note: API field/name: receivablesTurnoverAnnual; category: Efficiency and Returns.)
+- field:revenue_per_employee_ttm, type:numeric (note: API field/name: revenueEmployeeTTM; category: Efficiency and Returns.)
+- field:revenue_per_employee_annual, type:numeric (note: API field/name: revenueEmployeeAnnual; category: Efficiency and Returns.)
+- field:net_income_per_employee_ttm, type:numeric (note: API field/name: netIncomeEmployeeTTM; category: Efficiency and Returns.)
+- field:net_income_per_employee_annual, type:numeric (note: API field/name: netIncomeEmployeeAnnual; category: Efficiency and Returns.)
+- field:revenue_growth_ttm_yoy, type:numeric (note: API field/name: revenueGrowthTTMYoy; category: Growth.)
+- field:revenue_growth_quarterly_yoy, type:numeric (note: API field/name: revenueGrowthQuarterlyYoy; category: Growth.)
+- field:revenue_growth_3y, type:numeric (note: API field/name: revenueGrowth3Y; category: Growth.)
+- field:revenue_growth_5y, type:numeric (note: API field/name: revenueGrowth5Y; category: Growth.)
+- field:revenue_per_share_growth_5y, type:numeric (note: API field/name: revenueShareGrowth5Y; category: Growth.)
+- field:eps_growth_ttm_yoy, type:numeric (note: API field/name: epsGrowthTTMYoy; category: Growth.)
+- field:eps_growth_quarterly_yoy, type:numeric (note: API field/name: epsGrowthQuarterlyYoy; category: Growth.)
+- field:eps_growth_3y, type:numeric (note: API field/name: epsGrowth3Y; category: Growth.)
+- field:eps_growth_5y, type:numeric (note: API field/name: epsGrowth5Y; category: Growth.)
+- field:ebitda_cagr_5y, type:numeric (note: API field/name: ebitdaCagr5Y; category: Growth.)
+- field:ebitda_interim_cagr_5y, type:numeric (note: API field/name: ebitdaInterimCagr5Y; category: Growth.)
+- field:focf_cagr_5y, type:numeric (note: API field/name: focfCagr5Y; category: Growth.)
+- field:capex_cagr_5y, type:numeric (note: API field/name: capexCagr5Y; category: Growth.)
+- field:book_value_per_share_growth_5y, type:numeric (note: API field/name: bookValueShareGrowth5Y; category: Growth.)
+- field:tangible_book_value_cagr_5y, type:numeric (note: API field/name: tbvCagr5Y; category: Growth.)
+- field:net_margin_growth_5y, type:numeric (note: API field/name: netMarginGrowth5Y; category: Growth.)
+- field:x10_day_average_trading_volume, type:numeric (note: API field/name: 10DayAverageTradingVolume; category: Price History, Trading Activity, and Risk.)
+- field:x3_month_average_trading_volume, type:numeric (note: API field/name: 3MonthAverageTradingVolume; category: Price History, Trading Activity, and Risk.)
+- field:beta, type:numeric (note: API field/name: beta; category: Price History, Trading Activity, and Risk.)
+- field:x3_month_ad_return_std, type:numeric (note: API field/name: 3MonthADReturnStd; category: Price History, Trading Activity, and Risk.)
+- field:x52_week_high, type:numeric (note: API field/name: 52WeekHigh; category: Price History, Trading Activity, and Risk.)
+- field:x52_week_high_date, type:date (note: API field/name: 52WeekHighDate; category: Price History, Trading Activity, and Risk.)
+- field:x52_week_low, type:numeric (note: API field/name: 52WeekLow; category: Price History, Trading Activity, and Risk.)
+- field:x52_week_low_date, type:date (note: API field/name: 52WeekLowDate; category: Price History, Trading Activity, and Risk.)
+- field:x5_day_price_return_daily, type:numeric (note: API field/name: 5DayPriceReturnDaily; category: Price Performance.)
+- field:month_to_date_price_return_daily, type:numeric (note: API field/name: monthToDatePriceReturnDaily; category: Price Performance.)
+- field:x13_week_price_return_daily, type:numeric (note: API field/name: 13WeekPriceReturnDaily; category: Price Performance.)
+- field:x26_week_price_return_daily, type:numeric (note: API field/name: 26WeekPriceReturnDaily; category: Price Performance.)
+- field:x52_week_price_return_daily, type:numeric (note: API field/name: 52WeekPriceReturnDaily; category: Price Performance.)
+- field:year_to_date_price_return_daily, type:numeric (note: API field/name: yearToDatePriceReturnDaily; category: Price Performance.)
+- field:price_relative_to_sp500_4_week, type:numeric (note: API field/name: priceRelativeToS&P5004Week; category: Price Performance.)
+- field:price_relative_to_sp500_13_week, type:numeric (note: API field/name: priceRelativeToS&P50013Week; category: Price Performance.)
+- field:price_relative_to_sp500_26_week, type:numeric (note: API field/name: priceRelativeToS&P50026Week; category: Price Performance.)
+- field:price_relative_to_sp500_52_week, type:numeric (note: API field/name: priceRelativeToS&P50052Week; category: Price Performance.)
+- field:price_relative_to_sp500_ytd, type:numeric (note: API field/name: priceRelativeToS&P500Ytd; category: Price Performance.)
+- field:dividend_indicated_annual, type:numeric (note: API field/name: dividendIndicatedAnnual; category: Dividends.)
+- field:dividend_per_share_ttm, type:numeric (note: API field/name: dividendPerShareTTM; category: Dividends.)
+- field:dividend_per_share_annual, type:numeric (note: API field/name: dividendPerShareAnnual; category: Dividends.)
+- field:dividend_yield_indicated_annual, type:numeric (note: API field/name: dividendYieldIndicatedAnnual; category: Dividends.)
+- field:current_dividend_yield_ttm, type:numeric (note: API field/name: currentDividendYieldTTM; category: Dividends.)
+- field:payout_ratio_ttm, type:numeric (note: API field/name: payoutRatioTTM; category: Dividends.)
+- field:payout_ratio_annual, type:numeric (note: API field/name: payoutRatioAnnual; category: Dividends.)
+- field:dividend_growth_rate_5y, type:numeric (note: API field/name: dividendGrowthRate5Y; category: Dividends.)
+- primary key on (stock_id)
+- foreign key on (stock_id) to 'stocks'
+
+table: market_movers
+- field:stock_id, type:integer, not null
+- field:mover_type, type:text, not null, (note: either 'gainer' or 'loser')
+- field:rank, type:smallint, not null,
+- field:change_amount_24hr, type:numeric, not null
+- field:change_pct_24hr, type:numeric, not null
+- field:as_of, type:timestamptz, not null
+- primary key on (stock_id, mover_type)
+- foreign key on (stock_id) to 'stocks'
+- unique constraint on (mover_type, rank)

@@ -1,0 +1,52 @@
+Vercel - Next.JS Frontend + CDN for images
+Heroku Web Dyno - FastAPI Endpoints (always-on server)
+Heroku Worker Dyno - 1 APScheduler Containing all Schedules + Executes Postgres Notify's (always-on server)
+Heroku Postgres Essential 1 - PostgreSQL Database (10gb)
+
+Web Dyno:
+- runs FastAPI and serves all https requests
+- set up db connection pool (keep 5 live connections)
+- each https request's jwt token must be verified with firebase
+- extract jwt from user uid
+
+Worker Dyno:
+- runs all APScheduler tasks:
+1. check market status
+    - poll https://finnhub.io/api/v1/stock/market-status?exchange=US
+    - api key 2
+    - store the result in db market_status table
+    - if it returns false, retry 10 seconds apart 3 times.
+    - call at 9:30:01, not exactly 9:30:00am.
+    - schedule: cron trigger, every weekday 9:30am (ny time)
+
+2. poll market prices for all stocks
+    - space each api request by 1 second using asynciolimiter
+    - after each price arrives, process all queued/stop/limit trades
+    - schedule: cron trigger, every minute during market open hours (check between 9:30-4pm ny time and market status is open)
+
+3. compute portfolio snapshots for each user
+    - api key 1
+    - compute portfolio value, look up each price in db stock_current_prices table.
+    - collect current cash balance
+    - push to db portfolio_history
+    - standardise 15 min bucket (round down to scheduled 15 min)
+    - schedule: cron trigger, every 15 minutes during market open hours (check between 9:30-4pm ny time and market status is open)
+
+4. news aggregator
+    - api key 2
+    - for general feed: https://finnhub.io/api/v1/news?category=general
+    - for each stock: https://finnhub.io/api/v1/company-news?symbol=symbol
+    - schedule: interval trigger, every 30 minutes (51 calls @ 2 per minute)
+
+5. company profile + stock recommendations
+    - api key 2
+    - metrics: https://finnhub.io/api/v1/stock/metric?symbol=symbol
+    - profile: https://financialmodelingprep.com/stable/profile?symbol=symbol
+    - stock recommendations: https://finnhub.io/api/v1/stock/recommendation?symbol=symbol
+    - space stocks 2 seconds apart using asynciolimiter. make all 3 API calls for each stock together before moving to the next stock.
+    - schedule: before market hours, every day 9am (weekend + weekday), check timezone
+
+6. calculate top movers
+    - calculate biggest gainers and push to db market_movers table
+    - calculate biggest losers and push to db market_movers table
+    - schedule: cron trigger, every 10 minutes during market open hours (check between 9:30-4pm ny time and market status is open)
