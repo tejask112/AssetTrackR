@@ -1,4 +1,4 @@
-from base import Base
+from db.tables.base import Base
 from datetime import datetime
 
 from sqlalchemy import TIMESTAMP, Boolean, String
@@ -9,5 +9,5 @@ class MarketStatus(Base):
 
     date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), primary_key=True, nullable=False) 
     is_open: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    session: Mapped[str] = mapped_column(String, nullable=True)
-    holiday: Mapped[str] = mapped_column(String, nullable=True)
+    session: Mapped[str | None] = mapped_column(String, nullable=True)
+    holiday: Mapped[str | None] = mapped_column(String, nullable=True)
