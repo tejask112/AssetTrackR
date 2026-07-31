@@ -3,8 +3,8 @@ import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from processes.market_status import check_market_open
-from processes.market_prices import collect_prices
+from app.dyno_worker.processes.market_status import check_market_open
+from app.dyno_worker.processes.market_prices import collect_prices
 
 async def main() -> None:
     scheduler = AsyncIOScheduler(timezone="America/New_York")
@@ -34,8 +34,6 @@ async def main() -> None:
         max_instances=1,
         coalesce=True
     )
-
-    # when polling stocks, setup async client to optimise for speed
 
     scheduler.start()
     print("Dyno Worker Started...")
