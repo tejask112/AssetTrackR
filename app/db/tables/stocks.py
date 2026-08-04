@@ -31,7 +31,7 @@ class StockHistoricalPrices(Base):
     recorded_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     recorded_minute: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False, primary_key=True)
 
-    stock_fk: Mapped["Stocks"] = relationship(back_populates="historical_prices_fk")    # foreign key to 'stocks.stock_id'
+    stock_fk: Mapped["Stocks"] = relationship(back_populates="historical_prices")    # foreign key to 'stocks.stock_id'
 
     __table_args__ = (
         CheckConstraint("recorded_minute = date_trunc('minute', recorded_at)", name="check_recorded_at_minute_aligns"),     # checks whether 'recorded_at' and 'recorded_bucket' align to the same minute
@@ -49,7 +49,7 @@ class StockCurrentPrices(Base):
     recorded_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
     recorded_minute: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
 
-    stock_fk: Mapped["Stocks"] = relationship(back_populates="current_prices_fk")    # foreign key to 'stocks.stock_id'
+    stock_fk: Mapped["Stocks"] = relationship(back_populates="current_price")    # foreign key to 'stocks.stock_id'
 
     __table_args__ = (
         UniqueConstraint("stock_id", name="stock_id_constraint"),    # only 1 stock_id price should exist (only the current price)
@@ -65,7 +65,7 @@ class StockNewsArticles(Base):
     news_id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, nullable=False)
     stock_id: Mapped[int] = mapped_column(Integer, ForeignKey("stocks.stock_id"), primary_key=True, nullable=False)
 
-    stock_fk: Mapped["Stocks"] = relationship(back_populates="stock_news_articles_fk")
+    stock_fk: Mapped["Stocks"] = relationship(back_populates="news_articles")
     news_fk: Mapped["NewsArticles"] = relationship(back_populates="stock_news_article_relationships")
 
 
@@ -80,7 +80,7 @@ class StockRecommendations(Base):
     sell: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
     strong_sell: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
 
-    stock_fk: Mapped["Stocks"] = relationship(back_populates="stock_recommendations_fk")
+    stock_fk: Mapped["Stocks"] = relationship(back_populates="recommendations")
 
     __table_args__ = (
         CheckConstraint("strong_buy >= 0 AND buy >= 0 AND hold >=0 AND sell >= 0 AND strong_sell >= 0", name="check_ratings_nonnegative"),  # check the ratings are non negative

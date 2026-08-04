@@ -12,5 +12,13 @@ def create_tables() -> None:
     except Exception as error:
         print(f"Exception: {error}")
 
+def recreate_tables() -> None:
+    try:
+        Base.metadata.drop_all(engine)
+        Base.metadata.create_all(engine)
+        print("Database tables recreated")
+    except Exception as error:
+        print(f"Exception: {error}")
+
 if __name__ == "__main__":
-    create_tables()
+    recreate_tables()

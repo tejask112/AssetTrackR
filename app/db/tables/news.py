@@ -2,14 +2,14 @@ from db.tables.base import Base
 
 import uuid
 from datetime import datetime
-from sqlalchemy import UUID, Integer, String, Boolean, TIMESTAMP, func, UniqueConstraint, Index, text
+from sqlalchemy import UUID, Integer, String, Boolean, TIMESTAMP, func, UniqueConstraint, Index, text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class NewsArticles(Base):
     __tablename__ = "news_articles"
 
-    news_id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, nullable=False)
+    news_id: Mapped[uuid.UUID] = mapped_column(UUID, ForeignKey("news_articles.news_id"), primary_key=True, nullable=False)
     finnhub_id: Mapped[int] = mapped_column(Integer, nullable=False)
     category: Mapped[str] = mapped_column(String, nullable=False)
     headline: Mapped[str] = mapped_column(String, nullable=False)
