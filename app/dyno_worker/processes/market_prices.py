@@ -1,7 +1,7 @@
 import aiohttp
 from asynciolimiter import StrictLimiter
 import asyncio
-from app.supported_stocks import STOCKS
+from supported_stocks import STOCKS
 from datetime import datetime
 from dotenv import load_dotenv
 import os

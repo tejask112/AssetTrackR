@@ -3,8 +3,8 @@ import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from app.dyno_worker.processes.market_status import check_market_open
-from app.dyno_worker.processes.market_prices import collect_prices
+from dyno_worker.processes.market_status import check_market_open
+from dyno_worker.processes.market_prices import collect_prices
 
 async def main() -> None:
     scheduler = AsyncIOScheduler(timezone="America/New_York")
