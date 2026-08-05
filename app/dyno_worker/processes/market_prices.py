@@ -2,9 +2,11 @@ import aiohttp
 from asynciolimiter import StrictLimiter
 import asyncio
 from supported_stocks import STOCKS
-from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 import os
+
+from dyno_worker.utils.market_open_checks import check_market_open, check_market_status
 
 load_dotenv()
 FINNHUB_API_KEY_1 = os.environ["FINNHUB_API_KEY_1"]
@@ -44,9 +46,20 @@ async def collect_stock_price(session: aiohttp.ClientSession, symbol: str) -> No
 
 
 async def collect_prices() -> None:
-    # to do: 
-    # 1. check market status is open
-    # 2. check market hours between 9:30am (inclusive) - 4pm (exclusive)
+    """
+    Collects latest quote for each stock in 'supported_stocks.py' if markets are open. Asyncio limiter spaces each stocks
+    API call 0.5 seconds apart. Each quote is inserted into stock_current_prices and into stock_historical_prices.
+    """
+
+    is_market_open = await check_market_open()
+    if not is_market_open:
+        return
+
+    is_open_status = await check_market_status()
+    if not is_open_status:
+        return
+
+    print("!!!!! All Timing Checks Passed")
 
     headers = { "X-Finnhub-Token": FINNHUB_API_KEY_1 }
     timeout = aiohttp.ClientTimeout(total=5)
@@ -55,6 +68,3 @@ async def collect_prices() -> None:
         await asyncio.gather(
             *(collect_stock_price(session, symbol) for symbol in STOCKS)
         )
-
-# if __name__ == '__main__':
-#     asyncio.run(collect_prices())
