@@ -1,10 +1,12 @@
 from db.tables.base import Base
+from db.tables.news import NewsArticles
 
 import uuid
 from decimal import Decimal
 from datetime import datetime
 from sqlalchemy import Identity, Integer, String, Numeric, TIMESTAMP, UUID, UniqueConstraint, CheckConstraint, ForeignKey, Index, func, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional
 
 class Stocks(Base):
     __tablename__ = "stocks"
@@ -12,10 +14,10 @@ class Stocks(Base):
     stock_id: Mapped[int] = mapped_column(Integer, Identity(always=True), primary_key=True, nullable=False)
     symbol: Mapped[str] = mapped_column(String, nullable=False)
 
-    historical_prices: Mapped[list["StockHistoricalPrices | None"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_historical_prices.stock_id'
-    current_price: Mapped["StockCurrentPrices | None"] = relationship(back_populates="stock_fk")   # foreign key to 'stock_current_prices.stock_id'
-    news_articles: Mapped[list["StockNewsArticles | None"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_news_articles.news_id'
-    recommendations: Mapped[list["StockRecommendations | None"]] = relationship(back_populates="stock_fk")  # foreign key to 'stock_recommendations.stock_id'
+    historical_prices: Mapped[list["StockHistoricalPrices"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_historical_prices.stock_id'
+    current_price: Mapped[Optional["StockCurrentPrices"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_current_prices.stock_id'
+    news_articles: Mapped[list["StockNewsArticles"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_news_articles.news_id'
+    recommendations: Mapped[list["StockRecommendations"]] = relationship(back_populates="stock_fk")  # foreign key to 'stock_recommendations.stock_id'
 
     __table_args__ = (
         UniqueConstraint("symbol", name="symbol_constraint"),   # unique constraint on 'symbol'

@@ -35,6 +35,8 @@ async def collect_stock_price(session: aiohttp.ClientSession, symbol: str) -> No
             f"{symbol}: ${current_price:,.2f}"
         )
 
+        
+
     except aiohttp.ClientResponseError as error:
         print(f"collect_stock_price({symbol}) failed: Finnhub returned HTTP {error.status} — {error.message}")
 

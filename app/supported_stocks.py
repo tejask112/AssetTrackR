@@ -1,8 +1,9 @@
 STOCKS = (
-    "MSFT", "GOOGL", "AVGO", "AMD", "ARM", "PLTR", "ORCL", "ADBE",
-    "CSCO", "CRWD", "PANW", "AMZN", "NVDA", "QCOM", "PYPL", "COIN",
-    "HOOD", "V", "MA", "SOFI", "AFRM", "SNDK", "XYZ", "FISV", "GPN",
-    "JPM", "BAC", "GS", "C", "AXP", "BLK", "BX", "COF", "MCO", "BNY",
-    "WFC", "MS", "NOC", "BA", "GE", "RTX", "LMT", "GD", "SPCX", "LHX",
-    "HII", "TDG", "HWM", "AVAV", "AAPL",
+    "TDG", "HII", "SOFI", "CSCO", "ARM", "NVDA", "BA", "FISV",
+    "XYZ", "BNY", "MCO", "AVGO", "SPCX", "AMZN", "AFRM", "GS",
+    "AVAV", "RTX", "PANW", "SNDK", "ORCL", "COIN", "AMD", "CRWD",
+    "AXP", "V", "MA", "GPN", "GE", "JPM", "BAC", "HWM",
+    "ADBE", "PYPL", "LHX", "WFC", "GOOGL", "HOOD", "AAPL", "C",
+    "BX", "PLTR", "LMT", "NOC", "QCOM", "BLK", "GD", "MSFT",
+    "MS", "COF",
 )
