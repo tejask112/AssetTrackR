@@ -1,12 +1,14 @@
 import aiohttp
-from asynciolimiter import StrictLimiter
 import asyncio
+import os
+from asynciolimiter import StrictLimiter
 from supported_stocks import STOCKS
 from datetime import datetime, timezone
 from dotenv import load_dotenv
-import os
+
 
 from dyno_worker.utils.market_open_checks import check_market_open, check_market_status
+from dyno_worker.db_queries.market_prices import insert_price_into_db
 
 load_dotenv()
 FINNHUB_API_KEY_1 = os.environ["FINNHUB_API_KEY_1"]
@@ -27,15 +29,21 @@ async def collect_stock_price(session: aiohttp.ClientSession, symbol: str) -> No
             quote = await response.json()
 
         current_price = quote.get("c")
+        current_time = datetime.now()
         if current_price is None:
             raise Exception(f"No current price returned for {symbol}: {quote}")
 
         print(
-            f"[{datetime.now():%Y-%m-%d %H:%M:%S}] "
-            f"{symbol}: ${current_price:,.2f}"
+            f"[{current_time:%Y-%m-%d %H:%M:%S}] "
+            f"{symbol}: ${current_price:,.2f} "
+            f"type:{type(current_price)}"
         )
 
+        insert_price_into_db(symbol=symbol, price=current_price, recorded_at=current_time)
         
+        # process all queued trades
+        # process all market/limit trades
+
 
     except aiohttp.ClientResponseError as error:
         print(f"collect_stock_price({symbol}) failed: Finnhub returned HTTP {error.status} — {error.message}")
