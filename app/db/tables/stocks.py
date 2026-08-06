@@ -64,7 +64,7 @@ class StockCurrentPrices(Base):
 class StockNewsArticles(Base):
     __tablename__ = "stock_news_articles"
 
-    news_id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, nullable=False)
+    news_id: Mapped[uuid.UUID] = mapped_column(UUID, ForeignKey("news_articles.news_id"), primary_key=True, nullable=False)
     stock_id: Mapped[int] = mapped_column(Integer, ForeignKey("stocks.stock_id"), primary_key=True, nullable=False)
 
     stock_fk: Mapped["Stocks"] = relationship(back_populates="news_articles")
@@ -76,6 +76,7 @@ class StockRecommendations(Base):
 
     stock_id: Mapped[int] = mapped_column(ForeignKey("stocks.stock_id"), primary_key=True)
     covering_date_period: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), primary_key=True, nullable=False)
+    current_recommendation: Mapped[str] = mapped_column(String)
     strong_buy: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
     buy: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
     hold: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
@@ -86,4 +87,5 @@ class StockRecommendations(Base):
 
     __table_args__ = (
         CheckConstraint("strong_buy >= 0 AND buy >= 0 AND hold >=0 AND sell >= 0 AND strong_sell >= 0", name="check_ratings_nonnegative"),  # check the ratings are non negative
+        CheckConstraint("current_recommendation IS NULL OR current_recommendation IN ('strong_buy', 'buy', 'hold', 'sell', 'strong_sell')", name="check_current_recommendation_valid")  # checks current recommendation is either null or a valid recommendation
     )

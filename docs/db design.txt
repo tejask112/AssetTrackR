@@ -144,6 +144,7 @@ table: stock_news_articles
 
 table: stock_recommendations
 - field:stock_id, type:integer, not null
+- field:current_recommendation, type:text
 - field:covering_date_period, type:date, not null
 - field:strong_buy, type:integer, not null
 - field:buy, type:integer, not null
