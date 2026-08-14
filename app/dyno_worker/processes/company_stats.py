@@ -8,6 +8,7 @@ from asynciolimiter import StrictLimiter
 
 from supported_stocks import STOCKS
 from dyno_worker.utils.company_stats_api_calls import basic_financials_api_call, recommendation_trends_api_call, earnings_api_call, company_profile_api_call
+from dyno_worker.utils.normalisations import normalise_company_metrics_api_resp, normalise_company_profile_api_resp, normalise_stock_recommendations_api_resp
 
 limiter = StrictLimiter(1/4)
 
@@ -23,14 +24,16 @@ async def collect_company_stats(session: aiohttp.ClientSession, symbol: str) -> 
     """
     await limiter.wait()
 
-    company_profile = await company_profile_api_call(session=session, symbol=symbol)
-    earnings = await earnings_api_call(session=session, symbol=symbol)
-    basic_fiancials = await basic_financials_api_call(session=session, symbol=symbol)
-    recommendation_trends = await recommendation_trends_api_call(session=session, symbol=symbol)
+    company_profile = await company_profile_api_call(session, symbol)
+    earnings = await earnings_api_call(session, symbol)
+    basic_financials = await basic_financials_api_call(session, symbol)
+    recommendation_trends = await recommendation_trends_api_call(session, symbol)
 
-    print(f"!!!!!!!!!!!!!!!!!!!!!!!!!! {symbol} !!!!!!!!!!!!!!!!!!!!!!!!!! ")
-    print(f"{company_profile}\n{earnings}\n{basic_fiancials}\n{recommendation_trends}")
-
+    company_profile_dict = normalise_company_profile_api_resp(company_profile)
+    company_metrics_dict = normalise_company_metrics_api_resp(earnings, basic_financials)
+    stock_recommendations_list = normalise_stock_recommendations_api_resp(recommendation_trends)
+    
+    
 
     
     

@@ -41,9 +41,7 @@ async def earnings_api_call(session: aiohttp.ClientSession, symbol: str) -> json
 
         if earnings_calendar is None:
             print("empty response")
-
-        print(json.dumps(earnings_calendar, indent=4))
-
+            
         return earnings_calendar
     
     except aiohttp.ClientResponseError as error:
@@ -122,7 +120,7 @@ async def company_profile_api_call(session: aiohttp.ClientSession, symbol: str) 
         if company_profile is None:
             print("empty response")
 
-        return company_profile
+        return company_profile[0]
     
     except aiohttp.ClientResponseError as error:
         print(f"company_profile_api_call({symbol}) failed: FMP returned HTTP {error.status} — {error.message}")
