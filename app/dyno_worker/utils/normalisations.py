@@ -1,7 +1,7 @@
 from datetime import date
 import json
 
-def normalise_company_profile_api_resp(company_profile: dict | None) -> dict:
+async def normalise_company_profile_api_resp(company_profile: dict | None) -> dict:
     """
     Normalises the company profile json FMP API responds with in a format that can be inserted
     into the database. 
@@ -43,7 +43,7 @@ def normalise_company_profile_api_resp(company_profile: dict | None) -> dict:
     }
 
 
-def normalise_stock_recommendations_api_resp(recommendation_trends: list[dict] | None) -> list[dict]:
+async def normalise_stock_recommendations_api_resp(recommendation_trends: list[dict] | None) -> list[dict]:
     """
     Normalises the stock recommendations json Finnhub API responds with in a format that can be inserted
     into the database correctly. Also adds extra fields the database requires.
@@ -87,7 +87,7 @@ def normalise_stock_recommendations_api_resp(recommendation_trends: list[dict] |
     return normalised
 
 
-def normalise_company_metrics_api_resp(earnings: list[dict] | None, basic_financials: dict | None) -> dict:
+async def normalise_company_metrics_api_resp(earnings: list[dict] | None, basic_financials: dict | None) -> dict:
     """
     Normalises the company metrics data from multiple API sources into one dictionary that can be cleanly
     inserted into the database. 
