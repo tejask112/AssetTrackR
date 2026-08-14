@@ -1,5 +1,6 @@
 from db.tables.base import Base
 from db.tables.news import NewsArticles
+from db.tables.company import CompanyProfile, CompanyMetrics
 
 import uuid
 from decimal import Decimal
@@ -14,10 +15,12 @@ class Stocks(Base):
     stock_id: Mapped[int] = mapped_column(Integer, Identity(always=True), primary_key=True, nullable=False)
     symbol: Mapped[str] = mapped_column(String, nullable=False)
 
-    historical_prices: Mapped[list["StockHistoricalPrices"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_historical_prices.stock_id'
-    current_price: Mapped[Optional["StockCurrentPrices"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_current_prices.stock_id'
-    news_articles: Mapped[list["StockNewsArticles"]] = relationship(back_populates="stock_fk")   # foreign key to 'stock_news_articles.news_id'
-    recommendations: Mapped[list["StockRecommendations"]] = relationship(back_populates="stock_fk")  # foreign key to 'stock_recommendations.stock_id'
+    historical_prices: Mapped[list["StockHistoricalPrices"]] = relationship(back_populates="stock_fk")
+    current_price: Mapped[Optional["StockCurrentPrices"]] = relationship(back_populates="stock_fk")
+    news_articles: Mapped[list["StockNewsArticles"]] = relationship(back_populates="stock_fk")
+    recommendations: Mapped[list["StockRecommendations"]] = relationship(back_populates="stock_fk")
+    company_profile: Mapped[Optional["CompanyProfile"]] = relationship(back_populates="stock_fk")
+    company_metrics: Mapped[Optional["CompanyMetrics"]] = relationship(back_populates="stock_fk")
 
     __table_args__ = (
         UniqueConstraint("symbol", name="symbol_constraint"),   # unique constraint on 'symbol'
