@@ -26,7 +26,9 @@ async def main() -> None:
         refresh_all_company_stats,
         trigger=CronTrigger(
             day_of_week="mon-fri",
-            second="30",
+            hour="8",
+            minute="30",
+            second="0",
             timezone="America/New_York"
         ),
         id="refresh_all_company_stats",
