@@ -8,7 +8,7 @@ from asynciolimiter import StrictLimiter
 
 from supported_stocks import STOCKS
 from dyno_worker.utils.company_stats_api_calls import basic_financials_api_call, recommendation_trends_api_call, earnings_api_call, company_profile_api_call
-from dyno_worker.utils.normalisations import normalise_company_metrics_api_resp, normalise_company_profile_api_resp, normalise_stock_recommendations_api_resp
+from dyno_worker.utils.normalisations_company_stats import normalise_company_metrics_api_resp, normalise_company_profile_api_resp, normalise_stock_recommendations_api_resp
 from dyno_worker.db_queries.company_stats import insert_company_profile, insert_stock_recommendations, insert_company_metrics
 
 limiter = StrictLimiter(1/5)

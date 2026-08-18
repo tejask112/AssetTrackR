@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 class NewsArticles(Base):
     __tablename__ = "news_articles"
 
-    news_id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, nullable=False)
+    news_id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, nullable=False, default=uuid.uuid4)
     finnhub_id: Mapped[int] = mapped_column(Integer, nullable=False)
     category: Mapped[str] = mapped_column(String, nullable=False)
     headline: Mapped[str] = mapped_column(String, nullable=False)
