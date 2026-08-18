@@ -24,32 +24,46 @@ async def get_stock_news(session: aiohttp.ClientSession, symbol: str) -> None:
     await limiter.wait()
 
     params = { "symbol": symbol }
+    news = await make_api_call(
+        url=FINNHUB_STOCK_NEWS_API_URL,
+        params=params,
+        session=session,
+        general_feed=False
+    )
+
+
+async def get_general_feed_news(session: aiohttp.ClientSession) -> None:
+    await limiter.wait()
+
+    params = { "category": "general" }
+    news = await make_api_call(
+        url=FINNHUB_GENERAL_NEWS_API_URL,
+        params=params,
+        session=session,
+        general_feed=True
+    )
+
+
+async def make_api_call(url: str, params: dict, session: aiohttp.ClientSession, general_feed: bool) -> None:
     try:
         async with session.get(
-            url=FINNHUB_STOCK_NEWS_API_URL,
+            url=url,
             params=params
         ) as resp:
             resp.raise_for_status()
             news = await resp.json()
 
-        print(f"{symbol}:")
-        normalised_news = await normalise_company_news_api_resp(news=news, general_feed=False)
-
-        
+        normalised_news = await normalise_company_news_api_resp(news=news, general_feed=general_feed)
+        print(json.dumps(normalised_news, indent=4, default=str))
 
     except aiohttp.ClientResponseError as error:
-        print(f"collect_stock_price({symbol}) failed: Finnhub returned HTTP {error.status} — {error.message}")
+        print(f"make_api_call(url={url}, params={params}) failed: Finnhub returned HTTP {error.status} — {error.message}")
     
     except aiohttp.ClientError as error:
-        print(f"collect_stock_price({symbol}) failed: Finnhub request error — {error}")
+        print(f"make_api_call(url={url}, params={params}) failed: Finnhub request error — {error}")
 
     except Exception as error:
-        print(f"collect_stock_price({symbol}) failed unexpectedly: {error}")
-
-
-async def get_general_feed_news(symbol: str) -> None:
-    await limiter.wait()
-    # get general feed news
+        print(f"make_api_call(url={url}, params={params}) failed unexpectedly: {error}")
 
 
 async def collect_news() -> None:
@@ -58,7 +72,7 @@ async def collect_news() -> None:
     timeout = aiohttp.ClientTimeout(total=10)
 
     async with aiohttp.ClientSession(headers=headers, timeout=timeout) as session:
-        # await get_general_feed_news(session)
+        await get_general_feed_news(session)
         await asyncio.gather(
             *(get_stock_news(session, symbol) for symbol in STOCKS)
         )
