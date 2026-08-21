@@ -7,6 +7,7 @@ import json
 
 from supported_stocks import STOCKS
 from ..utils.normalisations_news import normalise_company_news_api_resp
+from ..db_queries.news import insert_news
 
 
 load_dotenv()
@@ -22,7 +23,8 @@ FINNHUB_STOCK_NEWS_API_URL = "https://finnhub.io/api/v1/company-news"
 
 async def get_stock_news(session: aiohttp.ClientSession, symbol: str) -> None:
     await limiter.wait()
-
+    
+    # params = { "symbol": symbol, "from":"2026-08-13", "to":"2026-08-20"}
     params = { "symbol": symbol }
     news = await make_api_call(
         url=FINNHUB_STOCK_NEWS_API_URL,
@@ -30,6 +32,13 @@ async def get_stock_news(session: aiohttp.ClientSession, symbol: str) -> None:
         session=session,
         general_feed=False
     )
+
+    if news:
+        await insert_news(
+            general_news=False,
+            symbol=symbol,
+            news=news
+        )
 
 
 async def get_general_feed_news(session: aiohttp.ClientSession) -> None:
@@ -43,8 +52,15 @@ async def get_general_feed_news(session: aiohttp.ClientSession) -> None:
         general_feed=True
     )
 
+    if news:
+        await insert_news(
+            general_news=True,
+            symbol=None,
+            news=news
+        )
 
-async def make_api_call(url: str, params: dict, session: aiohttp.ClientSession, general_feed: bool) -> None:
+
+async def make_api_call(url: str, params: dict, session: aiohttp.ClientSession, general_feed: bool) -> list[dict]:
     try:
         async with session.get(
             url=url,
@@ -54,7 +70,9 @@ async def make_api_call(url: str, params: dict, session: aiohttp.ClientSession, 
             news = await resp.json()
 
         normalised_news = await normalise_company_news_api_resp(news=news, general_feed=general_feed)
-        print(json.dumps(normalised_news, indent=4, default=str))
+        # print(json.dumps(normalised_news, indent=4, default=str))
+
+        return normalised_news
 
     except aiohttp.ClientResponseError as error:
         print(f"make_api_call(url={url}, params={params}) failed: Finnhub returned HTTP {error.status} — {error.message}")
