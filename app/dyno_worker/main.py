@@ -41,7 +41,7 @@ async def main() -> None:
     scheduler.add_job(
         collect_news,
         trigger=CronTrigger(
-            second="30",
+            minute="0",
         ),
         id="collect_news",
         replace_existing=True,

@@ -13,9 +13,8 @@ from ..db_queries.news import insert_news
 load_dotenv()
 
 
-# limiter = StrictLimiter(1/30) 
-
-limiter = StrictLimiter(1)  #for testing
+limiter = StrictLimiter(1/30)  #deployment
+# limiter = StrictLimiter(1)  #testing
 
 FINNHUB_API_KEY_2 = os.environ["FINNHUB_API_KEY_2"]
 FINNHUB_GENERAL_NEWS_API_URL = "https://finnhub.io/api/v1/news"
