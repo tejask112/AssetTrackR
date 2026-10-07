@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from routes.routes import router
+from api.routes.health import health_router
 
 app = FastAPI()
-app.include_router(router, prefix="/api")
+prefix = "/api"
 
+app.include_router(health_router, prefix=prefix)
